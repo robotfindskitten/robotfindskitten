@@ -2,21 +2,25 @@ Makefile - it's a makefile
 constants.h - numbers that one should think hard before changing
 [messages.h - need to set the -I in Makefile to find it where it really lives]
 rfk-palm.c - this is where all the action is
+rfk-memo.{c,h} - get optional extra non-kitten-items from "rfk-fortune" memo 
 rfk.bmp - picture for the about screen (this why I am not an art major)
 robotfindskitten.bmp - the regular application icon
 robotfindskitten.def - one line of text used by 'build-prc' not very exciting
 robotfindskitten.pbm - the .bmp in .pbm format, because build-prc insists.
-robotfindskitten.rcp - the UI resource file: defines each little screen
+robotfindskitten.rcp[.in] - the UI resource file: defines each little screen
 robotfindskittenRsc.h - #define's shared by the .rcp file and the .c file
 robotfindskittenSmall.bmp - the tiny application icon
+preprocess/Makefile - build an executable to figure out what MESSAGES is
+preprocess/count_messages.c - (this is the easiest way to do it)
+preprocess/tweak_rcp.pl - generate the .rcp from the .rcp.in, w/ MESSAGES.
 
 this stuff should build:
 
 robotfindskitten.prc - The executable!  Install this on your handheld device.
 
 
-Oh, one more note.  The part of the version number that is "number of nki"
-appears in four (4) places but at least they're all in robotfindskitten.rcp.
-So if someone adds more messages to ../src/messages.h, keep an eye out and
-update robotfindskitten.rcp (I suppose I could write a script to do this
-automagically someday.)
+The part of the version number that is "number of nki" appears in four
+places in robotfindskitten.rcp.  The stuff in preprocess has the task
+of figuring out what that number is really supposed to be (by
+consulting messages.h) and inserting that number in those locations in
+robotfindskitten.rcp.  It's frivolous.

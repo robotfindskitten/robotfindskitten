@@ -49,7 +49,7 @@ Short num_bogus = 20;
 screen_object bogus[MAX_BOGUS];  // Representations of non-kittem items
 bogus_message bogus_messages[MAX_BOGUS]; // Has an index into messages[]
 Boolean used_messages[MESSAGES]; // Which of messages[] are used as bogus_msgs
-Short MESSAGES_real;
+// Hey, is [MESSAGES] going to work now that it's a sizeof/sizeof ?
 // Might also take some NKI messages from a memo.
 #include "rfk-memo.h"
 
@@ -750,9 +750,7 @@ void initialize_bogus()
     screen[x][y] = j + STARTBOGUS;
       
     /*Find a message for this object.*/
-    /* Treat MESSAGES as just a hint; don't rely on it for # of nki..
-       could be too large or too small accidentally. */
-    msg_count = (MESSAGES_real < MESSAGES) ? MESSAGES_real : MESSAGES;
+    msg_count = MESSAGES;
     // Might use some fortunes from a database record.
     total_count = (fortune_exists ? msg_count+fortune_ctr : msg_count);
     // Decide which of the 1 or 2 pools to draw the message from
@@ -832,11 +830,7 @@ Boolean Start_Form_HandleEvent(EventPtr e)
 #ifdef DEBUG
     {
       Char buf[80];
-      if (MESSAGES_real != MESSAGES)
-	StrPrintF(buf, "[WARNING: there's %d nki, not %d]",
-		  MESSAGES_real, MESSAGES);
-      else
-	StrPrintF(buf, "[yep, messages.h has %d nki]", MESSAGES);
+      StrPrintF(buf, "[messages.h has %d nki]", MESSAGES);
       WinDrawChars(buf, StrLen(buf), 5, 103);
       if (fortune_exists)
 	StrPrintF(buf, "%d fortunes found", fortune_ctr);
@@ -1083,9 +1077,6 @@ static Word StartApplication(void)
   else
     color = false; // Better test to see if it will run on OS2..
 #endif /* I_AM_COLOR */
-
-  // Make sure that messages.h has not got a fencepost error (again).
-  MESSAGES_real = sizeof(messages) / sizeof(Char *);
 
   // Read user preferences.
   readPrefs();

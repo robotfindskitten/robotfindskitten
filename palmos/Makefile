@@ -41,9 +41,9 @@ bin.stamp: $(TARGET).rcp $(TARGET).pbm $(IMAGES)
 	$(PILRC) $(TARGET).rcp .
 	touch bin.stamp
 
-# Check it out.. automatic subversion-number updating via cheesy perl script
+# Check it out.. cheesy automatic subversion-number updating
 $(TARGET).rcp: $(TARGET).rcp.in ../src/messages.h
-	perl -n preprocess_rcp.pl < $(TARGET).rcp.in > $(TARGET).rcp
+	perl -n preprocess/tweak_rcp.pl < $(TARGET).rcp.in > $(TARGET).rcp
 
 depend:
 	makedepend -Y  *.c
