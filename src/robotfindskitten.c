@@ -498,7 +498,7 @@ void initialize_screen()
   /*Draw a line across the screen.*/
   for (counter = X_MIN; counter <= X_MAX; counter++)
     {
-      printw("%c",196);
+      printw("%c",95);
     }
 
   /*
