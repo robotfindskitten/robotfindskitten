@@ -1,4 +1,8 @@
-static char* ver = "v1600003.240b";
+#if HAVE_CONFIG_H
+#include <config.h>
+static char* ver = VERSION;
+#endif
+
 /*
  *robotfindskitten: A Zen simulation
  *
@@ -20,7 +24,9 @@ static char* ver = "v1600003.240b";
  *
  */
 
+#if HAVE_CURSES_H
 #include <curses.h>
+#endif
 #include <signal.h>
 
 /* cunit is a unit-testing suite */
@@ -287,7 +293,7 @@ void process_input(int input)
 }
 
 /*finish is called upon signal or progam exit*/
-void finish(int sig)
+RETSIGTYPE finish(int sig)
 {
     endwin();
     printf("%c%c%c",27,'(','B'); /* Restore normal character set */
