@@ -1,0 +1,10 @@
+robotfindskitten (v1600003_201b-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Nick Moffitt <nick@zork.net>  Tue, 21 Nov 2000 11:27:27 -0800
+
+Local variables:
+mode: debian-changelog
+add-log-mailing-address "nick@zork.net"
+End:

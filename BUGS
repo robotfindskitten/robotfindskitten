@@ -10,6 +10,9 @@ ncurses doesn't cooperate with characters less than '!'. It displays
 them as, eg ^A for what should by rights be a little smiley
 face. draw.h uses the A_ALTCHARSET flag. It doesn't work.
 
+Occasionally, there are redraw errors.  Any ncurses gurus out there who can
+clear this up?
+
 Possible Improvements:
 ----------------------
 The code generally needs to be cleaned up.
@@ -27,3 +30,7 @@ at runtime, so that people can easily change the messages.
 The screen array is bigger than it needs to be. It probably shouldn't
 be an array at all, actually, since at most 1/8 of the entries are
 full. It should be a hash or something.
+
+The program shouldn't be hard-wired to 80x25.
+
+
