@@ -1,0 +1,166 @@
+// -0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0
+// robotfindskitten: A Zen simulation (ported to PalmOS)
+// Copyright (C) 2001 Bridget Spitznagel
+//                    i0lanthe@yahoo.com
+//
+// Original robotfindskitten is
+// Copyright (C) 1997,2000 Leonard Richardson 
+//                         leonardr@segfault.org
+// 
+//    This program is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU General Public License as
+//    published by the Free Software Foundation; either version 2 of
+//    the License, or (at your option) any later version.
+// 
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or EXISTENCE OF KITTEN.  See the GNU General
+//    Public License for more details.
+// 
+//    http://www.gnu.org/copyleft/gpl.html
+//
+// -0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0
+
+#include "robotfindskittenRsc.h"
+
+VERSION ID 1 "002.201"
+
+ICON "robotfindskitten.bmp"
+SMALLICON "robotfindskittenSmall.bmp"
+
+
+FORM ID HuntForm AT (0 0 160 160)
+USABLE
+NOFRAME
+MENUID HuntFormMenu
+BEGIN
+END
+
+
+MENU ID HuntFormMenu
+BEGIN
+    PULLDOWN "Options"
+    BEGIN
+        MENUITEM "About   "       ID menu_h_about "A"
+        MENUITEM "Instructions   "       ID menu_h_instruct "I"
+        MENUITEM "Preferences   "        ID menu_h_prefs "P"
+	MENUITEM SEPARATOR
+	MENUITEM "QUIT" ID  menu_h_quit "Q"
+    END
+END
+
+
+MENU ID StartFormMenu
+BEGIN
+    PULLDOWN "Options"
+    BEGIN
+        MENUITEM "About   "       ID menu_s_about "A"
+        MENUITEM "Preferences   "        ID menu_s_prefs "P"
+    END
+END
+
+FORM ID StartForm AT (0 0 160 160)
+USABLE
+MENUID StartFormMenu
+BEGIN
+  TITLE "robotfindskitten"
+
+  LABEL "In this game, you are robot (#)." AUTOID AT (0 15)
+  LABEL "Your job is to find kitten. This task is" AUTOID AT (0 PrevTop+11)
+  LABEL "complicated by the existence of" AUTOID AT (0 PrevTop+11)
+  LABEL "various things which are not kitten." AUTOID AT (0 PrevTop+11)
+  LABEL "Robot must touch items to determine" AUTOID AT (0 PrevTop+11)
+  LABEL "if they are kitten or not.  The game" AUTOID AT (0 PrevTop+11)
+  LABEL "ends when robotfindskitten." AUTOID AT (0 PrevTop+11)
+
+  BUTTON "Ok" ID btn_start_ok AT (5 147 45 AUTO)
+  LABEL "choose number of" AUTOID AT (15 PrevTop-33)
+  LABEL "non-kitten objects:" AUTOID AT (PrevLeft PrevTop+11)
+  FIELD ID field_start AT (PrevRight+4 PrevTop 20 AUTO) USABLE RIGHTALIGN EDITABLE UNDERLINED SINGLELINE MAXCHARS 2
+
+END
+
+
+BITMAP ID bitmap_rfk "robotfindskitten.bmp"
+BITMAP ID bitmap_cat "rfk.bmp"
+
+FORM ID AboutForm AT (2 2 156 156)
+USABLE
+MODAL
+HELPID AboutStr
+DEFAULTBTNID btn_about_ok
+BEGIN
+	TITLE "About"
+	FORMBITMAP AT (8 19) BITMAP bitmap_cat
+	FORMBITMAP AT (98 15) BITMAP bitmap_rfk
+	LABEL "robotfindskitten" AUTOID AT (85 40)
+	LABEL "for PalmOS" AUTOID AT (89 PrevTop+11)
+	LABEL "version 002.201" AUTOID AT (87 PrevTop+22)
+
+	LABEL "Bridget Spitznagel" AUTOID AT (Center 100)
+        LABEL "i0lanthe@yahoo.com" AUTOID AT (Center PrevTop+11)
+	BUTTON "Done" ID btn_about_ok AT (5 141 35 AUTO)
+	BUTTON "View © Info" ID btn_about_more AT (50 141 AUTO AUTO)
+END
+
+STRING AboutStr "robotfindskitten (port for PalmOS) v 002.201\n"\
+                "© 2001 Bridget Spitznagel,\n"\
+                "i0lanthe@yahoo.com\n\n"\
+                "robotfindskitten (for linux) is "\
+                "© 1997,2000 Leonard Richardson,\n"\
+                "leonardr@segfault.org\n\n"\
+    "This program is free software; you can redistribute it and/or "\
+    "modify it under the terms of the GNU General Public License as "\
+    "published by the Free Software Foundation; either version 2 of "\
+    "the License, or (at your option) any later version.\n\n"\
+    "This program is distributed in the hope that it will be useful, "\
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of "\
+    "MERCHANTABILITY or EXISTENCE OF KITTEN.  See the GNU General "\
+    "Public License for more details.\n\n"\
+     "http://www.gnu.org/copyleft/gpl.html"
+
+
+STRING InstructStr "robotfindskitten\n(PalmOS port) v 002.201\n"\
+  "In this game, you are robot (#). Your job is to find kitten. This task "\
+  "is complicated by the existence of various things which are not kitten. "\
+  "Robot must touch items to determine if they are kitten or not. The game "\
+  "ends when robotfindskitten. Alternatively, you may restart the game via "\
+  "the menu."
+
+
+STRING PrefsStr "Relative move: there is a 'coordinate system' used "\
+	"to translate screen-taps into robot-orders; if relative move "\
+	"is turned on, the coordinate system's origin is robot, and "\
+	"travels about the board with robot.  Otherwise the origin "\
+	"remains fixed at the center of the screen.\n" \
+	"Sound: turn game sound on/off.\n"\
+	"Hardware buttons: if on, you can use Address, Up, Down, and ToDo "\
+	"to move (and Datebook or Memo to dismiss non-kitten descriptions)."
+
+FORM ID PrefsForm AT (2 2 156 156)
+USABLE
+MODAL
+HELPID PrefsStr
+BEGIN
+  TITLE "Preferences"
+  LABEL "default number of" AUTOID AT (15 15)
+  LABEL "non-kitten objects:" AUTOID AT (PrevLeft PrevTop+11)
+  FIELD ID field_prefs AT (PrevRight+4 PrevTop 20 AUTO) USABLE RIGHTALIGN EDITABLE UNDERLINED SINGLELINE MAXCHARS 2
+  CHECKBOX "Relative move" ID check_prefs_1 AT (15 PrevTop+22 AUTO AUTO)
+  CHECKBOX "Sound" ID check_prefs_2 AT (15 PrevTop+11 AUTO AUTO)
+  CHECKBOX "Hardware buttons" ID check_prefs_3 AT (15 PrevTop+11 AUTO AUTO)
+  
+  BUTTON "Ok" ID btn_prefs_ok AT (5 141 45 AUTO)
+  BUTTON "Cancel" ID btn_prefs_cancel AT (PrevRight+5 141 45 AUTO)
+END
+
+
+// only needs 3 lines.  each line is 11 pixels high.
+// eh, might as well give it four though.
+// (156 - 44) / 2 = 56.  make y 56 to center vertically
+// make height 4*11.
+FORM ID ThingForm AT (2 56 156 THINGFORM_H)
+USABLE
+MODAL
+BEGIN
+END

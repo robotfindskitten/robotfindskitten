@@ -1,0 +1,15 @@
+Makefile - it's a makefile
+constants.h - numbers that one should think hard before changing
+[messages.h - need to set the -I in Makefile to find it where it really lives]
+rfk-palm.c - this is where all the action is
+rfk.bmp - picture for the about screen (this why I am not an art major)
+robotfindskitten.bmp - the regular application icon
+robotfindskitten.def - one line of text used by 'build-prc' not very exciting
+robotfindskitten.pbm - the .bmp in .pbm format, because build-prc insists.
+robotfindskitten.rcp - the UI resource file: defines each little screen
+robotfindskittenRsc.h - #define's shared by the .rcp file and the .c file
+robotfindskittenSmall.bmp - the tiny application icon
+
+this stuff should build:
+
+robotfindskitten.prc - The executable!  Install this on your handheld device.
