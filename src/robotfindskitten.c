@@ -36,6 +36,7 @@ static char* ver = VERSION;
 
 
 #include <signal.h>
+#include <stdlib.h>
 
 /*The messages go in a separate file because they are collectively
   huge, and you might want to modify them. It would be nice to load
@@ -86,9 +87,9 @@ static char* ver = VERSION;
 #define KEY_REDRAW ('L' - 64)
 /*Screen dimensions.*/
 #define X_MIN 0
-#define X_MAX 79
+#define X_MAX (COLS - 1)
 #define Y_MIN 3
-#define Y_MAX 23
+#define Y_MAX (LINES - 1)
 
 /*Macros for generating numbers in different ranges*/
 #define randx() rand() % X_MAX+1
@@ -148,7 +149,7 @@ int used_messages[MESSAGES];
  array is bigger than it needs to be, as we don't need to keep track
  of the first few rows of the screen. But that requires making an
  offset function and using that everywhere. So not right now. */
-int screen[X_MAX+1][Y_MAX+1];
+int** screen = NULL;
 
 #include "draw.h"
 
@@ -386,9 +387,17 @@ void instructions()
 void initialize_arrays()
 {
   int counter, counter2;
-
-  /*Initialize the empty object.*/
   screen_object empty;
+  int i = 0;
+
+  /* Allocate memory for the screen. */
+  screen = malloc (sizeof (int*) * (X_MAX + 1));
+  for (i = 0; i < (X_MAX + 1); ++i) {
+          /* XXX: blah blah blah check for NULL */
+          screen[i] = malloc (sizeof (int) * (Y_MAX + 1));
+  }
+  
+  /*Initialize the empty object.*/
   empty.x = -1;
   empty.y = -1;
   empty.color = 0;
@@ -566,6 +575,8 @@ int main(int argc, char *argv[])
    randchar() macro. */
    printf("%c%c%c",27,'(','U');
 
+  initialize_ncurses();  
+
   initialize_arrays();
 
   /*
@@ -575,7 +586,6 @@ int main(int argc, char *argv[])
   initialize_kitten();
   initialize_bogus();
 
-  initialize_ncurses();  
   instructions();  
 
   initialize_screen();
