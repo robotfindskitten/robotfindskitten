@@ -2,13 +2,14 @@ Current bugs:
 -------------
 When you hit the escape key, it takes about a second to register. Why?
 
-From the getch man page (Shazdeh <zen@emgnulation.org>):
+	From the getch man page (Shazdeh <zen@emgnulation.org>):
 -- 
        Use of the escape key by a programmer for a single charac-
        ter function is discouraged, as it will cause a	delay  of
        up to one second while the keypad code looks for a follow-
        ing function-key sequence.
--- 
+--
+	Also, you can now use Q to exit the simulation.
 
 ncurses doesn't cooperate with characters less than '!'. It displays
 them as, eg ^A for what should by rights be a little smiley

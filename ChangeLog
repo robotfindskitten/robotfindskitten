@@ -1,4 +1,7 @@
 
+Dec 5 2000 Shazdeh <zen@emgnulation.org>
+	* Made it possible to exit the game by pressing Q.
+	* Made Nethack movement controls case-insensitive.
 Nov 30 2000 Shazdeh <zen@emgnulation.org>
 	* fixed data-loss problem with getch()
 	* replaced wacko magic numbers with system-defined constants

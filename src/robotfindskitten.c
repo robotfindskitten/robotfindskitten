@@ -44,14 +44,22 @@ static char* ver = "v1600003.201b";
 #define DOWN_RIGHT_KEY 82
 
 /*Nethack keycodes*/
-#define NETHACK_DOWN 'j'
-#define NETHACK_UP 'k'
-#define NETHACK_LEFT 'h'
-#define NETHACK_RIGHT 'l'
-#define NETHACK_UL 'y'
-#define NETHACK_UR 'u'
-#define NETHACK_DL 'b'
-#define NETHACK_DR 'n'
+#define NETHACK_down 'j'
+#define NETHACK_DOWN 'J'
+#define NETHACK_up 'k'
+#define NETHACK_UP 'K'
+#define NETHACK_left 'h'
+#define NETHACK_LEFT 'H'
+#define NETHACK_right 'l'
+#define NETHACK_RIGHT 'L'
+#define NETHACK_ul 'y'
+#define NETHACK_UL 'Y'
+#define NETHACK_ur 'u'
+#define NETHACK_UR 'U'
+#define NETHACK_dl 'b'
+#define NETHACK_DL 'B'
+#define NETHACK_dr 'n'
+#define NETHACK_DR 'N'
 
 #define KEY_ESC 27
 
@@ -181,7 +189,7 @@ void play_game()
   int input;
 
   input = getch();
-  while (input != KEY_ESC)
+  while ((input != KEY_ESC) && (input != 'q') && (input != 'Q'))
     {
       process_input(input);
       
@@ -219,38 +227,46 @@ void process_input(int input)
   switch (input)
     {
     case KEY_UP:
+    case NETHACK_up:
     case NETHACK_UP:
       check_y--;
       break;
     case KEY_HOME:
+    case NETHACK_ul:
     case NETHACK_UL:
       check_x--;
       check_y--;
       break;
     case KEY_PPAGE:
+    case NETHACK_ur:
     case NETHACK_UR:
       check_x++;
       check_y--;
       break;
     case KEY_DOWN:
+    case NETHACK_down:
     case NETHACK_DOWN:
       check_y++;
       break;
     case KEY_END:
+    case NETHACK_dl:
     case NETHACK_DL:
       check_x--;
       check_y++;
       break;
     case KEY_NPAGE:
+    case NETHACK_dr:
     case NETHACK_DR:
       check_x++;
       check_y++;
       break;
     case KEY_LEFT:
+    case NETHACK_left:
     case NETHACK_LEFT:
       check_x--;
       break;
     case KEY_RIGHT:
+    case NETHACK_right:
     case NETHACK_RIGHT:
       check_x++;
       break;
