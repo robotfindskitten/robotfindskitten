@@ -1,6 +1,6 @@
 /*Be sure to change MESSAGES when you change the array, or bad things
   will happen.*/
-#define MESSAGES 201
+#define MESSAGES 223
 
 static char* messages[] =
 {
@@ -204,5 +204,27 @@ static char* messages[] =
   "...thingy???",
   "It's 1000 secrets the government doesn't want you to know!",
   "The letters O and R.",
-  "A magical... magic thing."
+  "A magical... magic thing.",
+  "It's a moment of silence.",
+  "It's Sirhan-Sirhan, looking guilty.",
+  "It's \"Chicken Soup for the Kitten-seeking Soulless Robot.\"",
+  "It is a set of wind-up teeth.",
+  "It is a cloud shaped like an ox.",
+  "You see a snowflake here, melting slowly.",
+  "It's a big block of ice. Something is frozen inside it.",
+  "Vladimir Lenin's casket rests here.",
+  "It's a copy of \"Zen and The Art of Robot Maintenance\".",
+  "This invisible box contains a pantomime horse.",
+  "A mason jar lies here open. It's label reads: \"my innocence\".",
+  "A train of thought chugs through here.",
+  "This jar of pickles expired back in 1957.",
+  "Someone's identity disk lies here.",
+  "\"Yes!\" says the bit.",
+  "\"No!\" says the bit.",
+  "A dodecahedron bars your way.",
+  "Mr. Hooper is here, surfing.",
+  "It's a big smoking fish.",
+  "You have new mail in /var/spool/robot",
+  "Just a monitor with the blue element burnt out.",
+  "A pile of coaxial plumbing lies here."
 };
