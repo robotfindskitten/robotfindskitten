@@ -23,7 +23,8 @@
 
 #include "robotfindskittenRsc.h"
 
-VERSION ID 1 "002.201"
+// Change .xxx to the current number of nki in ../src/messages.h
+VERSION ID 1 "002.242"
 
 ICON "robotfindskitten.bmp"
 SMALLICON "robotfindskittenSmall.bmp"
@@ -84,6 +85,7 @@ END
 BITMAP ID bitmap_rfk "robotfindskitten.bmp"
 BITMAP ID bitmap_cat "rfk.bmp"
 
+// Change .xxx to the current number of nki in ../src/messages.h
 FORM ID AboutForm AT (2 2 156 156)
 USABLE
 MODAL
@@ -95,7 +97,7 @@ BEGIN
 	FORMBITMAP AT (98 15) BITMAP bitmap_rfk
 	LABEL "robotfindskitten" AUTOID AT (85 40)
 	LABEL "for PalmOS" AUTOID AT (89 PrevTop+11)
-	LABEL "version 002.201" AUTOID AT (87 PrevTop+22)
+	LABEL "version 002.242" AUTOID AT (87 PrevTop+22)
 
 	LABEL "Bridget Spitznagel" AUTOID AT (Center 100)
         LABEL "i0lanthe@yahoo.com" AUTOID AT (Center PrevTop+11)
@@ -103,7 +105,8 @@ BEGIN
 	BUTTON "View © Info" ID btn_about_more AT (50 141 AUTO AUTO)
 END
 
-STRING AboutStr "robotfindskitten (port for PalmOS) v 002.201\n"\
+// Change .xxx to the current number of nki in ../src/messages.h
+STRING AboutStr "robotfindskitten (port for PalmOS) v 002.242\n"\
                 "© 2001 Bridget Spitznagel,\n"\
                 "i0lanthe@yahoo.com\n\n"\
                 "robotfindskitten (for linux) is "\
@@ -120,7 +123,8 @@ STRING AboutStr "robotfindskitten (port for PalmOS) v 002.201\n"\
      "http://www.gnu.org/copyleft/gpl.html"
 
 
-STRING InstructStr "robotfindskitten\n(PalmOS port) v 002.201\n"\
+// Change .xxx to the current number of nki in ../src/messages.h
+STRING InstructStr "robotfindskitten\n(PalmOS port) v 002.242\n"\
   "In this game, you are robot (#). Your job is to find kitten. This task "\
   "is complicated by the existence of various things which are not kitten. "\
   "Robot must touch items to determine if they are kitten or not. The game "\

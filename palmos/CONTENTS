@@ -13,3 +13,10 @@ robotfindskittenSmall.bmp - the tiny application icon
 this stuff should build:
 
 robotfindskitten.prc - The executable!  Install this on your handheld device.
+
+
+Oh, one more note.  The part of the version number that is "number of nki"
+appears in four (4) places but at least they're all in robotfindskitten.rcp.
+So if someone adds more messages to ../src/messages.h, keep an eye out and
+update robotfindskitten.rcp (I suppose I could write a script to do this
+automagically someday.)
