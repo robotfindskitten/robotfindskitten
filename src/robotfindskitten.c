@@ -43,6 +43,8 @@ static char* ver = "v1600003.201b";
 #define DOWN_LEFT_KEY 104
 #define DOWN_RIGHT_KEY 82
 
+#define KEY_ESC 27
+
 /*Nethack keycodes*/
 #define NETHACK_down 'j'
 #define NETHACK_DOWN 'J'
@@ -61,7 +63,11 @@ static char* ver = "v1600003.201b";
 #define NETHACK_dr 'n'
 #define NETHACK_DR 'N'
 
-#define KEY_ESC 27
+/*EMACS keycodes - Subtracting 64 makes it a control command*/
+#define EMACS_NEXT ('N' - 64)
+#define EMACS_PREVIOUS ('P' - 64)
+#define EMACS_BACKWARD ('B' - 64)
+#define EMACS_FORWARD ('F' - 64)
 
 /*Screen dimensions.*/
 #define X_MIN 0
@@ -229,6 +235,7 @@ void process_input(int input)
     case KEY_UP:
     case NETHACK_up:
     case NETHACK_UP:
+    case EMACS_PREVIOUS:
       check_y--;
       break;
     case KEY_HOME:
@@ -246,6 +253,7 @@ void process_input(int input)
     case KEY_DOWN:
     case NETHACK_down:
     case NETHACK_DOWN:
+    case EMACS_NEXT:
       check_y++;
       break;
     case KEY_END:
@@ -263,11 +271,13 @@ void process_input(int input)
     case KEY_LEFT:
     case NETHACK_left:
     case NETHACK_LEFT:
+    case EMACS_BACKWARD:
       check_x--;
       break;
     case KEY_RIGHT:
     case NETHACK_right:
     case NETHACK_RIGHT:
+    case EMACS_FORWARD:
       check_x++;
       break;
     case 0:

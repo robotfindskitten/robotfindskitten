@@ -113,11 +113,12 @@ dispense with the niceties and get on with the documentation.
 @cindex subversion
 @cindex destiny
 @cindex Nethack
+@cindex EMACS
 
 In this simulation, you play the part of robot. Your task is to
 complete the simulation by finding kitten, as is your destiny, and
 indeed your wont.  You (robot) are represented by the # character, and
-you move around with the arrow keys (Nethack or otherwise) touching
+you move around with the arrow keys (Nethack, EMACS, or otherwise) touching
 things.  If the thing you touch is kitten, you get a cute little
 animation (which was cuter in the DOS version) and the simulation
 ends. Otherwise, you get a brief description of what it is you
@@ -162,9 +163,10 @@ complicated simulation.
 @cindex movement
 @cindex controls
 @cindex Nethack
+@cindex EMACS
 @enumerate
 @item
-To move robot, use the arrow keys. Diagonals now work! Nethack arrow keys (including diagonals) now work! Now that's innovation!
+To move robot, use the arrow keys. Diagonals now work! Nethack arrow keys (including diagonals) now work! Now that's innovation! EMACS keys work, too.
 
 @cindex touch
 @item
