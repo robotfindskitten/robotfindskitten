@@ -5,7 +5,8 @@
   currently have the version number hardcoded into them, and they 
   should reflect MESSAGES. */
 
-#define MESSAGES 243
+/*#define MESSAGES 243 *//* Watch out for fenceposts.*/
+#define MESSAGES 242
 
 static char* messages[] =
 {
