@@ -1,4 +1,4 @@
-static char* ver = "v1600003.201b";
+static char* ver = "v1600003.240b";
 /*
  *robotfindskitten: A Zen simulation
  *

@@ -1,6 +1,6 @@
 /*Be sure to change MESSAGES when you change the array, or bad things
   will happen.*/
-#define MESSAGES 223
+#define MESSAGES 240
 
 static char* messages[] =
 {
@@ -65,7 +65,7 @@ static char* messages[] =
   "A smoking branding iron shaped like a 24-pin connector.",
   "It's a Java applet.",
   "An abandoned used-car lot.",
-  "A shameless plug for Crummy: http://fire.csua.ucla.edu/~leonardr/",
+  "A shameless plug for Crummy: http://www.crummy.com/",
   "A shameless plug for the UCLA Linux Users Group: http://linux.ucla.edu/",
   "A can of Spam Lite.",
   "This is another fine mess you've gotten us into, Stanley.",
@@ -191,7 +191,7 @@ static char* messages[] =
   "\"Blup, blup, blup\", says the mud pot.",
   "More grist for the mill.",
   "Grind 'em up, spit 'em out, they're twigs.",
-  "The boom box belts out an old Ethel Merman tune.",
+  "The boom box cranks out an old Ethel Merman tune.",
   "It's \"Finding kitten\", published by O'Reilly and Associates.",
   "Pumpkin pie spice.",
   "It's the Bass-Matic '76! Mmm, that's good bass!",
@@ -226,5 +226,22 @@ static char* messages[] =
   "It's a big smoking fish.",
   "You have new mail in /var/spool/robot",
   "Just a monitor with the blue element burnt out.",
-  "A pile of coaxial plumbing lies here."
+  "A pile of coaxial plumbing lies here.",
+  "It's a rotten old shoe.",
+  "It's only a hundred-dollar bill.",
+  "It's a Dvorak keyboard.",
+  "It's a cardboard box full of 8-tracks.",
+  "Just a broken hard drive containg the archives of Nerth Pork.",
+  "A broken metronome sits here, it's needle off to the side.",
+  "A sign reads: \"Go home!\"",
+  "A sign reads: \"No robots allowed!\"",
+  "It's the handheld robotfindskitten game, by Tiger.",
+  "This monstrosity appears to be ENIAC.",
+  "This is a tasty-looking banana creme pie.",
+  "A wireframe model of a hot dog rotates in space here.",
+  "Just the empty husk of a locust.",
+  "You disturb a murder of crows.",
+  "It's a copy of the robotfindskitten EULA."
+  "It's Death.",
+  "It's an autographed copy of \"Secondary Colors,\" by Bob Ross."
 };
