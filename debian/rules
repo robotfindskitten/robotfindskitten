@@ -13,6 +13,7 @@ configure-stamp:
 	dh_testdir
 #	Add here commands to configure the package.
 	aclocal
+	libtoolize
 	autoheader
 	automake --add-missing
 	autoconf
@@ -40,6 +41,9 @@ clean:
 	rm -f COPYING INSTALL config.guess config.sub install-sh \
 		ltconfig ltmain.sh missing mkinstalldirs doc/texinfo.tex \
 		Makefile config.status conftest conftest.o \
+		configure depcomp config.h.in aclocal.m4 \
+		Makefile.in doc/Makefile.in src/Makefile.in doc/robotfindskitten.info \
+		doc/robotfindskitten.pdf \
 		src/robotfindskitten.o src/robotfindskitten
 
 	dh_clean

@@ -1,3 +1,35 @@
+robotfindskitten (0.1600005.344b-3) unstable; urgency=low
+
+  * Updated to standards version 3.5.6.1
+  * Updated debian/rules for automake >= 1.6 and libtool, added some make
+    clean targets
+  * Thanks to Aaron Haviland for these fixes!
+
+ -- Neale Pickett <neale@debian.org>  Fri, 13 Sep 2002 16:39:51 -0700
+
+robotfindskitten (0.1600005.344b-2) unstable; urgency=low
+  
+  * Added build-depends on libtool (closes: #121595)
+  
+ -- Neale Pickett <neale@debian.org>  Thu,  6 Dec 2001 08:12:10 -0800
+
+robotfindskitten (0.1600005.344b-1) unstable; urgency=low
+
+  * New version number, to be more in-line with upstream
+  * Changed maintainer in control file, so I get bug reports instead of
+    Nick Moffitt
+  * Added build-depends: automake and autoconf (closes: #120862)
+  * Updated info file to reflect current version
+
+ -- Neale Pickett <neale@debian.org>  Tue, 27 Nov 2001 09:26:36 -0800
+
+robotfindskitten (0.0.1600005-1) unstable; urgency=low
+  
+  * Initial packaging for woody
+  * Changed versioning scheme to pass lintian check
+
+ -- Neale Pickett <neale@debian.org>  Tue,  6 Nov 2001 21:59:24 -0800
+
 robotfindskitten (0.0.1600005-1) unstable; urgency=low
   
   * Initial packaging for woody
@@ -28,8 +60,3 @@ robotfindskitten (v1600003_248b-1) unstable; urgency=low
   * Pre-Alpha Release.
 
  -- Nick Moffitt <nick@zork.net>  Wed, 21 Feb 2001 11:27:27 -0800
-
-Local variables:
-mode: debian-changelog
-add-log-mailing-address: "neale@debian.org"
-End:
