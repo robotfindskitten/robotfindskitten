@@ -6,7 +6,8 @@
   should reflect MESSAGES. */
 
 /* Watch out for fenceposts.*/
-#define MESSAGES 248
+#define MESSAGES (sizeof messages / sizeof (char*))
+
 
 static char* messages[] =
 {
