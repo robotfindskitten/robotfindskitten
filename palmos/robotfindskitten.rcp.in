@@ -27,11 +27,17 @@
 // We use it as the subversion number.
 // Run  perl preprocess_rcp.pl < robotfindskitten.rcp.in > robotfindskitten.rcp
 // to replace all occurences of the string MESSAGES with number of nki.  heh.
-VERSION ID 1 "004.MESSAGES"
 
-ICON "robotfindskitten.bmp"
-SMALLICON "robotfindskittenSmall.bmp"
+//APPLICATIONICONNAME ID 1000 "robotfindskitten"
 
+VERSION ID 1 "005.MESSAGES"
+
+//ICON "robotfindskitten.bmp"
+//SMALLICON "robotfindskittenSmall.bmp"
+ICONFAMILY "robotfindskitten.bmp" "" "" "robotfindskittenC.bmp" TRANSPARENT 255 255 255
+SMALLICONFAMILY "robotfindskittenSmall.bmp" "" "" "robotfindskittenSmallC.bmp" TRANSPARENT 255 255 255
+
+LAUNCHERCATEGORY "Games"
 
 FORM ID HuntForm AT (0 0 160 160)
 USABLE
@@ -84,9 +90,11 @@ BEGIN
 
 END
 
+BITMAPFAMILY ID bitmap_cat "rfk.bmp" "" "" "rfkC.bmp" TRANSPARENT 255 255 255
+BITMAPFAMILY ID bitmap_rfk "robotfindskitten.bmp" "" "" "robotfindskittenC.bmp" TRANSPARENT 255 255 255
 
-BITMAP ID bitmap_rfk "robotfindskitten.bmp"
-BITMAP ID bitmap_cat "rfk.bmp"
+//BITMAP ID bitmap_rfk "robotfindskitten.bmp"
+//BITMAP ID bitmap_cat "rfk.bmp"
 
 // Change .xxx to the current number of nki in ../src/messages.h
 FORM ID AboutForm AT (2 2 156 156)
@@ -100,7 +108,7 @@ BEGIN
 	FORMBITMAP AT (98 15) BITMAP bitmap_rfk
 	LABEL "robotfindskitten" AUTOID AT (82 40)
 	LABEL "for PalmOS" AUTOID AT (86 PrevTop+11)
-	LABEL "version 004.MESSAGES" AUTOID AT (82 PrevTop+22)
+	LABEL "version 005.MESSAGES" AUTOID AT (82 PrevTop+22)
 
 	LABEL "Bridget Spitznagel" AUTOID AT (Center 100)
         LABEL "i0lanthe@robotfindskitten.org" AUTOID AT (Center PrevTop+11)
@@ -112,7 +120,7 @@ END
 // Change .xxx to the current number of nki in ../src/messages.h
 STRING AboutStr "robotfindskitten is "\
                 "© 1997, 2000 Leonard Richardson.\n\n"\
-                "PalmOS adaptation v004.MESSAGES\n"\
+                "PalmOS adaptation v005.MESSAGES\n"\
                 "© 2001 Bridget Spitznagel\n\n"\
     "This program is free software; you can redistribute it and/or "\
     "modify it under the terms of the GNU General Public License as "\
@@ -128,7 +136,7 @@ STRING AboutStr "robotfindskitten is "\
 
 
 // Change .xxx to the current number of nki in ../src/messages.h
-STRING InstructStr "robotfindskitten\n(PalmOS port) v 004.MESSAGES\n"\
+STRING InstructStr "robotfindskitten\n(PalmOS port) v 005.MESSAGES\n"\
   "In this game, you are robot (#). Your job is to find kitten. This task "\
   "is complicated by the existence of various things which are not kitten. "\
   "Robot must touch items to determine if they are kitten or not. The game "\

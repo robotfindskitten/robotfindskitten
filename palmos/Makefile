@@ -17,10 +17,8 @@ PERL = perl
 # in version 003.  So I think I'll just compile one version from now on.
 #CFLAGS = -Wall -g -O2 $(INCS) -palmos2 -DI_AM_OS_2
 
-# to compile with (HIGHLY EXPERIMENTAL) color:
-#CFLAGS = -Wall -g -O2 $(INCS) -palmos3.5 -DNON_INTERNATIONAL -DI_AM_COLOR
-# if 3.5 is your default sdk you can just do this:
-CFLAGS = -Wall -g -O2 $(INCS) -DNON_INTERNATIONAL -DI_AM_COLOR
+# to compile with color support:
+CFLAGS = -Wall -g -O2 $(INCS) -palmos3.5 -DNON_INTERNATIONAL -DI_AM_COLOR
 
 PILRC = pilrc
 BUILDPRC = build-prc
