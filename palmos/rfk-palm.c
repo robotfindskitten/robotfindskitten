@@ -756,8 +756,9 @@ void initialize_bogus()
     // Might use some fortunes from a database record.
     total_count = (fortune_exists ? msg_count+fortune_ctr : msg_count);
     // Decide which of the 1 or 2 pools to draw the message from
-    if (!my_prefs.replace_nki &&
-	((SysRandom(0) % total_count) < msg_count)) {
+    if (!fortune_exists ||  // [props to Richard Hoelscher]
+	(!my_prefs.replace_nki &&
+	 ((SysRandom(0) % total_count) < msg_count)) ) {
       // Draw from the messages.h pool
       do {
 	index = SysRandom(0) % msg_count;
