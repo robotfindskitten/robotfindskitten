@@ -112,6 +112,7 @@ BEGIN
 
 	LABEL "Bridget Spitznagel" AUTOID AT (Center 100)
         LABEL "i0lanthe@robotfindskitten.org" AUTOID AT (Center PrevTop+11)
+        LABEL "http://robotfindskitten.org" AUTOID AT (Center PrevTop+11)
 	BUTTON "Done" ID btn_about_ok AT (5 141 35 AUTO)
 	BUTTON "View © Info" ID btn_about_more AT (50 141 AUTO AUTO)
 END
@@ -132,7 +133,7 @@ STRING AboutStr "robotfindskitten is "\
     "Public License for more details: "\
     "http://www.gnu.org/copyleft/gpl.html\n\n"\
     "For source code try: "\
-    "http://sourceforge.net/projects/rfk/"
+    "http://robotfindskitten.org"
 
 
 // Change .xxx to the current number of nki in ../src/messages.h
