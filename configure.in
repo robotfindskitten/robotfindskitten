@@ -10,9 +10,7 @@ AM_PROG_LIBTOOL
 AC_PROG_INSTALL
 
 dnl Checks for libraries.
-dnl Replace `main' with a function in -lncurses:
 AC_CHECK_LIB(ncurses, initscr,,curses)
-AM_PATH_GLIB()
 
 dnl Checks for header files.
 AC_CHECK_HEADERS(curses.h)

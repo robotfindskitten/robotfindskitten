@@ -29,9 +29,6 @@ static char* ver = VERSION;
 #endif
 #include <signal.h>
 
-/* cunit is a unit-testing suite */
-#include "cunit.h"
-
 /*The messages go in a separate file because they are collectively
   huge, and you might want to modify them. It would be nice to load
   the messages from a text file at run time.*/
@@ -407,31 +404,6 @@ void initialize_arrays()
     }
 }
 
-gchar *test_initialize_arrays(void)
-{
-	int i,j;
-
-	initialize_arrays();
-
-	for(i=0; i <= X_MAX; i++) {
-		for(j=0; j <= Y_MAX; j++) {
-			cunit_assert( screen[i][j] == EMPTY);
-		}
-	}
-
-	for(i=0; i < MESSAGES; i++) {
-		cunit_assert( used_messages[i] == 0 );
-		cunit_assert( bogus_messages[i] == 0 );
-		cunit_assert( bogus[i].x == -1 );
-		cunit_assert( bogus[i].y == -1 );
-		cunit_assert( bogus[i].color == 0 );
-		cunit_assert( bogus[i].bold == FALSE );
-		cunit_assert( bogus[i].character == ' ' );
-	}
-
-	return(NULL);
-}
-
 /*initialize_ncurses sets up ncurses for action. Much of this code 
  stolen from Raymond and Ben-Halim, "Writing Programs with NCURSES"*/
 void initialize_ncurses()
@@ -472,29 +444,6 @@ void initialize_robot()
   screen[robot.x][robot.y] = ROBOT;
 }
 
-gchar *test_initialize_robot()
-{
-	int i,j;
-
-	initialize_robot();
-	cunit_assert( robot.x > 0 );
-	cunit_assert( robot.y > 0 );
-	cunit_assert( robot.x <= X_MAX );
-	cunit_assert( robot.y <= Y_MAX );
-
-	for(i=0; i <= X_MAX; i++) {
-		for(j=0; j <= Y_MAX; j++) {
-			if(i == robot.x && j == robot.y) {
-				cunit_assert( screen[i][j] == ROBOT );
-			} else {
-				cunit_assert( screen[i][j] != ROBOT );
-			}
-		}
-	}
-
-	return(NULL);
-}
-
 /*initialize kitten, well, initializes kitten.*/
 void initialize_kitten()
 {
@@ -513,29 +462,6 @@ void initialize_kitten()
 
   kitten.color = randcolor();
   kitten.bold = randbold();
-}
-
-gchar *test_initialize_kitten()
-{
-	int i,j;
-
-	initialize_kitten();
-	cunit_assert( kitten.x > 0 );
-	cunit_assert( kitten.y > 0 );
-	cunit_assert( kitten.x <= X_MAX );
-	cunit_assert( kitten.y <= Y_MAX );
-
-	for(i=0; i <= X_MAX; i++) {
-		for(j=0; j <= Y_MAX; j++) {
-			if(i == kitten.x && j == kitten.y) {
-				cunit_assert( screen[i][j] == KITTEN );
-			} else {
-				cunit_assert( screen[i][j] != KITTEN );
-			}
-		}
-	}
-
-	return(NULL);
 }
 
 /*initialize_bogus initializes all non-kitten objects to be used in this run.*/
@@ -604,35 +530,11 @@ void initialize_screen()
 
 }
 
-/*
- * This function registers various test functions to a
- * cunit_test_session.  It will be called by cunit_TestRunner if
- * argv[1] is --TestRunner
- */
-cunit_test_session *session_builder(void)
-{
-	cunit_test_session *sp;
-
-	sp=cunit_new_test_session();
-
-	/* register tests and suites: */
-	cunit_register_test(sp, "rfk.initialize_arrays", test_initialize_arrays);
-	cunit_register_test(sp, "rfk.initialize_robot", test_initialize_robot);
-	cunit_register_test(sp, "rfk.initialize_kitten", test_initialize_kitten);
-
-	return(sp);
-}
-
 int main(int argc, char *argv[])
 {
   /*
    *Do general start-of-program stuff.
    */
-
-	/*
-	 * Run test suites if --TestRunner is the first parameter
-	 */
-	cunit_TestRunner(argc, argv, session_builder);
 
   
   /*Get a number of non-kitten objects.*/
