@@ -1,0 +1,9 @@
+[v003.242 has highly-experimental color, sort of via compile-time switch.]
+
+This may just be POSE hating me since I had an exciting time compiling
+it on RH5.2:
+*sometimes* I get a fatal error when I touch an object.  This
+happened when running the color version with the (non-debug) color
+ROM.  (Find out whether this occurs in the OS-2 (no color) compilation
+(a) on Visor and (b) on POSE.  that may help track it down.)
+

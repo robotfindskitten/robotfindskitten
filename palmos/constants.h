@@ -49,12 +49,16 @@
 #define DIR_SE   8
 
 /*Macros for generating numbers in different ranges*/
-#define randx() SysRandom(0) % X_MAX+1
-#define randy() SysRandom(0) % (Y_MAX-Y_MIN+1)+Y_MIN /*I'm feeling randy()!*/
+#define randx() (SysRandom(0) % X_MAX+1)
+#define randy() (SysRandom(0) % (Y_MAX-Y_MIN+1)+Y_MIN) /*I'm feeling randy()!*/
 /* I had better check on these characters. */
-#define randchar() SysRandom(0) % (254-'!'+1)+'!';
-/* Black and white only.. */
+#define randchar() (SysRandom(0) % (254-'!'+1)+'!')
+#ifdef I_AM_COLOR
+/* here we want 0x00, 33, 66, 99, and CC values only (for a 'dark' R, G, or B.)
+   so pick 0-4 inclusive and mul by 51. */
+//#define randRGB() ((SysRandom(0) % 5) * 51)
 //#define randcolor() rand() % 6 + 1
+#endif /* I_AM_COLOR */
 /* We could use bold but (a) it's a different font (b) 'M' is even wider in it
    Another possibility is reverse-video. */
 //#define randbold() (rand() % 2 ? TRUE:FALSE)
@@ -66,9 +70,12 @@ typedef struct
 {
   UChar x;
   UChar y;
-  //  int color; /* there's no color */
   //  bool bold; /* we're not using bold because it's a PAIN to change font */
   UChar character; // 33 to 255 inclusive, apart from a few skips
+#ifdef I_AM_COLOR
+  IndexedColorType fg_color; // this is a UInt8, or, as its friends used to
+  IndexedColorType bg_color; // call it, a UChar.
+#endif
 } screen_object;
 
 

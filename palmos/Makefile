@@ -10,6 +10,11 @@ CC = m68k-palmos-gcc
 # (need -I../src so that we can use the same messages.h)
 CFLAGS = -Wall -g -O2 -I. -I../src -palmos2 -DI_AM_OS_2
 
+# to compile with (HIGHLY EXPERIMENTAL) color:
+#CFLAGS = -Wall -g -O2 -I. -I../src -palmos3.5 -DNON_INTERNATIONAL -DI_AM_COLOR
+## (if 3.5 is your default sdk you can just do:)
+##CFLAGS = -Wall -g -O2 -I. -I../src -DNON_INTERNATIONAL -DI_AM_COLOR
+
 PILRC = pilrc
 BUILDPRC = build-prc
 

@@ -1,7 +1,7 @@
 // -0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0
 // robotfindskitten: A Zen simulation (ported to PalmOS)
 // Copyright (C) 2001 Bridget Spitznagel
-//                    i0lanthe@yahoo.com
+//                    i0lanthe@robotfindskitten.org
 //
 // Original robotfindskitten is
 // Copyright (C) 1997,2000 Leonard Richardson 
@@ -24,7 +24,7 @@
 #include "robotfindskittenRsc.h"
 
 // Change .xxx to the current number of nki in ../src/messages.h
-VERSION ID 1 "002.242"
+VERSION ID 1 "003.242"
 
 ICON "robotfindskitten.bmp"
 SMALLICON "robotfindskittenSmall.bmp"
@@ -97,18 +97,19 @@ BEGIN
 	FORMBITMAP AT (98 15) BITMAP bitmap_rfk
 	LABEL "robotfindskitten" AUTOID AT (85 40)
 	LABEL "for PalmOS" AUTOID AT (89 PrevTop+11)
-	LABEL "version 002.242" AUTOID AT (87 PrevTop+22)
+	LABEL "version 003.242" AUTOID AT (87 PrevTop+22)
 
 	LABEL "Bridget Spitznagel" AUTOID AT (Center 100)
-        LABEL "i0lanthe@yahoo.com" AUTOID AT (Center PrevTop+11)
+        LABEL "i0lanthe@robotfindskitten.org" AUTOID AT (Center PrevTop+11)
 	BUTTON "Done" ID btn_about_ok AT (5 141 35 AUTO)
 	BUTTON "View © Info" ID btn_about_more AT (50 141 AUTO AUTO)
 END
+//        LABEL "i0lanthe@yahoo.com" AUTOID AT (Center PrevTop+11)
 
 // Change .xxx to the current number of nki in ../src/messages.h
-STRING AboutStr "robotfindskitten (port for PalmOS) v 002.242\n"\
+STRING AboutStr "robotfindskitten (port for PalmOS) v 003.242\n"\
                 "© 2001 Bridget Spitznagel,\n"\
-                "i0lanthe@yahoo.com\n\n"\
+                "i0lanthe@robotfindskitten.org\n\n"\
                 "robotfindskitten (for linux) is "\
                 "© 1997,2000 Leonard Richardson,\n"\
                 "leonardr@segfault.org\n\n"\
@@ -124,7 +125,7 @@ STRING AboutStr "robotfindskitten (port for PalmOS) v 002.242\n"\
 
 
 // Change .xxx to the current number of nki in ../src/messages.h
-STRING InstructStr "robotfindskitten\n(PalmOS port) v 002.242\n"\
+STRING InstructStr "robotfindskitten\n(PalmOS port) v 003.242\n"\
   "In this game, you are robot (#). Your job is to find kitten. This task "\
   "is complicated by the existence of various things which are not kitten. "\
   "Robot must touch items to determine if they are kitten or not. The game "\

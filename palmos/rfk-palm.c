@@ -1,7 +1,7 @@
 /**************************************************************************
  * robotfindskitten: A Zen simulation (ported to PalmOS)
  * Copyright (C) 2001 Bridget Spitznagel
- *                    i0lanthe@yahoo.com
+ *                    i0lanthe@robotfindskitten.org
  *
  * Original robotfindskitten is
  * Copyright (C) 1997,2000 Leonard Richardson 
@@ -21,13 +21,20 @@
  *
  **************************************************************************/
 
+#ifndef I_AM_COLOR
 #include <Pilot.h>
+#else /* I_AM_COLOR */
+#include <PalmOS.h>
+#include <PalmCompatibility.h>
+#endif /* I_AM_COLOR */
 #include "robotfindskittenRsc.h"
 #include "constants.h"
 
 // this is so that we can include an *unaltered* messages.h:
 #define char Char
 #include "messages.h"
+
+Boolean we_gots_color = false;
 
 screen_object robot;
 screen_object kitten;
@@ -60,10 +67,40 @@ struct rfkPreferenceType my_prefs = {
   true    // hardware buttons on
 };
 
+// remember the last hardware or graffiti key pressed (0 if last action nonkey)
+Word last_key = 0;
+
 /*****************************************************************************
  *                      the Hunt form                                        *
  *****************************************************************************/
 
+#ifdef I_AM_COLOR
+// Note - these most probably need work.
+#define randRGB() ((SysRandom(0) % 5) * 51)
+IndexedColorType random_fg_color()
+{
+  RGBColorType my_tmp_color;
+  my_tmp_color.r = randRGB();// slightly dark
+  my_tmp_color.g = randRGB();
+  my_tmp_color.b = randRGB();
+  return WinRGBToIndex(&my_tmp_color);
+}
+IndexedColorType random_bg_color()
+{
+  RGBColorType my_tmp_color;
+  my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 255;
+  if (0 == (SysRandom(0) % 10))
+    my_tmp_color.r -= 51;
+  if (0 == (SysRandom(0) % 10))
+    my_tmp_color.g -= 51;
+  if (0 == (SysRandom(0) % 10))
+    my_tmp_color.b -= 51;
+  return WinRGBToIndex(&my_tmp_color);
+}
+#endif /* I_AM_COLOR */
+
+
+// if color, the caller promises to save and restore screen state
 void draw(screen_object o)
 {
   Short row = o.y, col = o.x;
@@ -76,6 +113,11 @@ void draw(screen_object o)
   if (cheat <= 1)   cheat = 0;
   else              cheat /= 2;
 
+#ifdef I_AM_COLOR
+  WinSetTextColor(o.fg_color);
+  //  WinSetBackColor(o.bg_color); // It's possible.  But kind of uglified.
+#endif /* I_AM_COLOR */
+
   WinDrawChars(&ch, 1, col * cell_W + cheat, (row+1) * cell_H + 2);
 
 }
@@ -87,14 +129,25 @@ void initialize_screen()
   Short counter;
   WinDrawChars("robotfindskitten", 16, 0, 0);
   WinDrawGrayLine(0, 11, 160, 11);
+
+#ifdef I_AM_COLOR
+  WinPushDrawState();
+#endif /* I_AM_COLOR */
+
   for (counter = 0; counter < num_bogus; counter++)
     draw(bogus[counter]);
   draw(kitten);
   draw(robot);
+
+#ifdef I_AM_COLOR
+  WinPopDrawState();
+#endif /* I_AM_COLOR */
+
 }
 
 // Erase robot's old location and redraw at new location
 // maybe this will save some tails getting erased
+// Robot is always black on white so we don't care about color here.
 void redraw_robot(UChar x0, UChar y0, UChar x1, UChar y1)
 {
   Short cheat = (cell_W - robot_W) / 2;
@@ -105,6 +158,8 @@ void redraw_robot(UChar x0, UChar y0, UChar x1, UChar y1)
   WinDrawChars(&robot.character, 1, x1 * cell_W + cheat, (y1+1) * cell_H + 2);
 }
 
+// note: if you are on POSE, at least on my computer which could stand an
+// upgrade, this is mindbogglingly slow.  just fine on the real thing though.
 void play_animation()
 {
   Short rx, kx, rcheat, kcheat, moves = 3;
@@ -136,8 +191,23 @@ void play_animation()
   SysTaskDelay(SysTicksPerSecond());
   RctSetRectangle(&r, 0, 12, 160, 160-12);
   WinEraseRectangle(&r, 0);
-  // Note: This is an artistic interpretation that was not in the original work
+  // Note: This should drawn in a nice color. XXXX
+#ifdef I_AM_COLOR
+  WinPushDrawState();
+  {
+    IndexedColorType my_red;
+    RGBColorType my_tmp_color;
+    my_tmp_color.r = 255;
+    my_tmp_color.g = 0;
+    my_tmp_color.b = 0;
+    my_red = WinRGBToIndex(&my_tmp_color);
+    WinSetTextColor(my_red);
+  }
+#endif /* I_AM_COLOR */
   WinDrawChars(&c, 1, kx*cell_W + cell_W/2, (Y_MIN+1)*cell_H + 2);  
+#ifdef I_AM_COLOR
+  WinPopDrawState();
+#endif /* I_AM_COLOR */
   SysTaskDelay(SysTicksPerSecond());
   WinEraseRectangle(&r, 0);
   WinDrawChars("play again?", 11, 56, (160-12)/2); // approximately centered
@@ -230,12 +300,24 @@ Boolean buttonsHandleEvent(EventPtr e)
       && (e->data.keyDown.chr != pageDownChr))
     return false; // not a hardware button (e.g. graffiti) or not one we want
 
+  last_key = 0;
+
   if (FrmGetActiveFormID() != HuntForm) {
     if (FrmGetActiveFormID() == ThingForm &&
 	(e->data.keyDown.chr == hard1Chr || e->data.keyDown.chr == hard4Chr))
       LeaveForm(); // Datebook and Memo will leave a Thing-popup.  else....
     return true; // we override these buttons BUT do nothing!
   }
+  // ok we are in the HuntForm for sure now, handling only the
+  // hard?Chr where ?==1..4, plus the pageup/pagedown.
+  
+  if (found) {
+    // we're in "hit any key to start a new game" state..
+    LeaveForm();
+    FrmGotoForm(StartForm);
+    return true;
+  }
+  last_key = e->data.keyDown.chr; // could just set it to 0..
 
   // <incs>/UI/Chars.h is useful....   ChrIsHardKey(c)
   // hard[1-4]Chr, calcChr, findChr.
@@ -307,6 +389,7 @@ Boolean Hunt_Form_HandleEvent(EventPtr e)
   switch (e->eType) {
 
   case frmOpenEvent:
+    last_key = 0;
     frm = FrmGetActiveForm();
     FrmDrawForm(frm);
     // draw the robot, kitten, and non-kitten things.
@@ -314,6 +397,7 @@ Boolean Hunt_Form_HandleEvent(EventPtr e)
     return true;
 
   case menuEvent:
+    last_key = 0;
     MenuEraseStatus(NULL); // clear menu status from display
     if (!found) // if kitten is found, game is over, disable menu
       switch(e->data.menu.itemID) {
@@ -339,10 +423,13 @@ Boolean Hunt_Form_HandleEvent(EventPtr e)
     // we will allow hjklyubn keys to move robot
     // (or to restart the game if kitten is found)
   case keyDownEvent:
+    last_key = 0;
     if (found) {
       LeaveForm();
       FrmGotoForm(StartForm);
+      handled = true;
     } else {
+      last_key = e->data.keyDown.chr;
       handled = do_keyboard(e->data.keyDown.chr);
     }
     break;
@@ -350,6 +437,7 @@ Boolean Hunt_Form_HandleEvent(EventPtr e)
     // we will allow screen-taps to move robot
     // (or to restart the game if kitten is found)
   case penDownEvent:
+    last_key = 0;
     if (found) {
       LeaveForm();
       FrmGotoForm(StartForm);
@@ -434,7 +522,11 @@ Boolean Thing_Form_HandleEvent(EventPtr e)
 
     // Note: you have to tap WITHIN the form in order to leave the form.
     // or write any character; or (see buttonsHandleEvent) certain hw buttons.
-  case penDownEvent: case keyDownEvent:
+  case keyDownEvent:
+    // ignore the key that they pressed to "get here" in case it's held down
+    if (e->data.keyDown.chr == last_key) return true;
+    // else Fall Through.    
+  case penDownEvent:
     LeaveForm();
     handled = true;
     break;
@@ -494,8 +586,16 @@ Boolean About_Form_HandleEvent(EventPtr e)
 void initialize_arrays()
 {
   Short i, j;
-
   screen_object empty;
+
+#ifdef I_AM_COLOR
+  RGBColorType my_tmp_color;
+  my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 0; // black
+  empty.fg_color = WinRGBToIndex(&my_tmp_color);
+  my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 255; // white
+  empty.bg_color = WinRGBToIndex(&my_tmp_color);
+#endif /* I_AM_COLOR */
+
   empty.x = 0; empty.y = 0;  // these were -1
   empty.character = ' ';
   
@@ -515,11 +615,20 @@ void initialize_arrays()
 /*initialize_robot initializes robot.*/
 void initialize_robot()
 {
+#ifdef I_AM_COLOR
+  RGBColorType my_tmp_color;
+  my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 0; // black
+  robot.fg_color = WinRGBToIndex(&my_tmp_color);
+  my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 255; // white
+  robot.bg_color = WinRGBToIndex(&my_tmp_color);
+#endif /* I_AM_COLOR */
+
   robot.x = randx();  /*Assign a position to the player.*/
   robot.y = randy();
 
   robot.character = ROBOTCHAR;
   screen[robot.x][robot.y] = ROBOT;
+  // if color, robot stays black on white.
 }
 
 Boolean validchar(UChar a)
@@ -551,6 +660,10 @@ void initialize_kitten()
     kitten.character = randchar();
   } while (!(validchar(kitten.character))); 
   screen[kitten.x][kitten.y] = KITTEN;
+#ifdef I_AM_COLOR
+  kitten.bg_color = random_bg_color();
+  kitten.fg_color = random_fg_color();
+#endif /* I_AM_COLOR */
   found = false;
 }
 
@@ -565,6 +678,12 @@ void initialize_bogus()
     do {  c = randchar(); }
     while (!validchar(c)); 
     bogus[j].character = c;
+
+    // also a color
+#ifdef I_AM_COLOR
+    bogus[j].bg_color = random_bg_color();
+    bogus[j].fg_color = random_fg_color();
+#endif /* I_AM_COLOR */
 
     /*Give it a position.*/
     do { x = randx();  y = randy(); }
@@ -839,6 +958,16 @@ Boolean ApplicationHandleEvent(EventPtr e)
 static Word StartApplication(void)
 {
   Word error = 0;
+
+  // Decide whether we have color an'at
+  DWord version;
+  FtrGet(sysFtrCreator, sysFtrNumROMVersion, &version);
+#ifdef I_AM_COLOR
+  // well,,, we don't NECESSARILY have color, but we have the API calls anyway
+  if (version >= 0x03503000L)
+    we_gots_color = true;
+#endif /* I_AM_COLOR */
+
 
   // Read user preferences.
   readPrefs();
