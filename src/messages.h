@@ -253,7 +253,7 @@ static char* messages[] =
   "It's an autographed copy of \"Secondary Colors,\" by Bob Ross.",
   "It is a marzipan dreadnought that appears to have melted and stuck.",
   "It's a DVD of \"Crouching Monkey, Hidden Kitten\", region encoded for the moon.",
-  "It's Kieran Hervold.  Damn dyslexia!"
+  "It's Kieran Hervold.  Damn dyslexia!",
   "A non-descript box of crackers.",
   "Carbonated Water, High Fructose Corn Syrup, Color, Phosphoric Acid, Flavors, Caffeine.",
   "\"Move along! Nothing to see here!\"",
