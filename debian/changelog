@@ -1,8 +1,19 @@
+robotfindskitten (v1600005_344b-1) unstable; urgency=low
+
+  * Added contrib NKI
+
+ -- Nick Moffitt <nick@zork.net>  Tue, 14 Aug 2001 11:16:08 -0700
+robotfindskitten (v1600005_248b-1) unstable; urgency=low
+
+  * Fixed stray null info file
+
+ -- Nick Moffitt <nick@zork.net>  Sat, 10 Mar 2001 12:29:52 -0800
+
 robotfindskitten (v1600005_248b) unstable; urgency=low
 
   * Sneakums patches applied
 
- -- Nick Moffitt <nick@zork.net>  Wed, 21 Feb 2001 11:27:27 -0800
+ -- Nick Moffitt <nick@zork.net>  Fri,  9 Mar 2001 23:42:13 -0800
 
 robotfindskitten (v1600003_248b-1) unstable; urgency=low
 
