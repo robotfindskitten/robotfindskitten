@@ -1,8 +1,16 @@
+robotfindskitten (0.0.1600005-1) unstable; urgency=low
+  
+  * Initial packaging for woody
+  * Changed versioning scheme to pass lintian check
+
+ -- Neale Pickett <neale@debian.org>  Tue,  6 Nov 2001 21:59:24 -0800
+
 robotfindskitten (v1600005_344b-1) unstable; urgency=low
 
   * Added contrib NKI
 
  -- Nick Moffitt <nick@zork.net>  Tue, 14 Aug 2001 11:16:08 -0700
+    
 robotfindskitten (v1600005_248b-1) unstable; urgency=low
 
   * Fixed stray null info file
@@ -23,5 +31,5 @@ robotfindskitten (v1600003_248b-1) unstable; urgency=low
 
 Local variables:
 mode: debian-changelog
-add-log-mailing-address "nick@zork.net"
+add-log-mailing-address: "neale@debian.org"
 End:

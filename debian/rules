@@ -9,9 +9,13 @@
 export DH_COMPAT=2
 
 configure: configure-stamp
-configure-stamp:
+configure-stamp: 
 	dh_testdir
-	# Add here commands to configure the package.
+#	Add here commands to configure the package.
+	aclocal
+	autoheader
+	automake --add-missing
+	autoconf
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 
 	touch configure-stamp
@@ -20,19 +24,23 @@ build: configure-stamp build-stamp
 build-stamp:
 	dh_testdir
 
-	# Add here commands to compile the package.
+#	Add here commands to compile the package.
 	$(MAKE)
-	#/usr/bin/docbook-to-man debian/robotfindskitten-v1600003.sgml > robotfindskitten-v1600003.1
+#	/usr/bin/docbook-to-man debian/robotfindskitten-v1600003.sgml > robotfindskitten-v1600003.1
 
 	touch build-stamp
 
-clean:
+clean: 
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
 
-	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
+#	Add here commands to clean up after the build process.
+	-([ -f Makefile ] && $(MAKE) distclean) || true
+	rm -f COPYING INSTALL config.guess config.sub install-sh \
+		ltconfig ltmain.sh missing mkinstalldirs doc/texinfo.tex \
+		Makefile config.status conftest conftest.o \
+		src/robotfindskitten.o src/robotfindskitten
 
 	dh_clean
 
@@ -42,7 +50,7 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/tmp.
+#	Add here commands to install the package into debian/tmp.
 	$(MAKE) install prefix=$(CURDIR)/debian/robotfindskitten/usr
 
 
@@ -71,8 +79,7 @@ binary-arch: build install
 	dh_strip
 	dh_compress
 	dh_fixperms
-	# You may want to make some executables suid here.
-	dh_suidregister
+#	You may want to make some executables suid here.
 #	dh_makeshlibs
 	dh_installdeb
 #	dh_perl

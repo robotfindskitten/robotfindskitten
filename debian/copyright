@@ -1,7 +1,9 @@
 This package was debianized by Nick Moffitt <nick@beaujolais.zork.net> on
 Tue, 21 Nov 2000 11:27:27 -0800.
+The maintainer is presently Neale Pickett <neale@debian.org>.
 
-It was downloaded from http://crummy.com/devel/robotfindskitten/
+The latest source can be found at
+http://www.robotfindskitten.org/
 
 Upstream Author(s): Leonard Richardson <leonardr@segfault.org>
 
