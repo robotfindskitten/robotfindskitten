@@ -170,7 +170,7 @@ static char* messages[] =
   "This TRS-80 III is eerily silent.",
   "A toilet bowl occupies this space.",
   "This peg-leg is stuck in a knothole!",
-  "It's a solitary vaccuum tube.",
+  "It's a solitary vacuum tube.",
   "This corroded robot is clutching a mitten.",
   "\"Hi, I'm Anson Williams, TV's 'Potsy'.\"",
   "This subwoofer was blown out in 1974.",
@@ -345,7 +345,22 @@ static char* messages[] =
   "You hit the non-kitten item.  The non-kitten item fails to yowl.",
   "You suddenly yearn for your distant homeland.",
   "You've found the snows of yesteryear!  So that's where they all went to.",
-  "Approaching.  One car.  J.  Followed by.  Two car.  M, M.  In five.  Minutes."
+  "Approaching.  One car.  J.  Followed by.  Two car.  M, M.  In five.  Minutes.",
+  
+  "Free Jon Johansen!",
+  "Free Dmitry Sklyarov!",
+  "One person shouts \"What do we want?\" The crowd answers \"Free Dmitry!\"",
+  "Judith Platt insults librarians.",
+  "This map is not the territory.",
+  "\"Go back to Libraria!\", says Pat Schroeder.",
+  "This is a porcelain kitten-counter.  0, 0, 0, 0, 0...",
+  "An old bootable business card, unfortunately cracked down the middle.",
+  "A kitten sink, for washing kitten (if only kitten liked water).",
+  "A kitten source (to match the kitten sink).",
+  "If it's one thing, it's not another.",
+  "If it's not one thing, it's another.",
+  "A caboodle.",
+  "A grin."
 
 
 
