@@ -509,6 +509,29 @@ void initialize_kitten()
   kitten.bold = randbold();
 }
 
+gchar *test_initialize_kitten()
+{
+	int i,j;
+
+	initialize_kitten();
+	cunit_assert( kitten.x > 0 );
+	cunit_assert( kitten.y > 0 );
+	cunit_assert( kitten.x <= X_MAX );
+	cunit_assert( kitten.y <= Y_MAX );
+
+	for(i=0; i <= X_MAX; i++) {
+		for(j=0; j <= Y_MAX; j++) {
+			if(i == kitten.x && j == kitten.y) {
+				cunit_assert( screen[i][j] == KITTEN );
+			} else {
+				cunit_assert( screen[i][j] != KITTEN );
+			}
+		}
+	}
+
+	return(NULL);
+}
+
 /*initialize_bogus initializes all non-kitten objects to be used in this run.*/
 void initialize_bogus()
 {
@@ -589,6 +612,7 @@ cunit_test_session *session_builder(void)
 	/* register tests and suites: */
 	cunit_register_test(sp, "rfk.initialize_arrays", test_initialize_arrays);
 	cunit_register_test(sp, "rfk.initialize_robot", test_initialize_robot);
+	cunit_register_test(sp, "rfk.initialize_kitten", test_initialize_kitten);
 
 	return(sp);
 }
