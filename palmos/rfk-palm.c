@@ -47,8 +47,11 @@ Short num_bogus = 20;
 
 // 4*99 + 1*99 + 1*201 = 696 B
 screen_object bogus[MAX_BOGUS];  // Representations of non-kittem items
-Short bogus_messages[MAX_BOGUS]; // An index into messages[]
+bogus_message bogus_messages[MAX_BOGUS]; // Has an index into messages[]
 Boolean used_messages[MESSAGES]; // Which of messages[] are used as bogus_msgs
+Short MESSAGES_real;
+// Might also take some NKI messages from a memo.
+#include "rfk-memo.h"
 
 // Our internal representation of the screen.
 // This is 300 B bringing us to about 1K in globals: Within acceptable limits.
@@ -68,7 +71,10 @@ struct rfkPreferenceType my_prefs = {
   20,     // default number of screen objects
   true,   // relative move
   true,   // sound on
-  true    // hardware buttons on
+  true,   // hardware buttons on
+  false,  // append memo (don't replace with it)
+  true,   // objects are color if you've got it
+  true    // messages are color if you've got it
 };
 
 // remember the last hardware or graffiti key pressed (0 if last action nonkey)
@@ -85,7 +91,7 @@ Word last_key = 0;
 IndexedColorType random_fg_color()
 {
   RGBColorType c;
-  Short i = SysRandom(0) % 3;
+  //  Short i = SysRandom(0) % 3;
   // Try to pick something with decent contrast..
   c.r = (SysRandom(0) % 3) * 51;  // 00, 33, 66
   c.g = (SysRandom(0) % 2) * 51;  // 00, 33, 66
@@ -124,7 +130,7 @@ void draw(screen_object o)
   else              cheat /= 2;
 
 #ifdef I_AM_COLOR
-  if (color) {
+  if (color && my_prefs.color_nki) {
     WinSetTextColor(o.fg_color);
     //  WinSetBackColor(o.bg_color); // It's possible.  But kind of uglified.
   }
@@ -136,6 +142,7 @@ void draw(screen_object o)
 
 
 /*initialize_screen draws all the objects on the playing field.*/
+// it's safe to call this more than once.
 void initialize_screen()
 {
   Short counter;
@@ -207,7 +214,7 @@ void play_animation()
   SysTaskDelay(SysTicksPerSecond());
   RctSetRectangle(&r, 0, 12, 160, 160-12);
   WinEraseRectangle(&r, 0);
-  // Note: This should drawn in a nice color. XXXX
+  // draw nice red heart
 #ifdef I_AM_COLOR
   if (color) {
     IndexedColorType my_red;
@@ -495,16 +502,25 @@ Boolean Hunt_Form_HandleEvent(EventPtr e)
 // All The News That Fits, We Print.
 void print_descr(Short i)
 {
-  Char *p = messages[ bogus_messages[i] ];
+  Char *msg, *p;
   Word wwlen, maxwid=152;
   Short w, maxw=0, x, y = 0;
 
 #ifdef I_AM_COLOR
-  if (color) {
+  if (color && my_prefs.color_msgs) {
     WinPushDrawState();
     WinSetTextColor(bogus[i].fg_color);
   }
 #endif /* I_AM_COLOR */
+
+  if (bogus_messages[i].is_memo) {
+    if (!lookup_fortune( bogus_messages[i].index ))
+      StrPrintF(fortune_buf, "It's a bug!"); // This ``should never happen''
+    msg = fortune_buf;
+  } else {
+    msg = messages[ bogus_messages[i].index ];
+  }
+  p = msg;
 
   while (y < THINGFORM_H) {
     wwlen = FntWordWrap(p, maxwid);
@@ -517,7 +533,7 @@ void print_descr(Short i)
   
   x = (160 - maxw) / 2;
   y = ((y >= THINGFORM_H) ? 0 : (THINGFORM_H-y)/2 );
-  p = messages[ bogus_messages[i] ];
+  p = msg; // rewind...
   while (y < THINGFORM_H) {
     wwlen = FntWordWrap(p, maxwid);
     WinDrawChars(p, wwlen, x, y);
@@ -525,8 +541,9 @@ void print_descr(Short i)
     p += wwlen;
     y += 11;
   }
+
 #ifdef I_AM_COLOR
-  if (color) {
+  if (color && my_prefs.color_msgs) {
     WinPopDrawState();
   }
 #endif /* I_AM_COLOR */
@@ -630,6 +647,7 @@ void initialize_arrays()
 
   empty.x = 0; empty.y = 0;  // these were -1
   empty.character = ' ';
+  empty.memo = false;
   
   for (i = 0; i <= X_MAX; i++)
     for (j = 0; j <= Y_MAX; j++)
@@ -637,9 +655,11 @@ void initialize_arrays()
   
   for (i = 0; i < MESSAGES; i++)
     used_messages[i] = false;
+  reinit_used_fortunes();
 
   for (i = 0; i < MAX_BOGUS; i++) {
-    bogus_messages[i] = 0;
+    bogus_messages[i].index = 0;
+    bogus_messages[i].is_memo = false;
     bogus[i] = empty;
   }
 }
@@ -707,7 +727,7 @@ void initialize_kitten()
 /*initialize_bogus initializes all non-kitten objects to be used in this run.*/
 void initialize_bogus()
 {
-  Short j, index, x, y;
+  Short j, index, x, y, msg_count, total_count;
   UChar c;
   for (j = 0; j < num_bogus; j++) {
     /*Give it a character.*/
@@ -730,10 +750,27 @@ void initialize_bogus()
     screen[x][y] = j + STARTBOGUS;
       
     /*Find a message for this object.*/
-    do {  index = SysRandom(0) % MESSAGES; }
-    while (used_messages[index]);
-    bogus_messages[j] = index;
-    used_messages[index] = true;
+    /* Treat MESSAGES as just a hint; don't rely on it for # of nki..
+       could be too large or too small accidentally. */
+    msg_count = (MESSAGES_real < MESSAGES) ? MESSAGES_real : MESSAGES;
+    // Might use some fortunes from a database record.
+    total_count = (fortune_exists ? msg_count+fortune_ctr : msg_count);
+    // Decide which of the 1 or 2 pools to draw the message from
+    if (!my_prefs.replace_nki &&
+	((SysRandom(0) % total_count) < msg_count)) {
+      // Draw from the messages.h pool
+      do {
+	index = SysRandom(0) % msg_count;
+      } while (used_messages[index]);
+      bogus_messages[j].index = index;
+      bogus_messages[j].is_memo = false;
+      used_messages[index] = true;
+    } else {
+      // Draw from the memo pool - see rfk-memo.c
+      bogus_messages[j].index = random_fortune(num_bogus);
+      bogus_messages[j].is_memo = true;
+      // (random_fortune() will track used_fortunes on its own.)
+    }
   }
 }
 
@@ -791,6 +828,22 @@ Boolean Start_Form_HandleEvent(EventPtr e)
     init_bogus_field(fld, num_bogus);
     FrmDrawForm(frm);
     // I should read prefs.num_bogus and set the ui widgets..
+#ifdef DEBUG
+    {
+      Char buf[80];
+      if (MESSAGES_real != MESSAGES)
+	StrPrintF(buf, "[WARNING: there's %d nki, not %d]",
+		  MESSAGES_real, MESSAGES);
+      else
+	StrPrintF(buf, "[yep, messages.h has %d nki]", MESSAGES);
+      WinDrawChars(buf, StrLen(buf), 5, 103);
+      if (fortune_exists)
+	StrPrintF(buf, "%d fortunes found", fortune_ctr);
+      else 
+	StrPrintF(buf, "No fortunes found", fortune_ctr);
+      WinDrawChars(buf, StrLen(buf), 5, 103-11);
+    }
+#endif /* DEBUG */
     handled = true;
     break;
 
@@ -858,7 +911,7 @@ void writePrefs()
 
 Boolean Prefs_Form_HandleEvent(EventPtr e)
 {
-  Boolean handled = false;
+  Boolean handled = false, redraw = false;
   FormPtr frm;
   FieldPtr fld;
   ControlPtr checkbox;
@@ -876,7 +929,18 @@ Boolean Prefs_Form_HandleEvent(EventPtr e)
     CtlSetValue(checkbox, (my_prefs.sound_on ? 1 : 0));
     checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_3));
     CtlSetValue(checkbox, (my_prefs.use_buttons ? 1 : 0));
+    checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_4));
+    CtlSetValue(checkbox, (my_prefs.replace_nki ? 1 : 0));
     FrmDrawForm(frm);
+    if (color) {
+      // make the color-OS-only checkboxes usable.. AFTER drawing the form..
+      checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_5));
+      CtlSetValue(checkbox, (my_prefs.color_nki ? 1 : 0));
+      CtlShowControl(checkbox);
+      checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_6));
+      CtlSetValue(checkbox, (my_prefs.color_msgs ? 1 : 0));
+      CtlShowControl(checkbox);
+    }
     handled = true;
     break;
 
@@ -893,8 +957,19 @@ Boolean Prefs_Form_HandleEvent(EventPtr e)
 	my_prefs.sound_on = (CtlGetValue(checkbox) != 0);	
 	checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_3));
 	my_prefs.use_buttons = (CtlGetValue(checkbox) != 0);	
+	checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_4));
+	my_prefs.replace_nki = (CtlGetValue(checkbox) != 0);	
+	if (color) {
+	  Boolean old = my_prefs.color_nki;
+	  checkbox = FrmGetObjectPtr(frm,FrmGetObjectIndex(frm,check_prefs_5));
+	  my_prefs.color_nki = (CtlGetValue(checkbox) != 0);
+	  redraw = (old != my_prefs.color_nki); // if changed, redraw.. later..
+	  checkbox = FrmGetObjectPtr(frm,FrmGetObjectIndex(frm,check_prefs_6));
+	  my_prefs.color_msgs = (CtlGetValue(checkbox) != 0);	
+	}
 	writePrefs();
 	LeaveForm();
+	if (redraw) initialize_screen(); // since we turned 'color' on or off 
       }
       handled = true;
       break;
@@ -1008,9 +1083,13 @@ static Word StartApplication(void)
     color = false; // Better test to see if it will run on OS2..
 #endif /* I_AM_COLOR */
 
+  // Make sure that messages.h has not got a fencepost error (again).
+  MESSAGES_real = sizeof(messages) / sizeof(Char *);
 
   // Read user preferences.
   readPrefs();
+  // Open the memo database and look for a fortune memo
+  find_fortune();
   // Seed the random number generator.
   SysRandom(TimGetSeconds());
   
@@ -1027,7 +1106,8 @@ static void StopApplication(void)
 {
   FrmSaveAllForms();
   FrmCloseAllForms();
-  // close databases, free stuff.  we don't need to.
+  // close databases, free stuff.  maybe we don't need to.
+  cleanup_fortune();
 }
 
 

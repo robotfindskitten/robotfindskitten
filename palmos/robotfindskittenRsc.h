@@ -48,6 +48,9 @@
 #define check_prefs_1         1405
 #define check_prefs_2         1406
 #define check_prefs_3         1407
+#define check_prefs_4         1408
+#define check_prefs_5         1409
+#define check_prefs_6         1410
 #define ThingForm             1500
 
 // 4 lines.  (each line of text is 11 pixels high)

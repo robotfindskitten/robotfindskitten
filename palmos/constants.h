@@ -76,7 +76,14 @@ typedef struct
   IndexedColorType fg_color; // this is a UInt8, or, as its friends used to
   IndexedColorType bg_color; // call it, a UChar.
 #endif
+  Boolean memo;
 } screen_object;
+
+typedef struct
+{
+  Short index;
+  Boolean is_memo;
+} bogus_message;
 
 
 
@@ -85,4 +92,7 @@ struct rfkPreferenceType {
   Boolean relative_move;
   Boolean sound_on;
   Boolean use_buttons;
+  Boolean replace_nki;
+  Boolean color_nki;
+  Boolean color_msgs;
 };
