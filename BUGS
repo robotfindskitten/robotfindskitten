@@ -18,7 +18,8 @@ face. draw.h uses the A_ALTCHARSET flag. It doesn't work.
 Occasionally, there are redraw errors.  Any ncurses gurus out there who can
 clear this up?
 
-	There's a chance that when I fixed the problem with noecho, it fixed this as well, but it hasn't been tested.
+	There's a chance that when I fixed the problem with noecho, it
+	fixed this as well, but it hasn't been tested.
 			- Shazdeh <zen@emgnulation.org>
 
 Possible Improvements:
@@ -28,6 +29,8 @@ The code generally needs to be cleaned up.
 Although the code should compile on anything that has ncurses, the
 special character set used probably won't be handled correctly on
 anything but Linux/Intel. Have an option to stick to standard ASCII.
+[currently robotfindskitten is only standard ASCII.]
+
 
 The program shouldn't depend on a hard-wired constant for the number
 of messages.

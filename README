@@ -1,4 +1,11 @@
-To compile, simply type "./configure" and then "make".
+IMPORTANT!
+robotfindskitten will NOT compile properly without ncurses headers
+(libncursesN-dev in Debian GNU/Linux). Eventually ./configure will warn
+you if you do not have it installed.
+
+To compile, make sure you have the ncurses libraries installed, and 
+simply type "./configure" and then "make".
+
 To install, do the preceeding and then type "make install".
 
 The program is called "rfk", and the documentation can be viewed by typing

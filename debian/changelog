@@ -1,8 +1,8 @@
-robotfindskitten (v1600003_201b-1) unstable; urgency=low
+robotfindskitten (v1600003_248b-1) unstable; urgency=low
 
-  * Initial Release.
+  * Pre-Alpha Release.
 
- -- Nick Moffitt <nick@zork.net>  Tue, 21 Nov 2000 11:27:27 -0800
+ -- Nick Moffitt <nick@zork.net>  Wed, 21 Feb 2001 11:27:27 -0800
 
 Local variables:
 mode: debian-changelog

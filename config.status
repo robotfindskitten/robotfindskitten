@@ -62,7 +62,7 @@ s%@INSTALL_PROGRAM@%${INSTALL}%g
 s%@INSTALL_SCRIPT@%${INSTALL_PROGRAM}%g
 s%@INSTALL_DATA@%${INSTALL} -m 644%g
 s%@PACKAGE@%robotfindskitten%g
-s%@VERSION@%v1600003.240b%g
+s%@VERSION@%v1600003.248b%g
 s%@ACLOCAL@%aclocal%g
 s%@AUTOCONF@%autoconf%g
 s%@AUTOMAKE@%automake%g
@@ -85,6 +85,10 @@ s%@LD@%/usr/bin/ld%g
 s%@NM@%/usr/bin/nm -B%g
 s%@LN_S@%ln -s%g
 s%@LIBTOOL@%$(SHELL) $(top_builddir)/libtool%g
+s%@GLIB_CONFIG@%/usr/bin/glib-config%g
+s%@GLIB_CFLAGS@%-I/usr/lib/glib/include%g
+s%@GLIB_LIBS@%-L/usr/lib -lglib%g
+s%@CPP@%gcc -E%g
 
 CEOF
 
@@ -217,21 +221,24 @@ for ac_file in .. $CONFIG_HEADERS; do if test "x$ac_file" != x..; then
 ${ac_dA}PACKAGE${ac_dB}PACKAGE${ac_dC}"robotfindskitten"${ac_dD}
 ${ac_uA}PACKAGE${ac_uB}PACKAGE${ac_uC}"robotfindskitten"${ac_uD}
 ${ac_eA}PACKAGE${ac_eB}PACKAGE${ac_eC}"robotfindskitten"${ac_eD}
-${ac_dA}VERSION${ac_dB}VERSION${ac_dC}"v1600003.240b"${ac_dD}
-${ac_uA}VERSION${ac_uB}VERSION${ac_uC}"v1600003.240b"${ac_uD}
-${ac_eA}VERSION${ac_eB}VERSION${ac_eC}"v1600003.240b"${ac_eD}
+${ac_dA}VERSION${ac_dB}VERSION${ac_dC}"v1600003.248b"${ac_dD}
+${ac_uA}VERSION${ac_uB}VERSION${ac_uC}"v1600003.248b"${ac_uD}
+${ac_eA}VERSION${ac_eB}VERSION${ac_eC}"v1600003.248b"${ac_eD}
 ${ac_dA}HAVE_LIBNCURSES${ac_dB}HAVE_LIBNCURSES${ac_dC}1${ac_dD}
 ${ac_uA}HAVE_LIBNCURSES${ac_uB}HAVE_LIBNCURSES${ac_uC}1${ac_uD}
 ${ac_eA}HAVE_LIBNCURSES${ac_eB}HAVE_LIBNCURSES${ac_eC}1${ac_eD}
-${ac_dA}RETSIGTYPE${ac_dB}RETSIGTYPE${ac_dC}void${ac_dD}
-${ac_uA}RETSIGTYPE${ac_uB}RETSIGTYPE${ac_uC}void${ac_uD}
-${ac_eA}RETSIGTYPE${ac_eB}RETSIGTYPE${ac_eC}void${ac_eD}
+${ac_dA}HAVE_CURSES_H${ac_dB}HAVE_CURSES_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_CURSES_H${ac_uB}HAVE_CURSES_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_CURSES_H${ac_eB}HAVE_CURSES_H${ac_eC}1${ac_eD}
 CEOF
   sed -f conftest.frag conftest.in > conftest.out
   rm -f conftest.in
   mv conftest.out conftest.in
 
   cat > conftest.frag <<CEOF
+${ac_dA}RETSIGTYPE${ac_dB}RETSIGTYPE${ac_dC}void${ac_dD}
+${ac_uA}RETSIGTYPE${ac_uB}RETSIGTYPE${ac_uC}void${ac_uD}
+${ac_eA}RETSIGTYPE${ac_eB}RETSIGTYPE${ac_eC}void${ac_eD}
 s%^[ 	]*#[ 	]*undef[ 	][ 	]*[a-zA-Z_][a-zA-Z_0-9]*%/* & */%
 CEOF
   sed -f conftest.frag conftest.in > conftest.out
