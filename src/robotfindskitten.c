@@ -466,6 +466,29 @@ void initialize_robot()
   screen[robot.x][robot.y] = ROBOT;
 }
 
+gchar *test_initialize_robot()
+{
+	int i,j;
+
+	initialize_robot();
+	cunit_assert( robot.x > 0 );
+	cunit_assert( robot.y > 0 );
+	cunit_assert( robot.x <= X_MAX );
+	cunit_assert( robot.y <= Y_MAX );
+
+	for(i=0; i <= X_MAX; i++) {
+		for(j=0; j <= Y_MAX; j++) {
+			if(i == robot.x && j == robot.y) {
+				cunit_assert( screen[i][j] == ROBOT );
+			} else {
+				cunit_assert( screen[i][j] != ROBOT );
+			}
+		}
+	}
+
+	return(NULL);
+}
+
 /*initialize kitten, well, initializes kitten.*/
 void initialize_kitten()
 {
@@ -565,6 +588,7 @@ cunit_test_session *session_builder(void)
 
 	/* register tests and suites: */
 	cunit_register_test(sp, "rfk.initialize_arrays", test_initialize_arrays);
+	cunit_register_test(sp, "rfk.initialize_robot", test_initialize_robot);
 
 	return(sp);
 }
