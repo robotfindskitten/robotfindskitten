@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/draw.h)
-AM_INIT_AUTOMAKE(robotfindskitten,v1.4142135.349)
+AM_INIT_AUTOMAKE(robotfindskitten,v1.4142135.406)
 AM_CONFIG_HEADER(config.h)
 AC_LANG_C
 
