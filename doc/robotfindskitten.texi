@@ -35,7 +35,7 @@ by the Foundation.
 @end ifinfo
 
 @titlepage
-@title robotfindskitten v1600005-344b
+@title robotfindskitten v1.4142135.349
 @subtitle Leonard: In Bakersfield they have an art gallery in the mall.
 @subtitle Al: That's where they belong.
 @author by Leonard Richardson 

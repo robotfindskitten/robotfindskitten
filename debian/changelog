@@ -1,3 +1,10 @@
+robotfindskitten (1.4142135.349-1) unstable; urgency=low
+
+  * New upstream release
+  * Added configure file to upstream release (closes: #165009)
+
+ -- Neale Pickett <neale@debian.org>  Mon, 27 Jan 2003 09:02:24 -0800
+
 robotfindskitten (0.1600005.344b-3) unstable; urgency=low
 
   * Updated to standards version 3.5.6.1

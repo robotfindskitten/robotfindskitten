@@ -12,11 +12,6 @@ configure: configure-stamp
 configure-stamp: 
 	dh_testdir
 #	Add here commands to configure the package.
-	aclocal
-	libtoolize
-	autoheader
-	automake --add-missing
-	autoconf
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 
 	touch configure-stamp
@@ -27,7 +22,6 @@ build-stamp:
 
 #	Add here commands to compile the package.
 	$(MAKE)
-#	/usr/bin/docbook-to-man debian/robotfindskitten-v1600003.sgml > robotfindskitten-v1600003.1
 
 	touch build-stamp
 

@@ -2,7 +2,7 @@ Source: robotfindskitten
 Section: games
 Priority: optional
 Maintainer: Neale Pickett <neale@debian.org>
-Build-Depends: debhelper, libncurses5-dev, automake, autoconf, libtool, texinfo
+Build-Depends: debhelper, libncurses5-dev, texinfo
 Standards-Version: 3.5.6.1
 
 Package: robotfindskitten
