@@ -1,5 +1,10 @@
 /*Be sure to change MESSAGES when you change the array, or bad things
   will happen.*/
+
+/*Also, take note that robotfindskitten.c and configure.in 
+  currently have the version number hardcoded into them, and they 
+  should reflect MESSAGES. */
+
 #define MESSAGES 240
 
 static char* messages[] =
