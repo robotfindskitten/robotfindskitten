@@ -7,3 +7,5 @@ robotfindskitten_LDADD= -lncurses $(GLIB_LIBS)
 
 check_SCRIPTS=testrunner
 TESTS=testrunner
+
+EXTRA_DIST=$(check_SCRIPTS)
