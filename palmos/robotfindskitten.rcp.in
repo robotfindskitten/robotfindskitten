@@ -90,8 +90,8 @@ BEGIN
 
 END
 
-BITMAPFAMILY ID bitmap_cat "rfk.bmp" "" "" "rfkC.bmp" TRANSPARENT 255 255 255
-BITMAPFAMILY ID bitmap_rfk "robotfindskitten.bmp" "" "" "robotfindskittenC.bmp" TRANSPARENT 255 255 255
+BITMAPFAMILY ID bitmap_cat "rfk.bmp" "" "" "rfkC.bmp" COMPRESS TRANSPARENT 255 255 255
+BITMAPFAMILY ID bitmap_rfk "robotfindskitten.bmp" "" "" "robotfindskittenC.bmp" COMPRESS TRANSPARENT 255 255 255
 
 //BITMAP ID bitmap_rfk "robotfindskitten.bmp"
 //BITMAP ID bitmap_cat "rfk.bmp"
