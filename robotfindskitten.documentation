@@ -1,0 +1,146 @@
+robotfindskitten v1600003.201
+By Leonard Richardson
+leonardr@segfault.org
+My site: http://www.crummy.com/
+My software: http://www.crummy.com/devel/
+
+Leonard: In Bakersfield they have an art gallery in the mall.
+Al: That's where they belong.
+============================================================================
+
+THE NICETIES 
+------------ 
+Hi there. This is the documentation file for robotfindskitten, winner
+(by default) of the first Nerth Pork webzine robotfindskitten
+contest. The object of the contest was to create a work of art whose
+title and/or theme was "robotfindskitten". I chose to write this
+program, which is a Zen simulation. That's what Nerth Pork editor Pete
+Peterson calls it, and that's really the best way to describe it, even
+though "Zen simulation" sounds kinda pretentious.  Anyway, let's
+dispense with the niceties and get on with the documentation.
+
+THE DOCUMENTATION
+-----------------
+In this simulation, you play the part of robot. Your task is to
+complete the simulation by finding kitten, as is your destiny, and
+indeed your wont.  You (robot) are represented by the # character, and
+you move around with the arrow keys touching things.  If the thing you
+touch is kitten, you get a cute little animation (which was cuter in
+the DOS version) and the simulation ends. Otherwise, you get a brief
+description of what it is you touched. So far, there are 201
+non-kitten objects in the simulation, thus the subversion number
+201. Future versions will have more objects and thus higher subversion
+numbers.
+
+THE PARTS OF THE SIMULATION 
+--------------------------- 
+
+The first part of the simulation is the command line used to invoke
+it. It is here where you can control the number of non-kitten objects
+on the screen in any one instance of the simulation. To exercise this
+control, simply enter a number between 0 and 201 inclusive on the
+command line. For instance, to play with 32 objects on the screen, you
+would invoke the program with the command "robotfindskitten 32" (or,
+more likely, "./robotfindskitten 32"). The default is twenty
+non-kitten objects.
+
+The second part of the simulation is the title screen. It should be
+fairly self-explanatory.
+
+The third part of the simulation is the actual simulation itself. The
+long line near the top of the screen separates the screen into the
+field of play and the status bar. The status bar displays messages and
+item descriptions.  Just so you don't wonder what that line is.
+
+The fourth part of the simulation... there isn't one. It's not a very
+complicated simulation.
+
+CONTROLS
+--------
+
+1. To move robot, use the arrow keys. Diagonals now work! Now that's
+   innovation!
+
+2. To touch an object, make a move as if you were trying to occupy the
+   square currently occupied by the object you want to touch. Sorry if
+   that seemed obvious, but you never know. I don't want to be accused
+   of writing incomplete documentation.
+
+3. If you want to end the program for whatever reason, just hit Escape, or
+   terminate the program by hitting control-C.
+
+A WORD OF WARNING
+-----------------
+Danger!
+
+ANOTHER WORD OF WARNING
+-----------------------
+The characters you see on the screen are not guaranteed to correspond
+in shape or color to what the descriptions say they are. In fact,
+they're pretty much guaranteed not to. If there was any consistency,
+it'd be pretty easy to spot kitten every time, now wouldn't it?
+
+YET ANOTHER WORD OF WARNING
+---------------------------
+This is a BETA release of robotfindskitten. I've never had it crash,
+but it might do weird things. Let me know.
+
+TECHNICAL INFORMATION FOR HARD-CORE GEEKS
+----------------------------------------- 
+The original robotfindskitten (the one that won the contest) was
+written using Borland Turbo C++ 3.0 for DOS in 1997. I ported it to
+(rewrote it for, more like) Linux over Independance Day, 1999. It now
+uses the ncurses library. Version 1600003 is written for ncurses 5.0,
+which is what I have on my Mandrake system. It's good that you're a
+hard-core geek like me. I can speak frankly to you, knowing that
+non-coders won't read this section, or will be scared off by all that
+jargon in the first few sentences. Our plan is nearly complete, and we
+are poised to take our rightful places as rulers of this
+planet. Already we control the technology of the sheeplike masses. We
+merely await the command from Geek Central, and Earth will be ours! AH
+HA HA HA HA HA! Uh-oh, that evil laughing looks kind of conspicuous in
+a doc file. I better put in some more technical info. If you want to
+write your own ncurses game, you can use the framework provided by
+robotfindskitten or the more flexible framework provided by the sequel
+(also on my software page). Now, let us part with the secret geek
+handshake!
+
+JOIN THE BLUDGEONING robotfindskitten COMMUNITY!
+------------------------------------------------
+I want robotfindskitten to be the most comprehensive Zen simulation on
+the market. But for that to happen, I need your help. Please, send in
+any descriptions of objects you would like to see in robotfindskitten
+to leonardr@ucla.edu. Heck, you could even tell me to put you in the
+program!  I'm certainly not above that sort of thing. Pete Peterson
+set a great example by providing over 30 objects for everone's
+kitten-finding enjoyment. Also, be sure to tell me how you like
+robotfindskitten.
+
+A FINAL THOUGHT
+---------------
+"Day and night I feverishly worked upon the machine, creating both a
+soul which could desire its goal, and a body with which it could
+realize it. Many who saw my creation called it an abomination, and
+denied me grant money. But they could not dissuade me from my
+impossible task. It was a spectre that tormented me always, a ghost I
+had to give a form and a life, lest it consume me from the inside. And
+when at last my task was done, when the grey box on wheels was
+complete and when it, as well as I, knew what had to be done, I felt
+deep sympathy for the machine. For I had not destroyed the phantom,
+but merely exorcized it into another body. The robot knew not why this
+task had to be performed, for I could not imbue it with knowledge I
+did not myself posess. And at the same time, I felt a sweeping sense
+of relief sweep over me, that somehow, the dream that had driven me
+for my entire life had come one step closer to fruition.
+
+"As I vocally activated the robot, I realized that the it was
+following my instructions, but not out of any desire to obey me. Had I
+remained silent, it would have performed exactly the same
+operations. We were two beings controlled by the same force now. And
+yet, seeking vainly to hold some illusion of control over the machine
+I thought I had created, I gave my final command.
+
+"`GO!' I told the box as it began to roll out of my workshop into the
+frozen desert beyond. `FIND KITTEN!'"  
+
+       --The Book of Found Kittens, pages 43-4, author unknown
