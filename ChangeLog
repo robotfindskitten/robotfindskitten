@@ -1,4 +1,5 @@
-
+Dec 6 2000 Shazdeh <zen@emgnulation.org>
+	* ^L now redraws the screen (I hope).
 Dec 5 2000 Shazdeh <zen@emgnulation.org>
 	* Made it possible to exit the game by pressing Q.
 	* Made Nethack movement controls case-insensitive.

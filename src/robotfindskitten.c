@@ -69,6 +69,7 @@ static char* ver = "v1600003.201b";
 #define EMACS_BACKWARD ('B' - 64)
 #define EMACS_FORWARD ('F' - 64)
 
+#define KEY_REDRAW ('L' - 64)
 /*Screen dimensions.*/
 #define X_MIN 0
 #define X_MAX 79
@@ -232,6 +233,11 @@ void process_input(int input)
 
   switch (input)
     {
+    case KEY_REDRAW:
+/*FIXME: I'm ignoring the return value.  I know it's a risk, but I can
+ *handle it.*/
+      refresh();
+      break;
     case KEY_UP:
     case NETHACK_up:
     case NETHACK_UP:
