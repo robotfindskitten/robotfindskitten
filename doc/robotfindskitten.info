@@ -63,12 +63,13 @@ The Documentation
    In this simulation, you play the part of robot. Your task is to
 complete the simulation by finding kitten, as is your destiny, and
 indeed your wont.  You (robot) are represented by the # character, and
-you move around with the arrow keys touching things.  If the thing you
-touch is kitten, you get a cute little animation (which was cuter in
-the DOS version) and the simulation ends. Otherwise, you get a brief
-description of what it is you touched. So far, there are 201 non-kitten
-objects in the simulation, thus the subversion number 201. Future
-versions will have more objects and thus higher subversion numbers.
+you move around with the arrow keys (Nethack or otherwise) touching
+things.  If the thing you touch is kitten, you get a cute little
+animation (which was cuter in the DOS version) and the simulation ends.
+Otherwise, you get a brief description of what it is you touched. So
+far, there are 201 non-kitten objects in the simulation, thus the
+subversion number 201. Future versions will have more objects and thus
+higher subversion numbers.
 
 * Menu:
 
@@ -107,8 +108,8 @@ File: robotfindskitten.info,  Node: Controls,  Next: A Word of Warning,  Prev: T
 Controls
 ========
 
-  1. To move robot, use the arrow keys. Diagonals now work! Now that's
-     innovation!
+  1. To move robot, use the arrow keys. Diagonals now work! Nethack
+     arrow keys (including diagonals) now work! Now that's innovation!
 
   2. To touch an object, make a move as if you were trying to occupy
      the square currently occupied by the object you want to touch.
@@ -260,6 +261,8 @@ Concept Index
 * movement:                              Controls.
 * ncurses 5.0:                           Technical Information for Hard-Core Geeks.
 * Nerth Pork:                            The Niceties.
+* Nethack <1>:                           Controls.
+* Nethack:                               The Documentation.
 * non-debian distribution of GNU/Linux:  Technical Information for Hard-Core Geeks.
 * non-kitten objects:                    The Parts of the Simulation.
 * original version:                      Technical Information for Hard-Core Geeks.
@@ -293,14 +296,14 @@ Tag Table:
 Node: Top871
 Node: The Niceties1488
 Node: The Documentation2154
-Node: The Parts of the Simulation3026
-Node: Controls4187
-Node: A Word of Warning4818
-Node: Another Word of Warning4983
-Node: Yet Another Word of Warning5440
-Node: Technical Information for Hard-Core Geeks5772
-Node: Join the Bludgeoning robotfindskitten Community!7145
-Node: A Final Thought8167
-Node: Index9930
+Node: The Parts of the Simulation3049
+Node: Controls4210
+Node: A Word of Warning4892
+Node: Another Word of Warning5057
+Node: Yet Another Word of Warning5514
+Node: Technical Information for Hard-Core Geeks5846
+Node: Join the Bludgeoning robotfindskitten Community!7219
+Node: A Final Thought8241
+Node: Index10004
 
 End Tag Table

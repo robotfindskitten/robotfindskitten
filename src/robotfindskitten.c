@@ -43,7 +43,17 @@ static char* ver = "v1600003.201b";
 #define DOWN_LEFT_KEY 104
 #define DOWN_RIGHT_KEY 82
 
-#define QUIT_KEY 27
+/*Nethack keycodes*/
+#define NETHACK_DOWN 'j'
+#define NETHACK_UP 'k'
+#define NETHACK_LEFT 'h'
+#define NETHACK_RIGHT 'l'
+#define NETHACK_UL 'y'
+#define NETHACK_UR 'u'
+#define NETHACK_DL 'b'
+#define NETHACK_DR 'n'
+
+#define KEY_ESC 27
 
 /*Screen dimensions.*/
 #define X_MIN 0
@@ -89,12 +99,12 @@ static void finish(int sig);
 
 /*Game functions*/
 void play_game();
-void process_input(char);
+void process_input(int);
 
 /*Helper functions*/
 int validchar(char);
 
-void play_animation(char);
+void play_animation(int);
 
 /*Global variables. Bite me, it's fun.*/
 screen_object robot;
@@ -168,10 +178,10 @@ void play_game()
 {
   int old_x = robot.x;
   int old_y = robot.y;
-  char input;
+  int input;
 
   input = getch();
-  while (input != QUIT_KEY)
+  while (input != KEY_ESC)
     {
       process_input(input);
       
@@ -201,39 +211,47 @@ void play_game()
  *Given the keyboard input, process_input interprets it in terms of moving,
  *touching objects, etc.
  */
-void process_input(char input)
+void process_input(int input)
 {
   int check_x = robot.x;
   int check_y = robot.y;
 
-  switch ((int)input)
+  switch (input)
     {
-    case UP_KEY:
+    case KEY_UP:
+    case NETHACK_UP:
       check_y--;
       break;
-    case UP_LEFT_KEY:
+    case KEY_HOME:
+    case NETHACK_UL:
       check_x--;
       check_y--;
       break;
-    case UP_RIGHT_KEY:
+    case KEY_PPAGE:
+    case NETHACK_UR:
       check_x++;
       check_y--;
       break;
-    case DOWN_KEY:
+    case KEY_DOWN:
+    case NETHACK_DOWN:
       check_y++;
       break;
-    case DOWN_LEFT_KEY:
+    case KEY_END:
+    case NETHACK_DL:
       check_x--;
       check_y++;
       break;
-    case DOWN_RIGHT_KEY:
+    case KEY_NPAGE:
+    case NETHACK_DR:
       check_x++;
       check_y++;
       break;
-    case LEFT_KEY:
+    case KEY_LEFT:
+    case NETHACK_LEFT:
       check_x--;
       break;
-    case RIGHT_KEY:
+    case KEY_RIGHT:
+    case NETHACK_RIGHT:
       check_x++;
       break;
     case 0:
@@ -301,7 +319,7 @@ int validchar(char a)
   return 1;
 }
 
-void play_animation(char input)
+void play_animation(int input)
 {
   int counter;
   /*The grand cinema scene.*/
@@ -310,8 +328,8 @@ void play_animation(char input)
       /*Move the object on the right.*/
       mvaddch(ADV_ROW,ANIMATION_MEET+counter+1,' ');
       move(ADV_ROW,ANIMATION_MEET+counter);
-      if (input == RIGHT_KEY || input == DOWN_KEY 
-	  || input == DOWN_RIGHT_KEY  || input == UP_RIGHT_KEY)
+      if (input == KEY_RIGHT || input == KEY_DOWN 
+	  || input == KEY_C3  || input == KEY_A3)
 	draw_in_place(kitten);
       else
 	draw_in_place(robot);
@@ -319,8 +337,8 @@ void play_animation(char input)
       /*Move the object on the left.*/
       mvaddch(ADV_ROW,ANIMATION_MEET-counter,' ');
       move(ADV_ROW,ANIMATION_MEET-counter+1);
-      if (input == RIGHT_KEY || input == DOWN_KEY
-	  || input == DOWN_RIGHT_KEY  || input == UP_RIGHT_KEY)
+      if (input == KEY_RIGHT || input == KEY_DOWN
+	  || input == KEY_C3  || input == KEY_A3)
 	draw_in_place(robot);
       else
 	draw_in_place(kitten);
@@ -399,9 +417,9 @@ void initialize_ncurses()
   keypad(stdscr, TRUE);  /* enable keyboard mapping */
   (void) nonl();         /* tell curses not to do NL->CR/NL on output */
   intrflush(stdscr, FALSE);
-  (void) noecho;        /* don't echo characters */
-  (void) cbreak;         /* don't wait for enter before accepting input */
-    
+  (void) noecho();         /* don't echo characters */
+  (void) cbreak();         /* don't wait for enter before accepting input */
+  
   if (has_colors())
     {
       start_color();      

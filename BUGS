@@ -2,9 +2,13 @@ Current bugs:
 -------------
 When you hit the escape key, it takes about a second to register. Why?
 
-The call to noecho doesn't seem to do anything. I tried a little
-program that just does noecho and takes input, and that worked, so
-something somewhere is undoing the effect of noecho.
+From the getch man page (Shazdeh <zen@emgnulation.org>):
+-- 
+       Use of the escape key by a programmer for a single charac-
+       ter function is discouraged, as it will cause a	delay  of
+       up to one second while the keypad code looks for a follow-
+       ing function-key sequence.
+-- 
 
 ncurses doesn't cooperate with characters less than '!'. It displays
 them as, eg ^A for what should by rights be a little smiley
@@ -12,6 +16,9 @@ face. draw.h uses the A_ALTCHARSET flag. It doesn't work.
 
 Occasionally, there are redraw errors.  Any ncurses gurus out there who can
 clear this up?
+
+	There's a chance that when I fixed the problem with noecho, it fixed this as well, but it hasn't been tested.
+			- Shazdeh <zen@emgnulation.org>
 
 Possible Improvements:
 ----------------------

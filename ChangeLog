@@ -1,3 +1,9 @@
+
+Nov 30 2000 Shazdeh <zen@emgnulation.org>
+	* fixed data-loss problem with getch()
+	* replaced wacko magic numbers with system-defined constants
+	* added support for NetHack movement keys
+	* fixed curses initialization to not echo or buffer
 Nov 21 2000 CrackMonkey <monkeymaster@crackmonkey.org>
 	* autoconf'd up the package from crummy.com 
 	* translated the robotfindskitten.documentation file to texinfo.
