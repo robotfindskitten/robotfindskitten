@@ -34,7 +34,11 @@
 #define char Char
 #include "messages.h"
 
-Boolean we_gots_color = false;
+#ifndef I_AM_COLOR
+Boolean color = false;
+#else /* I_AM_COLOR */
+Boolean color = true;
+#endif /* I_AM_COLOR */
 
 screen_object robot;
 screen_object kitten;
@@ -75,15 +79,21 @@ Word last_key = 0;
  *****************************************************************************/
 
 #ifdef I_AM_COLOR
-// Note - these most probably need work.
-#define randRGB() ((SysRandom(0) % 5) * 51)
+/* Note - these most probably need work. */
+// 00, 33, 66, 99, cc, ff
+#define randRGB() ((SysRandom(0) % 6) * 51)
 IndexedColorType random_fg_color()
 {
-  RGBColorType my_tmp_color;
-  my_tmp_color.r = randRGB();// slightly dark
-  my_tmp_color.g = randRGB();
-  my_tmp_color.b = randRGB();
-  return WinRGBToIndex(&my_tmp_color);
+  RGBColorType c;
+  Short i = SysRandom(0) % 3;
+  // Try to pick something with decent contrast..
+  c.r = (SysRandom(0) % 3) * 51;  // 00, 33, 66
+  c.g = (SysRandom(0) % 2) * 51;  // 00, 33, 66
+  c.b = (SysRandom(0) % 3) * 51;  // 00, 33, 66
+  if (c.b >= c.g && c.b >= c.r) c.b += (SysRandom(0) % 3) * 51;
+  else if (c.g >= c.r) c.g += (SysRandom(0) % 3) * 51;
+  else c.r += (SysRandom(0) % 3) * 51;
+  return WinRGBToIndex(&c);
 }
 IndexedColorType random_bg_color()
 {
@@ -114,8 +124,10 @@ void draw(screen_object o)
   else              cheat /= 2;
 
 #ifdef I_AM_COLOR
-  WinSetTextColor(o.fg_color);
-  //  WinSetBackColor(o.bg_color); // It's possible.  But kind of uglified.
+  if (color) {
+    WinSetTextColor(o.fg_color);
+    //  WinSetBackColor(o.bg_color); // It's possible.  But kind of uglified.
+  }
 #endif /* I_AM_COLOR */
 
   WinDrawChars(&ch, 1, col * cell_W + cheat, (row+1) * cell_H + 2);
@@ -131,7 +143,9 @@ void initialize_screen()
   WinDrawGrayLine(0, 11, 160, 11);
 
 #ifdef I_AM_COLOR
-  WinPushDrawState();
+  if (color) {
+    WinPushDrawState();
+  }
 #endif /* I_AM_COLOR */
 
   for (counter = 0; counter < num_bogus; counter++)
@@ -140,7 +154,9 @@ void initialize_screen()
   draw(robot);
 
 #ifdef I_AM_COLOR
-  WinPopDrawState();
+  if (color) {
+    WinPopDrawState();
+  }
 #endif /* I_AM_COLOR */
 
 }
@@ -193,10 +209,10 @@ void play_animation()
   WinEraseRectangle(&r, 0);
   // Note: This should drawn in a nice color. XXXX
 #ifdef I_AM_COLOR
-  WinPushDrawState();
-  {
+  if (color) {
     IndexedColorType my_red;
     RGBColorType my_tmp_color;
+    WinPushDrawState();
     my_tmp_color.r = 255;
     my_tmp_color.g = 0;
     my_tmp_color.b = 0;
@@ -206,7 +222,9 @@ void play_animation()
 #endif /* I_AM_COLOR */
   WinDrawChars(&c, 1, kx*cell_W + cell_W/2, (Y_MIN+1)*cell_H + 2);  
 #ifdef I_AM_COLOR
-  WinPopDrawState();
+  if (color) {
+    WinPopDrawState();
+  }
 #endif /* I_AM_COLOR */
   SysTaskDelay(SysTicksPerSecond());
   WinEraseRectangle(&r, 0);
@@ -481,6 +499,13 @@ void print_descr(Short i)
   Word wwlen, maxwid=152;
   Short w, maxw=0, x, y = 0;
 
+#ifdef I_AM_COLOR
+  if (color) {
+    WinPushDrawState();
+    WinSetTextColor(bogus[i].fg_color);
+  }
+#endif /* I_AM_COLOR */
+
   while (y < THINGFORM_H) {
     wwlen = FntWordWrap(p, maxwid);
     w = FntCharsWidth(p, wwlen);
@@ -496,10 +521,15 @@ void print_descr(Short i)
   while (y < THINGFORM_H) {
     wwlen = FntWordWrap(p, maxwid);
     WinDrawChars(p, wwlen, x, y);
-    if (wwlen >= StrLen(p)) return; // whew, we printed the whole message
+    if (wwlen >= StrLen(p)) break; // whew, we printed the whole message
     p += wwlen;
     y += 11;
   }
+#ifdef I_AM_COLOR
+  if (color) {
+    WinPopDrawState();
+  }
+#endif /* I_AM_COLOR */
 }
 
 // This form just displays a message.
@@ -516,7 +546,7 @@ Boolean Thing_Form_HandleEvent(EventPtr e)
   case frmOpenEvent:
     frm = FrmGetActiveForm();
     FrmDrawForm(frm);
-    // remember that 'atthing' is an index into bogus_messages..
+    // remember that 'atthing' is an index into bogus_messages or bogus
     print_descr(atthing);
     return true;
 
@@ -589,11 +619,13 @@ void initialize_arrays()
   screen_object empty;
 
 #ifdef I_AM_COLOR
-  RGBColorType my_tmp_color;
-  my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 0; // black
-  empty.fg_color = WinRGBToIndex(&my_tmp_color);
-  my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 255; // white
-  empty.bg_color = WinRGBToIndex(&my_tmp_color);
+  if (color) {
+    RGBColorType my_tmp_color;
+    my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 0; // black
+    empty.fg_color = WinRGBToIndex(&my_tmp_color);
+    my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 255; // white
+    empty.bg_color = WinRGBToIndex(&my_tmp_color);
+  }
 #endif /* I_AM_COLOR */
 
   empty.x = 0; empty.y = 0;  // these were -1
@@ -616,11 +648,13 @@ void initialize_arrays()
 void initialize_robot()
 {
 #ifdef I_AM_COLOR
-  RGBColorType my_tmp_color;
-  my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 0; // black
-  robot.fg_color = WinRGBToIndex(&my_tmp_color);
-  my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 255; // white
-  robot.bg_color = WinRGBToIndex(&my_tmp_color);
+  if (color) {
+    RGBColorType my_tmp_color;
+    my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 0; // black
+    robot.fg_color = WinRGBToIndex(&my_tmp_color);
+    my_tmp_color.r = my_tmp_color.g = my_tmp_color.b = 255; // white
+    robot.bg_color = WinRGBToIndex(&my_tmp_color);
+  }
 #endif /* I_AM_COLOR */
 
   robot.x = randx();  /*Assign a position to the player.*/
@@ -661,8 +695,10 @@ void initialize_kitten()
   } while (!(validchar(kitten.character))); 
   screen[kitten.x][kitten.y] = KITTEN;
 #ifdef I_AM_COLOR
-  kitten.bg_color = random_bg_color();
-  kitten.fg_color = random_fg_color();
+  if (color) {
+    kitten.bg_color = random_bg_color();
+    kitten.fg_color = random_fg_color();
+  }
 #endif /* I_AM_COLOR */
   found = false;
 }
@@ -681,8 +717,10 @@ void initialize_bogus()
 
     // also a color
 #ifdef I_AM_COLOR
-    bogus[j].bg_color = random_bg_color();
-    bogus[j].fg_color = random_fg_color();
+    if (color) {
+      bogus[j].bg_color = random_bg_color();
+      bogus[j].fg_color = random_fg_color();
+    }
 #endif /* I_AM_COLOR */
 
     /*Give it a position.*/
@@ -965,7 +1003,9 @@ static Word StartApplication(void)
 #ifdef I_AM_COLOR
   // well,,, we don't NECESSARILY have color, but we have the API calls anyway
   if (version >= 0x03503000L)
-    we_gots_color = true;
+    color = true;
+  else
+    color = false; // Better test to see if it will run on OS2..
 #endif /* I_AM_COLOR */
 
 

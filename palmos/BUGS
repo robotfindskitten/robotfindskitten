@@ -7,3 +7,4 @@ happened when running the color version with the (non-debug) color
 ROM.  (Find out whether this occurs in the OS-2 (no color) compilation
 (a) on Visor and (b) on POSE.  that may help track it down.)
 
+ah, it was fencepost error in messages.h
