@@ -197,7 +197,7 @@ void process_input(int input)
     case KEY_REDRAW:
 /*FIXME: I'm ignoring the return value.  I know it's a risk, but I can
  *handle it.*/
-      refresh();
+      wrefresh(curscr);
       break;
     case KEY_UP:
     case NETHACK_up:

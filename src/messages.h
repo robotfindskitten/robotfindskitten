@@ -5,7 +5,7 @@
   currently have the version number hardcoded into them, and they 
   should reflect MESSAGES. */
 
-#define MESSAGES 240
+#define MESSAGES 241
 
 static char* messages[] =
 {
@@ -249,4 +249,5 @@ static char* messages[] =
   "It's a copy of the robotfindskitten EULA."
   "It's Death.",
   "It's an autographed copy of \"Secondary Colors,\" by Bob Ross."
+  "It is a marzipan dreadnought that appears to have melted and stuck."
 };

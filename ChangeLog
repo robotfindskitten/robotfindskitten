@@ -1,3 +1,6 @@
+Dec 11 2000 CrackMonkey <monkeymaster@crackmonkey.org>
+	* Fixed screen redraw.
+	* Added more NKIs.
 Dec 6 2000 Shazdeh <zen@emgnulation.org>
 	* ^L now redraws the screen (I hope).
 Dec 5 2000 Shazdeh <zen@emgnulation.org>
