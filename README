@@ -1,0 +1,6 @@
+To compile, simply type "./configure" and then "make".
+To install, do the preceeding and then type "make install".
+
+The program is called "rfk", and the documentation can be viewed by typing
+"info robotfindskitten" or "tkinfo robotfindskitten".  The rfk binary is
+installed in $(prefix)/games (/usr/local/games by default on most systems).

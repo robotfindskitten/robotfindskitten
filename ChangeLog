@@ -1,0 +1,4 @@
+Nov 21 2000 CrackMonkey <monkeymaster@crackmonkey.org>
+	* autoconf'd up the package from crummy.com 
+	* translated the robotfindskitten.documentation file to texinfo.
+	* set up http://sourceforge.net/projects/rfk
