@@ -64,7 +64,7 @@ static char* ver = "v1600003.201b";
 /*Macros for generating numbers in different ranges*/
 #define randx() rand() % X_MAX+1
 #define randy() rand() % (Y_MAX-Y_MIN+1)+Y_MIN /*I'm feeling randy()!*/
-#define randchar() rand() % (254-'!'+1)+'!';
+#define randchar() rand() % (126-'!'+1)+'!';
 #define randcolor() rand() % 6 + 1
 #define randbold() (rand() % 2 ? TRUE:FALSE)
 
