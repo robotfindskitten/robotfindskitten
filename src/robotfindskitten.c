@@ -373,7 +373,7 @@ void instructions()
   printw("In this game, you are robot (");
   draw_in_place(robot);
   printw("). Your job is to find kitten. This task\n"); 
-  printw("is complicated by the existance of various things which are not kitten.\n");  
+  printw("is complicated by the existence of various things which are not kitten.\n");  
   printw("Robot must touch items to determine if they are kitten or not. The game\n");
   printw("ends when robotfindskitten. Alternatively, you may end the game by hitting\n");
   printw("the Esc key. See the documentation for more information.\n\n");
