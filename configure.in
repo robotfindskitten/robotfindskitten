@@ -12,8 +12,10 @@ AC_PROG_INSTALL
 dnl Checks for libraries.
 dnl Replace `main' with a function in -lncurses:
 AC_CHECK_LIB(ncurses, initscr)
+AM_PATH_GLIB(1.2.8,,AC_MSG_ERROR(You need at least version 1.2.8 of glib))
 
 dnl Checks for header files.
+AC_CHECK_HEADERS(curses.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 

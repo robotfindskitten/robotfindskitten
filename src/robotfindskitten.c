@@ -23,6 +23,9 @@ static char* ver = "v1600003.240b";
 #include <curses.h>
 #include <signal.h>
 
+/* cunit is a unit-testing suite */
+#include "cunit.h"
+
 /*The messages go in a separate file because they are collectively
   huge, and you might want to modify them. It would be nice to load
   the messages from a text file at run time.*/
@@ -143,48 +146,6 @@ int screen[X_MAX+1][Y_MAX+1];
  * Begin meaty routines that do the dirty work.
  *
  *****************************************************************************/
-int main(int argc, char *argv[])
-{
-  /*
-   *Do general start-of-program stuff.
-   */
-  
-  /*Get a number of non-kitten objects.*/
-  if (argc == 1)
-    {
-      num_bogus = 20;
-    } else {
-      num_bogus = atoi(argv[1]);
-      if (num_bogus < 0 || num_bogus > MESSAGES)
-	{
-	  printf("Run-time parameter must be between 0 and %d.\n",MESSAGES);
-	  exit(0);
-	}
-    }
-
-  /*Initialize the random number generator*/
-  srand(time(0));
-
-  /* Set up the screen to use the IBM character set. ncurses still won't
-   cooperate with characters before '!', so we take care of that in the
-   randchar() macro. */
-   printf("%c%c%c",27,'(','U');
-
-  initialize_arrays();
-
-  /*
-   *Now we initialize the various game objects.
-   */
-  initialize_robot();
-  initialize_kitten();
-  initialize_bogus();
-
-  initialize_ncurses();  
-  instructions();  
-
-  initialize_screen();
-  play_game();
-}
 
 /*
  *play_game waits in a loop getting input and sending it to process_input
@@ -440,6 +401,31 @@ void initialize_arrays()
     }
 }
 
+gchar *test_initialize_arrays(void)
+{
+	int i,j;
+
+	initialize_arrays();
+
+	for(i=0; i <= X_MAX; i++) {
+		for(j=0; j <= Y_MAX; j++) {
+			cunit_assert( screen[i][j] == EMPTY);
+		}
+	}
+
+	for(i=0; i < MESSAGES; i++) {
+		cunit_assert( used_messages[i] == 0 );
+		cunit_assert( bogus_messages[i] == 0 );
+		cunit_assert( bogus[i].x == -1 );
+		cunit_assert( bogus[i].y == -1 );
+		cunit_assert( bogus[i].color == 0 );
+		cunit_assert( bogus[i].bold == FALSE );
+		cunit_assert( bogus[i].character == ' ' );
+	}
+
+	return(NULL);
+}
+
 /*initialize_ncurses sets up ncurses for action. Much of this code 
  stolen from Raymond and Ben-Halim, "Writing Programs with NCURSES"*/
 void initialize_ncurses()
@@ -564,4 +550,70 @@ void initialize_screen()
 
   refresh();
 
+}
+
+/*
+ * This function registers various test functions to a
+ * cunit_test_session.  It will be called by cunit_TestRunner if
+ * argv[1] is --TestRunner
+ */
+cunit_test_session *session_builder(void)
+{
+	cunit_test_session *sp;
+
+	sp=cunit_new_test_session();
+
+	/* register tests and suites: */
+	cunit_register_test(sp, "rfk.initialize_arrays", test_initialize_arrays);
+
+	return(sp);
+}
+
+int main(int argc, char *argv[])
+{
+  /*
+   *Do general start-of-program stuff.
+   */
+
+	/*
+	 * Run test suites if --TestRunner is the first parameter
+	 */
+	cunit_TestRunner(argc, argv, session_builder);
+
+  
+  /*Get a number of non-kitten objects.*/
+  if (argc == 1)
+    {
+      num_bogus = 20;
+    } else {
+      num_bogus = atoi(argv[1]);
+      if (num_bogus < 0 || num_bogus > MESSAGES)
+	{
+	  printf("Run-time parameter must be between 0 and %d.\n",MESSAGES);
+	  exit(0);
+	}
+    }
+
+  /*Initialize the random number generator*/
+  srand(time(0));
+
+  /* Set up the screen to use the IBM character set. ncurses still won't
+   cooperate with characters before '!', so we take care of that in the
+   randchar() macro. */
+   printf("%c%c%c",27,'(','U');
+
+  initialize_arrays();
+
+  /*
+   *Now we initialize the various game objects.
+   */
+  initialize_robot();
+  initialize_kitten();
+  initialize_bogus();
+
+  initialize_ncurses();  
+  instructions();  
+
+  initialize_screen();
+  play_game();
 }
