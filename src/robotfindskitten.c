@@ -425,13 +425,13 @@ void initialize_arrays()
  stolen from Raymond and Ben-Halim, "Writing Programs with NCURSES"*/
 void initialize_ncurses()
 {
-  (void) signal(SIGINT, finish);
-  (void) initscr();      /* initialize the curses library */
+  signal(SIGINT, finish);
+  initscr();      /* initialize the curses library */
   keypad(stdscr, TRUE);  /* enable keyboard mapping */
-  (void) nonl();         /* tell curses not to do NL->CR/NL on output */
+  nonl();         /* tell curses not to do NL->CR/NL on output */
   intrflush(stdscr, FALSE);
-  (void) noecho();         /* don't echo characters */
-  (void) cbreak();         /* don't wait for enter before accepting input */
+  noecho();         /* don't echo characters */
+  cbreak();         /* don't wait for enter before accepting input */
   
   if (has_colors())
     {
