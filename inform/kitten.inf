@@ -1,0 +1,1764 @@
+! robotfindskitten
+! A Zen Simulation
+! Release 7 / Serial number 040523 / Inform v6.21
+!
+!     [-]       |\_/|        http://www.robotfindskitten.org
+!     (+)=C     |o o|__      Leonard Richardson (C) 1997, 2000
+!     | |       --*--__\     David Griffith (C) 2002  (Inform Edition)
+!     OOO       C_C(____)
+!
+!
+! This Zen simulation is based on the C version v1600003.248b
+! by Leonard Richardson (C) 1997, 2000.
+! Written originally for the Nerth Pork robotfindskitten contest.
+! Reimplemented in Inform by David Griffith (C) 2002.
+!
+! Lots more information on robotfindskitten is available at
+! http://www.robotfindskitten.org.
+!
+!
+! In this game, you are Robot (#).  Your job is to find Kitten.  This
+! task is complicated by the existance of various things which are not
+! kitten.  Robot must touch items to determine if they are Kitten or
+! not.  Move Robot with the cursor keys, the numeric keypad, or
+! using the vi/rogue movement keys. The game ends when robotfindskitten.
+! Alternatively, you may end the game by hitting the Esc or Q keys.
+!
+! Developed with Inform 6.21.4 as installed from NetBSD's pkgsrc tree
+! and Frotz 2.42.
+! 
+!
+! Compile it with:
+!	inform "-~S" kitten.inf  <-- Assuming Unix
+!		 ^
+!		 | 
+!		Gets rid of debugging code which doesn't really do
+!		this sort of program any good in the first place.
+!
+! Notes:
+!	1) More than half of the code is taken up by non kitten items
+!	(NKIs).  When I compiled the code with just five messages and
+!	no debugging code, the resulting binary was less than 10k bytes.
+!
+!	2) If it wasn't already abundantly obvious, this program won't
+!	compile to Glulx because of copious use of Z-machine assembly
+!	instructions.
+!	
+!	3) Compiling for V5 or higher is required due to "style" calls.
+!	Is there a reason why someone would want to compile this for V4
+!	or previous?
+
+!Switches xv5s;
+
+Switches v5d2;
+
+
+! Number of messages
+! This must be updated when adding new messages.
+!
+Constant MESSAGE_NUM	800;
+
+Constant Nonkitten_Default 20;
+
+! Maxmimum possible number of non-kitten items on the playfield at once.
+! For whatever reason, this cannot be set dynamically.
+!
+Constant Nonkitten_Max	589;
+
+
+Release 7;
+Serial "040523";	! Presumed release date
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Constant Story "robotfindskitten";
+
+Constant Headline "^A Zen Simulation^";
+
+
+Constant Anim_Meet	10;	! Number of spaces from the left where
+				!  Robot and Kitten meet during animation.
+
+Global Height = 0;		! These are set at runtime.
+Global Width = 0;
+
+Global Back_def = 2;		! Black.
+Global Fore_def = 9;		! White.
+
+Global TopBar = 5;		! Lines from the top.
+
+Global player_x = 0;		! Keeping track of where the player was
+Global player_y = 0;		!  1 move ago allows us to keep the
+Global player_x_last = 0;	!  player from walking through obstacles.
+Global player_y_last = 0;
+
+Global kitten_x = 0;
+Global kitten_y = 0;
+Global kitten_char = 0;
+Global kitten_color = 0;
+
+Global last_message = "";	! Always show the last-encountered message.
+
+Global nonkitten_count = Nonkitten_Default;
+
+Array nonkitten_x --> Nonkitten_Max;
+Array nonkitten_y --> Nonkitten_Max;
+Array nonkitten_color --> Nonkitten_Max;
+Array nonkitten_char --> Nonkitten_Max;
+Array nonkitten_msg --> Nonkitten_Max;
+
+Global already_msg_count = 0;
+Global already_count = 0;
+Array already_x --> Nonkitten_Max + 2;
+Array already_y --> Nonkitten_Max + 2;
+Array already_msg --> Nonkitten_Max;
+
+! If a key is held down while the found_kitten animation is playing,
+! (0-->1) & $03ff gets corrupted.  Seems like it might be a bug
+! somewhere in Unix Frotz.
+!
+Global Real_Release = 0;
+
+[ Main key;
+
+	@set_colour Fore_def Back_def;
+
+	if (MESSAGE_NUM < Nonkitten_Max) {
+		nonkitten_count = MESSAGE_NUM;
+	} else {
+		nonkitten_count = Nonkitten_Default;
+	}
+
+	Real_Release = (0-->1)&$03ff;
+
+	Width = $22-->0;
+	Height = $24-->0;
+
+	main_menu();	
+	while (true) {
+		key = getkey();
+		switch (key) {
+		'F':	already_count = 0;
+			init_nonkittens();
+			init_kitten();
+			init_robot();
+			while (findkitten())
+				;
+		'D':	set_nonkitten_count();
+		'I':	print_instructions();
+		'A':	print_about();
+		'T':	print_thoughts();
+!		'P':	print_all_nki();	! See print_all_nki() below.
+		}
+		if (key == 'Q' || key == $1b)	! $1b == ESC
+			break;
+		main_menu();
+	}
+	quit;
+];
+
+
+[ main_menu psycho;
+
+	! There's a 1:50 chance that the kitten in the title screen
+	! will have a "psycho" appearance.
+	!
+	psycho = random(50);
+	if (psycho == 1)
+		psycho = true;
+	else
+		psycho = false;
+
+	@erase_window $ffff;
+	@split_window 11;
+	@set_window 1;
+
+	Banner();
+	draw_horiz(TopBar);
+
+	draw_big_robot(3, 7);
+
+	if (psycho)
+		draw_big_kitten_psycho(14, 7);
+	else
+		draw_big_kitten(15, 7);
+
+	@set_cursor 7 30;
+	print "http://www.robotfindskitten.org";
+	@set_cursor 8 30;
+	print "Leonard Richardson (C) 1997, 2000";
+	@set_cursor 9 30;
+	print "David Griffith (C) 2002  (Inform Edition)";
+	@set_cursor 10 30;
+	print "    ", MESSAGE_NUM, " different nonkittens!";
+
+	@set_window 0;
+
+	print "  F) Find Kitten^",
+		"  D) Difficulty  (", nonkitten_count, ")^",
+		"  I) Instructions^",
+		"  T) Thoughts^",
+		"  A) About^",
+		"  Q) Quit^",
+		"^> ";
+];
+
+
+! Copied from module/verblibm.h of the Inform 6.21.3 standard library.
+!
+[ Banner i;
+	if (Story ~= 0) {
+		style bold; 
+		print (string) Story;
+		style roman;
+	}
+	if (Headline ~= 0) {
+		print (string) Headline;
+	}
+	print "Release ", Real_Release, " / Serial number ";
+	for (i=18:i<24:i++) print (char) 0->i;
+	print " / Inform v"; inversion; print " ";
+#ifdef STRICT_MODE;
+	print "S";
+#endif;
+#ifdef INFIX;
+	print "X";
+#ifnot;
+#ifdef DEBUG;
+	print "D";
+#endif;
+#endif;
+	new_line;
+];
+
+
+Constant INBUFSIZE 80;
+Array inbuf -> INBUFSIZE;
+
+[ set_nonkitten_count maxnum val;
+
+	while (true) {
+		@erase_window $ffff;
+		@split_window 5;
+		@set_window 1;
+		Banner();
+		draw_horiz(TopBar);
+		@set_window 0;
+
+		if (MESSAGE_NUM < Nonkitten_Max) {
+			maxnum = MESSAGE_NUM;
+		} else {
+			maxnum = Nonkitten_Max;
+		} 
+
+		print "^Please enter the number of nonkittens you
+			wish to search through.^(1 to ", maxnum, " only)^^> ";
+
+		while (true) {
+			val = get_number(1, maxnum, nonkitten_count);
+			if (val == -1) {
+				break;
+			} else {
+				nonkitten_count = val;
+				return;
+			}
+		}
+	}
+];
+
+
+[ get_number min max init inbufvar ix cx len val;
+
+	while (true) {
+		inbuf->0 = (INBUFSIZE-3);
+		inbuf->1 = 0;
+		inbufvar = inbuf;
+		ix = 0;
+		@aread inbufvar ix;
+		new_line;
+		len = inbuf->1;
+		cx = 0;
+		while (cx < len && inbuf->(2+cx) == ' ')
+			cx++;
+		if (cx < len && inbuf->(2+cx) == '.')
+			break;
+
+		! If user just hits return, use what we have already. 
+		if (len == 0)
+			return init;
+		if (cx == len || inbuf->(2+cx) < '0' || inbuf->(2+cx) > '9') {
+			print "Please enter a value from ", min, " to ", max,
+				", or Enter by itself to exit.^
+				[Press any key to continue.] ";
+			getkey();
+			return -1;
+		}
+		val = 0;
+		while (cx < len && inbuf->(2+cx) >= '0' && inbuf->(2+cx) <= '9') {
+			val = val * 10 + (inbuf->(2+cx) - '0');
+			cx++;
+		}
+		if (val < min || val > max) {
+			print "Please enter a value from ", min, " to ", max,
+				", or Enter by itself to exit.^
+				[Press any key to continue.] ";
+			getkey();
+			return -1;
+		} else break;
+	}
+	return val;
+];
+
+
+[ print_about;
+
+	@erase_window $ffff;
+	@split_window TopBar;
+	@set_window 1;
+	Banner();
+	draw_horiz(TopBar);
+	@set_window 0;
+
+print "^
+This Zen simulation is based on the C version v1600003.248b^
+by Leonard Richardson (C) 1997, 2000.^
+Written originally for the Nerth Pork robotfindskitten contest.^
+Reimplemented in Inform by David Griffith (C) 2002.^
+^
+This code is freely redistributable.  Do with it what you will, but
+don't go about claiming you wrote it.  I, David Griffith, retain
+copyright on this program except for the NKIs imported from the master
+(aka POSIX) port.^
+^
+Lots more information on robotfindskitten is available at
+http://www.robotfindskitten.org.^
+^
+To submit new NKI's, please go to the above URL.^
+^
+^
+Release History:^
+^
+Release 1 / Serial number 0211xx to 021214 or so^
+Initial private release.  Limited distribution for beta testing and
+debugging purposes.^
+^
+Release 2 / Serial Number 021216^
+First public release.^
+^
+Release 3 / Serial Number 021221^
+Bugfix release.^
+- Movement keys 'J' and 'K' were swapped by mistake.  Fixed.^
+- Special PalmOS movement key support added.^
+- More NKIs added (401 total).^
+^
+Release 4 / Serial Number 030131^
+Light overhaul release.^
+- Now an official port of robotfindskitten.^
+- Typos in NKIs fixed.^
+- Fixed diagonal collision-detection strangeness.^
+- Added color support.^
+- Added an easter egg.  Can you find it?^
+- Removed PalmOS movement key support (superfluous and ugly).^
+- Removed playfield resizing code (superfluous and ugly).^
+- It's ~robotfindskitten~, not ~Robot Finds Kitten~.^
+- Merged in new NKIs from the new POSIX release of robotfindskitten.^
+- More NKIs added (561 total).^
+^
+Release 5 / Serial Number 030524^
+Even more NKIs release.^
+- Idiotic typos fixed.^
+- More NKIs added (602 total).^
+^
+Release 6 / Serial Number 031116^
+Challenge release.^
+- More NKIs added (764 total).^
+- Increased maximum difficulty to 589.^
+- Lots more comments in the source code.^
+- Assorted cleanups in the source code.^
+^
+Release 7 / Serial Number 040523^
+Grammatically correct release.^
+- Grammar corrections from the POSIX port added.^
+- More NKIs added (800 total).^
+^
+^
+Known Bugs:^
+^
+1) I still don't know why already_seen_xy() occasionally causes Robot to
+get placed on top of another object when a game is started.  Fortunately
+this seems to happen only very rarely and typically only if the
+difficulty is set to more than 200.  This bug also seems to very
+occasionally put Kitten underneath an NKI.^
+^
+2) Under earlier versions of Windows Frotz, Robot used to appear as a
+solid block. This was because of a bug in Windows Frotz which
+incorrectly makes the cursor opaque. The cursor is now moved off to
+the upper-right corner so that the game looks okay on terminals that use
+something other than reverse for the cursor. I still can't figure out
+how to make Inform hide the cursor completely. At least on xterm and
+NetBSD's console, @@64set_cursor -1 doesn't work.^
+^
+3) Under Windows Frotz, an annoying [MORE] prompt might appear at the
+main menu. This is another bug in Windows Frotz which causes the
+interpreter to follow Windows' suggestion that something less than 24 or
+25 lines is okay.^
+^
+[Press any key to continue.] "; 
+	getkey();
+];
+
+
+[ print_instructions;
+	@erase_window $ffff;
+	@split_window TopBar;
+	@set_window 1;
+	Banner();
+	draw_horiz(TopBar);
+	@set_window 0;
+print "^
+In this game, you are Robot ( ";
+style reverse; print "#"; style roman;
+print " ). Your job is to find Kitten. This task is complicated by the
+existance of various things which are not Kitten. Robot must touch
+items to determine if they are Kitten or not.  Move Robot with the
+cursor keys, the numeric keypad (make sure numlock is on), or using the
+vi/rogue/nethack movement keys. The game ends when robotfindskitten.
+Alternatively, you may end the game by hitting the Esc or Q keys.^
+^
+[Press any key to continue.] "; 
+	getkey();
+];
+
+
+[ print_thoughts;
+
+	@erase_window $ffff;
+	@split_window TopBar;
+	@set_window 1;
+	Banner();
+	draw_horiz(TopBar);
+	@set_window 0;
+print "^
+A Final Thought.^
+^
+Day and night I feverishly worked upon the machine, creating both a soul
+which could desire its goal, and a body with which it could realize 
+it. Many who saw my creation called it an abomination, and denied me
+grant money.  But they could not dissuade me from my impossible 
+task.  It was a spectre that tormented me always, a ghost I had to give
+a form and a life, lest it consume me from the inside.  And when at last
+my task was done, when the grey box on wheels was complete and when it,
+as well as I, knew what had to be done, I felt deep sympathy for the
+machine.  For I had not destroyed the phantom, but merely exorcized it
+into another body.  The robot knew not why this task had to be
+performed, for I could not imbue it with knowledge I did not myself
+posess.  And at the same time, I felt a sweeping sense of relief sweep
+over me, that somehow, the dream that had driven me for my entire life
+had come one step closer to fruition.^
+^
+~Gort, Klaatu Verada Nikto~^
+^
+As I vocally activated the robot, I realized that it was following my
+instructions, but not out of any desire to obey me.  Had I remained
+silent, it would have performed exactly the same operations.  We were
+two beings controlled by the same force now.  And yet, seeking vainly to
+hold some illusion of control over the machine I thought I had created,
+I gave my final command.^
+^
+~GO!~  I told the box as it began to roll out of my workshop into the
+frozen desert beyond. ~FIND KITTEN!~^
+^
+-- The Book of Found Kittens, pages 43-4, author unknown.^
+^
+[Press any key to continue.] "; 
+	getkey();
+];
+
+
+[ draw_big_robot x y; 
+
+	if (x == 0)
+		x = 1;
+	if (y == 0)
+		y = 1;
+	@set_cursor y x;
+	@set_colour 6 Back_def;
+	print "[";
+	@set_colour 4 Back_def;
+	print "-";
+	@set_colour 6 Back_def;
+	print "]";
+
+	y = y+1;
+	@set_cursor y x;
+	@set_colour 6 Back_def;
+	print "(";
+	@set_colour 3 Back_def;
+	print "+";
+	@set_colour 6 Back_def;
+	print ")";
+	@set_colour 8 Back_def;
+	print "=C";
+
+	y = y+1;
+	@set_cursor y x;
+	@set_colour 6 Back_def;
+	print "| |";
+
+	y = y+1;
+	@set_cursor y x;
+	@set_colour 8 Back_def;
+	print "OOO";
+
+	@set_colour Fore_def Back_def;
+];
+
+
+[ draw_big_kitten x y;
+
+	if (x == 0)
+		x = 1;
+	if (y == 0)
+		y = 1;
+	@set_cursor y x;
+
+	@set_colour 5 Back_def;
+	print "|", (char) 92, "_/|";
+	y++;
+	@set_cursor y x;
+	print "|";
+	@set_colour 4 Back_def;
+	print "o o";
+	@set_colour 5 Back_def;
+	print "|__";
+	y++;
+	@set_cursor y x;
+	@set_colour 9 Back_def;
+	print "--";
+	@set_colour 3 Back_def;
+	print "*";
+	@set_colour 9 Back_def;
+	print "--";
+	@set_colour 5 Back_def;
+	print "__", (char) 92;
+	y++;
+	@set_cursor y x;
+	print "C_C(____)";	
+
+	@set_colour Fore_def Back_def;
+];
+
+
+[ draw_big_kitten_psycho x y;
+
+	if (x == 0)
+		x = 1;
+	if (y == 0)
+		y = 1;
+	@set_cursor y x;
+
+	@set_colour 5 Back_def;
+	print " |", (char) 92, "_/|";
+	y++;
+	@set_cursor y x;
+	@set_colour 4 Back_def;
+	print "(|) (|)";
+	@set_colour 5 Back_def;
+	print "_";
+	y++;
+	@set_cursor y x;
+	@set_colour 9 Back_def;
+	print " --";
+	@set_colour 3 Back_def;
+	print "O";
+	@set_colour 9 Back_def;
+	print "--";
+	@set_colour 5 Back_def;
+	print "__", (char) 92;
+	y++;
+	@set_cursor y x;
+	print " 3_3(____)";	
+
+	@set_colour Fore_def Back_def;
+];
+
+
+! Something gets messed up if I make this local to findkitten()
+! When going right or left, then up or down to hit the Kitten, the
+! animation gets reversed.
+! 
+Global last_right = false;
+
+[ findkitten key i;
+
+	@erase_window $ffff;
+	@split_window TopBar;
+	@set_window 1;
+	@set_cursor 1 1;
+
+	Banner();
+	print (string) last_message;
+	draw_horiz(TopBar);
+
+	draw_object(kitten_x, kitten_y, kitten_char, kitten_color);
+	draw_nonkittens();
+
+	style reverse;
+	draw_object(player_x, player_y, '#');
+	style roman;
+
+	@set_cursor 1 Width;
+
+	! Get movement key
+	!
+	key = getkey();
+
+	! Move Robot
+	!
+	player_x_last = player_x;
+	player_y_last = player_y;
+	switch (key) {
+	'Q', $1b:	rfalse;			! exit game ($1b == Esc)
+	'8', 'K', 129:	player_y--;		! up
+	'2', 'J', 130:	player_y++;		! down
+	'4', 'H', 131:	player_x--;		! left
+			last_right = false;
+	'6', 'L', 132:	player_x++;		! right
+			last_right = true;
+
+	'7', 'Y':	player_y--; player_x--;	! up-left
+			last_right = false;
+	'9', 'U':	player_y--; player_x++;	! up-right
+			last_right = true;
+	'1', 'B':	player_y++; player_x--;	! down-left
+			last_right = false;
+	'3', 'N':	player_y++; player_x++;	! down-right
+			last_right = true;
+	}
+
+	! Keep Robot from falling off edges of playfield.
+	!
+	if (player_y == TopBar || player_y > Height) {
+		player_y = player_y_last;
+	}
+	if (player_x < 1 || player_x > Width) {
+		player_x = player_x_last;
+	}
+
+	! Detect and handle collisions.
+	!
+	if (player_x == kitten_x && player_y == kitten_y) {
+		animate_kitten(key, last_right);
+		getkey();
+		rfalse;
+	}
+	for (i = 0: i < nonkitten_count: i++) {
+		if (player_x == nonkitten_x-->i
+		&& player_y == nonkitten_y-->i) {
+			@set_cursor 1 1;
+			last_message = lookup_msg(nonkitten_msg-->i);
+			player_x = player_x_last;
+			player_y = player_y_last;
+		}
+	}
+	rtrue;
+];
+
+
+[ animate_kitten key my_last_right i j junk robot_x anim_finished;
+
+	switch (key) {
+	'8', 'J', 129:	player_y++;
+	'2', 'K', 130:	player_y--;
+	'4', 'H', 131:	player_x++;
+	'6', 'L', 132:	player_x--;
+	'7', 'Y':	player_y++; player_x++; 
+	'9', 'U':	player_y++; player_x--;
+	'1', 'B':	player_y--; player_x++;
+	'3', 'N':	player_y--; player_x--;
+	}
+
+	anim_finished = false;
+	for (i = 4: i >= 0: i--) {
+		@erase_window $ffff;
+		@split_window TopBar;
+		@set_window 1;
+		@set_cursor 1 1;
+
+		Banner();
+		draw_horiz(TopBar);
+
+		if (i > 0) {
+			if (my_last_right) {
+				robot_x = Anim_Meet - i;
+				style reverse;
+				draw_object(robot_x, TopBar - 1, '#');
+				style roman;
+				draw_object(Anim_Meet - 1 + i, TopBar - 1, 
+					kitten_char, kitten_color);
+			} else {
+				robot_x = Anim_Meet - 1 + i;
+				style reverse;
+				draw_object(robot_x, TopBar - 1, '#');
+				style roman;
+				draw_object(Anim_Meet - i, TopBar - 1,
+					kitten_char, kitten_color);
+	 		}
+		} else {
+			j = TopBar - 1;
+			@set_cursor j 1;
+			print "You found Kitten!  Way to go, Robot!";
+			anim_finished = true;
+		}
+
+		draw_object(kitten_x, kitten_y, kitten_char, kitten_color);
+
+		style reverse;
+		draw_object(player_x, player_y, '#');
+		style roman;
+		draw_nonkittens();
+
+		if (anim_finished == false) {
+			j = TopBar - 1;
+			@set_cursor 1 Width;
+			@aread junk 0 10 pause -> junk;
+		} else {
+			style reverse;
+			draw_object(player_x, player_y, '#');
+			style roman;
+			@set_cursor 1 Width;
+		}
+	}
+];
+
+
+[ already_seen_xy x y i;
+	for (i = 0: i < already_count: i++) {
+		if (already_x-->already_count == x &&
+		already_y-->already_count ==y) {
+			rtrue;
+		}
+	}
+	already_x-->already_count = x;
+	already_y-->already_count = y;
+	already_count++;
+	rfalse;
+];
+
+
+[ pause;
+	rtrue;
+];
+
+
+[ init_kitten;
+	kitten_x = get_random_x();
+	kitten_y = get_random_y();
+	kitten_color = get_random_color();
+	while (already_seen_xy(kitten_x, kitten_y) == true) {
+		kitten_x = get_random_x();
+		kitten_y = get_random_y();
+	}
+	kitten_char = get_random_char();
+];
+
+
+[ init_robot;
+	player_x = get_random_x();
+	player_y = get_random_y();
+	while (already_seen_xy(player_x, player_y) == true) {
+		player_x = get_random_x();
+		player_y = get_random_y();
+	}
+];	
+
+
+[ init_nonkittens i;
+	already_msg_count = 0;
+	last_message = "";
+	for (i = 0: i < nonkitten_count: i++) {
+		nonkitten_x-->i = get_random_x();
+		nonkitten_y-->i = get_random_y();
+		nonkitten_color-->i = get_random_color();
+		while (already_seen_xy(nonkitten_x-->i, 
+			nonkitten_y-->i) == true) {
+			nonkitten_x-->i = get_random_x();
+			nonkitten_y-->i = get_random_y();
+		}
+		nonkitten_char-->i = get_random_char();
+		nonkitten_msg-->i = get_random_msg();
+	}
+];
+
+
+[ draw_nonkittens i;
+	for (i = 0: i < nonkitten_count: i++) {
+		draw_object(nonkitten_x-->i,
+				nonkitten_y-->i,
+				nonkitten_char-->i,
+				nonkitten_color-->i);
+	}
+];
+
+
+[ draw_object x y character fore back;
+	@set_cursor y x;
+
+	if (fore == "")
+		fore = Back_def;
+	if (back == "")
+		back = Back_def;	
+
+	@set_colour fore Back_def;
+	if (character)
+		print (char) character;
+
+	@set_colour Fore_def Back_def;
+];
+
+
+[ draw_horiz row i;
+	@set_cursor row 1;
+	for (i = 0 : i < Width : i++)
+		print (char) '-';
+];
+
+
+[ getkey x;
+	@read_char 1 -> x;
+	if (x >= 'a' && x <= 'z')
+		x = x - ('a' - 'A');
+	return x;
+];
+
+
+[ get_random_char num;
+	num = random(93);
+	num = num + 33;
+	while (num == 35) {  		! avoid choosing '#'
+		num = random(93);
+		num = num + 33;
+	}
+	return num;
+];
+
+
+[ get_random_msg num;
+	num = random(MESSAGE_NUM);
+	while (is_duplicate_msg(num) == true) {
+		num = random(MESSAGE_NUM);
+	}
+	return num;
+];
+
+
+[ get_random_color num;
+	num = random(7) + 2;
+	! 0 and 1 are default color and current color
+	! and we want to avoid picking the default color explicitly
+	while (num == $2c-->0) {
+		num = random(7) + 2;
+	}
+	return num;
+];
+
+
+[ is_duplicate_msg num i;
+	for (i = 0: i < already_msg_count: i++) {
+		if (already_msg-->i==num) {
+			rtrue;
+		}
+	}
+	already_msg-->already_msg_count = num;
+	already_msg_count++;
+	rfalse;
+];
+
+
+[ get_random_x;
+	! Maybe this will need to do something more in the future.
+	return random(Width);
+];
+
+
+[ get_random_y num;
+	! Make sure we don't draw in the status bar.
+	while (true) {
+		num = random(Height);
+		if (num > TopBar)
+			return num;
+	}
+];
+
+
+! This function is mainly of use to members of the robotfindskitten
+! development team.
+!
+! When this function is uncommented and enabled in
+! the menu, this will cause a script file to be written which contains
+! all NKIs properly formatted.
+
+![ print_all_nki num mystring;
+!	@output_stream 2; @output_stream -1;
+!	for (num = 1: num <= MESSAGE_NUM: num++) {
+!		mystring = lookup_msg(num);
+!		print (string)lookup_msg(num), "^";
+!	}
+!	@output_stream -2; @output_stream 1;
+!];
+
+
+! To use '~' or '@' in NKIs, keep the following in mind:
+! @@126 == '~'
+! @@64 == '@'
+
+[ lookup_msg num;
+	switch(num) {
+1:	return "~I pity the fool who mistakes me for kitten!~, sez Mr. T.";
+2: 	return "That's just an old tin can.";
+3:	return "It's an altar to the horse god.";
+4:	return "A box of dancing mechanical pencils.  They dance!  They sing!";
+5:	return "It's an old Duke Ellington record.";
+6:	return "A box of fumigation pellets.";
+7:	return "A digital clock. It's stuck at 2:17 PM.";
+8:	return "That's just a charred human corpse.";
+9:	return "I don't know what that is, but it's not kitten.";
+10:	return "An empty shopping bag.  Paper or plastic?";
+11:	return "Could it be... a big ugly bowling trophy?";
+12:	return "A coat hanger hovers in thin air.  Odd.";
+13:	return "Not kitten, just a packet of Kool-Aid(tm).";
+14:	return "A freshly-baked pumpkin pie.";
+15:	return "A lone, forgotten comma, sits here, sobbing.";
+16:	return "ONE HUNDRED THOUSAND CARPET FIBERS!!!!!";
+17:	return "It's Richard Nixon's nose!";
+18:	return "It's Lucy Ricardo. ~Aaaah, Ricky!~, she says.";
+19:	return "You stumble upon Bill Gates' stand-up act.";
+20:	return "Just an autographed copy of the Kama Sutra.";
+21:	return "It's the Will Rogers Highway.  Who was Will Rogers, anyway?";
+22:	return "It's another robot, more advanced in design than you but strangely immobile.";
+23:	return "Leonard Richardson is here, asking people to lick him.";
+24:	return "It's a stupid mask, fashioned after a beagle.";
+25:	return "Your State Farm Insurance(tm) representative!";
+26:	return "It's the local draft board.";
+27:	return "Seven 1/4~ screws and a piece of plastic.";
+28:	return "An 80286 machine.";
+29:	return "One of those stupid ~Homes of the Stars~ maps.";
+30:	return "A signpost saying ~TO KITTEN~.  It points in no particular direction.";
+31:	return "A hammock stretched between a tree and a volleyball pole.";
+32:	return "A Texas Instruments of Destruction calculator.";
+33:	return "It's a dark, amphorous blob of matter.";
+34:	return "Just a pincushion.";
+35:	return "It's a mighty zombie talking about some love and prosperity.";
+36:	return "~Dear robot, you may have already won our 10 MILLION DOLLAR prize...~";
+37:	return "It's just an object.";
+38:	return "A mere collection of pixels.";
+39:	return "A badly dented high-hat cymbal lies on its side here.";
+40:	return "A marijuana brownie.";
+41:	return "A plush Chewbacca.";
+42:	return "Daily hunger conditioner from Australasia";
+43:	return "Just some stuff.";
+44:	return "Why are you touching this when you should be finding kitten?";
+45:	return "A glorious fan of peacock feathers.";
+46:	return "It's some compromising photos of Babar the Elephant.";
+47:	return "A copy of the Weekly World News. Watch out for the chambered nautilus!";
+48:	return "It's the proverbial wet blanket.";
+49:	return "A ~Get Out of Jail Free~ card.";
+50:	return "An incredibly expensive ~Mad About You~ collector plate.";
+51:	return "Paul Moyer's necktie.";
+52:	return "A haircut and a real job.  Now you know where to get one!";
+53:	return "An automated robot-hater.  It frowns disapprovingly at you.";
+54:	return "An automated robot-liker.  It smiles at you.";
+55:	return "It's a black hole.  Don't fall in!";
+56:	return "Just a big brick wall.";
+57:	return "You found kitten!  No, just kidding.";
+58:	return "Heart of Darkness brand pistachio nuts.";
+59:	return "A smoking branding iron shaped like a 24-pin connector.";
+60:	return "It's a Java applet.";
+61:	return "An abandoned used-car lot.";
+62:	return "A shameless plug for Crummy: http://www.crummy.com/";
+63:	return "A shameless plug for the UCLA Linux Users Group: http://linux.ucla.edu/";
+64:	return "A can of Spam Lite.";
+65:	return "This is another fine mess you've gotten us into, Stanley.";
+66:	return "It's scenery for ~Waiting for Godot~.";
+67:	return "This grain elevator towers high above you.";
+68:	return "A Mentos wrapper.";
+69:	return "It's the constellation Pisces.";
+70:	return "It's a fly on the wall.  Hi, fly!";
+71:	return "This kind of looks like kitten, but it's not.";
+72:	return "It's a banana!  Oh, joy!";
+73:	return "A helicopter has crashed here.";
+74:	return "Carlos Tarango stands here, doing his best impression of Pat Smear.";
+75:	return "A patch of mushrooms grows here.";
+76:	return "A patch of grape jelly grows here.";
+77:	return "A spindle, and a grindle, and a bucka-wacka-woom!";
+78:	return "A geyser sprays water high into the air.";
+79:	return "A toenail?  What good is a toenail?";
+80:	return "You've found the fish!  Not that it does you much good in this game.";
+81:	return "A Buttertonsils bar.";
+82:	return "One of the few remaining discos.";
+83:	return "Ah, the uniform of a Revolutionary-era minuteman.";
+84:	return "A punch bowl, filled with punch and lemon slices.";
+85:	return "It's nothing but a G-thang, baby.";
+86:	return "IT'S ALIVE! AH HA HA HA HA!";
+87:	return "This was no boating accident!";
+88:	return "Wait!  This isn't the poker chip!  You've been tricked!  DAMN YOU, MENDEZ!";
+89:	return "A livery stable!  Get your livery!";
+90:	return "It's a perpetual immobility machine.";
+91:	return "~On this spot in 1962, Henry Winkler was sick.~";
+92:	return "There's nothing here; it's just an optical illusion.";
+93:	return "The World's Biggest Matzoh Ball!";
+94:	return "A tribe of cannibals lives here.  They eat Malt-O-Meal for breakfast, you know.";
+95:	return "This appears to be a rather large stack of trashy romance novels.";
+96:	return "Look out!  Exclamation points!";
+97:	return "A herd of wild coffee mugs slumber here.";
+98:	return "It's a limbo bar!  How low can you go?";
+99:	return "It's the horizon.  Now THAT'S weird.";
+100:	return "A vase full of artificial flowers is stuck to the floor here.";
+101:	return "A large snake bars your way.";
+102:	return "A pair of saloon-style doors swing slowly back and forth here.";
+103:	return "It's an ordinary bust of Beethoven... but why is it painted green?";
+104:	return "It's TV's lovable wisecracking Crow! ~Bite me!~, he says.";
+105:	return "Hey, look, it's war.  What is it good for?  Absolutely nothing.  Say it again.";
+106:	return "It's the amazing self-referential thing that's not kitten.";
+107:	return "A flamboyant feather boa.  Now you can dress up like Carol Channing!";
+108:	return "~Sure hope we get some rain soon,~ says Farmer Joe.";
+109:	return "~How in heck can I wash my neck if it ain't gonna rain no more?~ asks Farmer Al.";
+110:	return "~Topsoil's all gone, ma,~ weeps Lil' Greg.";
+111:	return "This is a large brown bear.  Oddly enough, it's currently peeing in the woods.";
+112:	return "A team of arctic explorers is camped here.";
+113:	return "This object here appears to be Louis Farrakhan's bow tie.";
+114:	return "This is the world-famous Chain of Jockstraps.";
+115:	return "A trash compactor, compacting away.";
+116:	return "This toaster strudel is riddled with bullet holes!";
+117:	return "It's a hologram of a crashed helicopter.";
+118:	return "This is a television.  On screen you see a robot strangely similar to yourself.";
+119:	return "This balogna has a first name, it's R-A-N-C-I-D.";
+120:	return "A salmon hatchery?  Look again.  It's merely a single salmon.";
+121:	return "It's a rim shot.  Ba-da-boom!";
+122:	return "It's creepy and it's kooky, mysterious and spooky.  It's also somewhat ooky.";
+123:	return "This is an anagram.";
+124:	return "This object is like an analogy.";
+125:	return "It's a symbol.  You see in it a model for all symbols everywhere.";
+126:	return "The object pushes back at you.";
+127:	return "A traffic signal.  It appears to have been recently vandalized.";
+128:	return "~There is no kitten!~ cackles the old crone.  You are shocked by her blasphemy.";
+129:	return "This is a Lagrange point.  Don't come too close now.";
+130:	return "The dirty old tramp bemoans the loss of his harmonica.";
+131:	return "Look, it's Fanny the Irishman!";
+132:	return "What in blazes is this?";
+133:	return "It's the instruction manual for a previous version of this game.";
+134:	return "A brain cell.  Oddly enough, it seems to be functioning.";
+135:	return "Tea and/or crumpets.";
+136:	return "This jukebox has nothing but Cliff Richards albums in it.";
+137:	return "It's a Quaker Oatmeal tube, converted into a drum.";
+138:	return "This is a remote control.  Being a robot, you keep a wide berth.";
+139:	return "It's a roll of industrial-strength copper wire.";
+140:	return "Oh boy!  Grub!  Er, grubs.";
+141:	return "A puddle of mud, where the mudskippers play.";
+142:	return "Plenty of nothing.";
+143:	return "Look at that, it's the Crudmobile.";
+144:	return "Just Walter Mattheau and Jack Lemmon.";
+145:	return "Two crepes, two crepes in a box.";
+146:	return "An autographed copy of ~Primary Colors~, by Anonymous.";
+147:	return "Another rabbit?  That's three today!";
+148:	return "It's a segmentation fault.  Core dumped, by the way.";
+149:	return "A historical marker showing the actual location of /dev/null.";
+150:	return "Thar's Mobius Dick, the convoluted whale.  Arrr!";
+151:	return "It's a charcoal briquette, smoking away.";
+151:	return "A pizza, melting in the sun.";
+152:	return "It's a ~HOME ALONE 2: Lost in New York~ novelty cup.";
+153:	return "A stack of 7 inch floppies wobbles precariously.";
+153:	return "It's nothing but a corrupted floppy.  Coaster anyone?";
+154:	return "A section of glowing phosphor cells sings a song of radiation to you.";
+155:	return "This TRS-80 III is eerily silent.";
+156:	return "A toilet bowl occupies this space.";
+157:	return "This peg-leg is stuck in a knothole!";
+158:	return "It's a solitary vacuum tube.";
+159:	return "This corroded robot is clutching a mitten.";
+160:	return "~Hi, I'm Anson Williams, TV's 'Potsy'.~";
+161:	return "This subwoofer was blown out in 1974.";
+162:	return "Three half-pennies and a wooden nickel.";
+163:	return "It's the missing chapter to ~A Clockwork Orange~.";
+164:	return "It's a burrito stand flyer.  ~Taqueria El Ranchito~.";
+165:	return "This smiling family is happy because they eat LARD.";
+166:	return "Roger Avery, persona un famoso de los Estados Unidos.";
+167:	return "Ne'er but a potted plant.";
+168:	return "A parrot, kipping on its back.";
+169:	return "A forgotten telephone switchboard.";
+170:	return "A forgotten telephone switchboard operator.";
+171:	return "It's an automated robot-disdainer.  It pretends you're not there.";
+172:	return "It's a portable hole.  A sign reads: ~Closed for the winter~.";
+173:	return "Just a moldy loaf of bread.";
+174:	return "A little glass tub of Carmex. ($.89)  Too bad you have no lips.";
+175:	return "A Swiss-Army knife.  All of its appendages are out.  (toothpick lost)";
+176:	return "It's a zen simulation, trapped within an ASCII character.";
+177:	return "It's a copy of ~The Rubaiyat of Spike Schudy~.";
+178:	return "It's ~War and Peace~ (unabridged, very small print).";
+179:	return "A willing, ripe tomato bemoans your inability to digest fruit.";
+180:	return "A robot comedian.  You feel amused.";
+181:	return "It's KITT, the talking car.";
+182:	return "Here's Pete Peterson.  His batteries seem to have long gone dead.";
+183:	return "~Blup, blup, blup~, says the mud pot.";
+184:	return "More grist for the mill.";
+185:	return "Grind 'em up, spit 'em out, they're twigs.";
+186:	return "The boom box cranks out an old Ethel Merman tune.";
+187:	return "It's ~Finding kitten~, published by O'Reilly and Associates.";
+188:	return "Pumpkin pie spice.";
+189:	return "It's the Bass-Matic '76!  Mmm, that's good bass!";
+190:	return "~Lend us a fiver 'til Thursday~, pleas Andy Capp.";
+191:	return "It's a tape of '70s rock.  All original hits!  All original artists!";
+192:	return "You've found the fabled America Online disk graveyard!";
+193:	return "Empty jewelboxes litter the landscape.";
+194:	return "It's the astounding meta-object.";
+195:	return "Ed McMahon stands here, lost in thought.  Seeing you, he bellows, ~YES SIR!~";
+196:	return "...thingy???";
+197:	return "It's 1000 secrets the government doesn't want you to know!";
+198:	return "The letters O and R.";
+199:	return "A magical... magic thing.";
+200:	return "It's a moment of silence.";
+201:	return "It's Sirhan-Sirhan, looking guilty.";
+202:	return "It's ~Chicken Soup for the Kitten-seeking Soulless Robot.~";
+203:	return "It is a set of wind-up chatter teeth.";
+204:	return "It is a cloud shaped like an ox.";
+205:	return "You see a snowflake here, melting slowly.";
+206:	return "It's a big block of ice.  Something seems to be frozen inside it.";
+207:	return "Vladimir Lenin's casket rests here.";
+208:	return "It's a copy of ~Zen and The Art of Robot Maintenance~.";
+209:	return "This invisible box contains a pantomime horse.";
+210:	return "A mason jar lies here open.  Its label reads: ~do not open!~.";
+211:	return "A train of thought chugs through here.";
+212:	return "This jar of pickles expired in 1957.";
+213:	return "Someone's identity disk lies here.";
+214:	return "~Yes!~ says the bit.";
+215:	return "~No!~ says the bit.";
+216:	return "A dodecahedron bars your way.";
+217:	return "Mr. Hooper is here, surfing.";
+218:	return "It's a big smoking fish.";
+219:	return "You have new mail in /var/spool/robot";
+220:	return "Just a monitor with the blue element burnt out.";
+221:	return "A pile of coaxial plumbing lies here.";
+222:	return "It's a rotten old shoe.";
+223:	return "It's a hundred-dollar bill.";
+224:	return "It's a Dvorak keyboard.";
+225:	return "It's a cardboard box full of 8-tracks.";
+226:	return "Just a broken hard drive containg the archives of Nerth Pork.";
+227:	return "A broken metronome sits here, its needle off to one side.";
+228:	return "A sign reads: ~Go home!~";
+229:	return "A sign reads: ~No robots allowed!~";
+230:	return "It's the handheld robotfindskitten game, by Tiger.";
+231:	return "This particular monstrosity appears to be ENIAC.";
+232:	return "This is a tasty-looking banana creme pie.";
+233:	return "A wireframe model of a hot dog rotates in space here.";
+234:	return "Just the empty husk of a locust.";
+235:	return "You disturb a murder of crows.";
+236:	return "It's a copy of the robotfindskitten EULA.";
+237:	return "It's Death.";
+238:	return "It's an autographed copy of ~Secondary Colors~, by Bob Ross.";
+239:	return "It is a marzipan dreadnought that appears to have melted and stuck.";
+240:	return "It's a DVD of ~Crouching Monkey, Hidden Kitten~, region encoded for the moon.";
+241:	return "It's Kieran Hervold.  Damn dyslexia!";
+242:	return "A non-descript box of crackers.";
+243:	return "Carbonated Water, High Fructose Corn Syrup, Color, Phosphoric Acid, Flavors, Caffeine.";
+244:	return "~Move along! Nothing to see here!~";
+245:	return "It's the embalmed corpse of Vladimir Lenin.";
+246:	return "A coupon for one free steak-fish at your local family diner.";
+247:	return "A set of keys to a 2001 Rolls Royce.  Worthless.";
+
+! The following Non Kitten Items were added by David Griffith
+!
+248:	return "It's the Golden Banana of Discord!";
+249:	return "The Inform Designer's Manual (4th edition)";
+250:	return "A packet of pipe cleaners.";
+251:	return "It's Andrew Plotkin plotting something.";
+252:	return "A half-eaten cheese sandwich.";
+253:	return "Clang, clang, clang goes the tranny!";
+254:	return "A family of integrals is here integrating.";
+255:	return "A tuft of kitten fur, but no kitten.";
+256:	return "A bottle of oil!  Refreshing!";
+257:	return "A shameless plug for Frotz: http://www.cs.csubak.edu/@@126dgriffi/proj/frotz/";
+258:	return "Clifford Stoll is here selling Klein bottles.";
+259:	return "You found the marble in the oatmeal!";
+260:	return "An empty Altoids tin.";
+261:	return "An empty Penguin Mints tin.";
+262:	return "So, THAT's what an invisible barrier looks like!";
+263:	return "A cluster of cattails are growing here.";
+264:	return "A discarded bagpipe chanter reed.";
+265:	return "Big Bird is here looking for Mr. Looper.";
+266:	return "It's a Linux install CD.";
+267:	return "You found Puppy!  Too bad this isn't ~robotfindspuppy~.";
+268:	return "Several meters of cat5 cable.";
+269:	return "A scrap of parchment bears the single word, ~meow~.";
+270:	return "A puddle of chocolate sauce.";
+271:	return "Your pal Floyd is here and wants to play Hucka-Bucka-Beanstalk.";
+272:	return "Someone is talking to Ralph on the big white phone here.";
+273:	return "'Twas brillig in the slivey-toves...";
+274:	return "Darth Vader is here looking for his Teddywookie.";
+275:	return "A baboon with a bassoon hoots angrily at you.";
+276:	return "Catsup and Mustard all over the place!  It's the Human Hamburger!";
+277:	return "Gibble, Gobble, we ACCEPT YOU ...";
+278:	return "A rancid corn dog.";
+279:	return "It's a tribute to fishnet stockings.";
+280:	return "A jar of Vegemite is playing hopscotch here.";
+281:	return "Nipples, dimples, knuckles, NICKLES, wrinkles, pimples!!";
+282:	return "A bottle of hair tonic.";
+283:	return "A packet of catnip.";
+284:	return "Here's Cal Worthington and his dog ~Spot~!";
+285:	return "It's Uncle Doctor Hurkamur!";
+286:	return "YEEEEEEEEEEEHAAAAAAAA!!!!!";
+287:	return "Thunder, Thunder, Thunder, Thunder Cats!!!";
+288:	return "An overturned bottle of ink and lots of kitten pawprints.";
+289:	return "A flyer advertising a sale at Spatula City.";
+290:	return "A 540Hz tuning fork.";
+291:	return "A 3-inch floppy disk.";
+292:	return "Seargent Duffy is here.";
+293:	return "A ball of pocket fluff.";
+294:	return "A 3-sided Monty Python record.";
+295:	return "A Sanrio catalog.";
+296:	return "A scratching-post.";
+297:	return "Butane!!!";
+298:	return "An ice cube.";
+299:	return "Just a cage of white mice.";
+300:	return "You've found Harvey, the Wonder Hamster!";
+301:	return "A jar of dehydrated water.";
+302:	return "Just some swamp gas.";
+303:	return "A bowl of cherries.";
+304:	return "Spoon!!!";
+305:	return "A sign reads ~Don't step on the Mome Raths~.";
+306:	return "Dirty socks.";
+307:	return "~Dogbert's tech support, how may I abuse you?~";
+308:	return "A radio hisses away.  Kitten must have been here.";
+309:	return "~Kilroy was here~";
+310:	return "~Plexar was here~";
+311:	return "~Kibo was here~";
+312:	return "It's the cork to someone's lunch.";
+313:	return "A piping-hot pizza.  Useless.";
+314:	return "Diogenes is here demanding whisky.";
+315:	return "The Monolith of Spam towers above you.";
+316:	return "~Meow meow meow meow...~  How discouraging!  It's only a recording.";
+317:	return "Marvin is complaining about the pain in the diodes down his left side.";
+318:	return "Mr. Kamikaze and Mr. DNA are here drinking tea.";
+319:	return "Rene Descarte is whistling a happy tune here.";
+320:	return "Ooh, shiny!";
+321:	return "It's a giant slorr!";
+322:	return "A ketchup bottle (nearly empty).";
+323:	return "A large pile of rubber bands.";
+324:	return "A ton of feathers.";
+325:	return "This nonkitten may contain peanuts.";
+326:	return "A tree with some jelly nailed to it.";
+327:	return "Ah, the skirl of the pipes and the rustle of the silicon...";
+328:	return "You found Parakeet!  Too bad this isn't ~robotfindsparakeet~.";
+329:	return "A ball of yarn.";
+330:	return "A big chunk of frozen chocolate pudding.";
+331:	return "There is no tea here.";
+332:	return "An automated robot-doubter.  It doesn't believe in you.";
+333:	return "A plastic model of Kitten.";
+334:	return "It's Yorgle, the Yellow Dragon.";
+335:	return "It's Grundle, the Green Dragon.";
+336:	return "It's Rhindle, the Red Dragon.";
+337:	return "An old pattern is here going on and on.";
+338:	return "TV says donuts are high in fat.";
+339:	return "It's a pool with a straw in it.";
+340:	return "A singing frog.  Useless.";
+341:	return "It's a funky beat!";
+342:	return "A tiny ceramic Kitten.  It's probably not the Kitten you're looking for.";
+343:	return "An oven mitt with kittens on it.";
+344:	return "An empty coaxial cable spool.";
+345:	return "Billions and billions of things that aren't Kitten.";
+346:	return "Snarf?";
+347:	return "Faboo!";
+348:	return "99 bottles of beer are on a wall here.";
+349:	return "Hydraulic fluid and jagged metal bits.  You recoil from the scene of carnage.";
+350:	return "A bobolink is twittering a happy tune here.";
+351:	return "Biscuits.";
+352:	return "A blank deposit slip.";
+353:	return "What's that blue thing doing here?";
+354:	return "A travel-sized cyclotron.";
+355:	return "A largish bath towel.";
+356:	return "You found Chinchilla!  Too bad this isn't ~robotfindschinchilla~.";
+357:	return "A meerkat... not even close.";
+358:	return "A green yo-yo.";
+359:	return "A hairless rat.";
+360:	return "Bright copper kettles.";
+
+! The following Non Kitten Items were added by David Griffith for
+! Release 3
+!
+361:	return "Ten yards of avocado-green shag carpet.";
+362:	return "A zorkmid coin.";
+363:	return "It's Babe Flathead's favorite bat.";
+364:	return "It's cute like a kitten, but isn't a kitten.";
+365:	return "A cyclops glowers angrily at you.";
+366:	return "A discarded pop bottle.";
+367:	return "Definitely not Kitten.";
+368:	return "A mouse.";
+369:	return "Slack!";
+370:	return "A troll.  Ewww!!!";
+371:	return "A tube of white lithium grease.  Perfect for your robotic joints.";
+372:	return "Talcum powder.";
+373:	return "A breadbox.  Nope, Kitten isn't in the breadbox.";
+374:	return "An unlicensed nuclear accelerator.";
+375:	return "A sub-atomic particle languishes here all alone.";
+376:	return "A bowling ball with the name ~Bob~ inscribed on it.";
+377:	return "A briefcase filled with spy stuff.";
+378:	return "Is that an elephant's head or a winged sandal?";
+379:	return "Bibbidy bibbidy bibbidy bibbidy bibbidy bibbidy...";
+380:	return "A tube of toothpaste.  Too bad you have no teeth.";
+381:	return "This isn't the item you're looking for.";
+382:	return "A discarded refrigerator box.  Nope, Kitten isn't in the box.";
+383:	return "A paper shopping bag.  Nope, Kitten isn't in the bag.";
+384:	return "A flyer reads, ~Please donate hydraulic fluid~";
+385:	return "A dangly thing mangled by Kitten.";
+386:	return "A crouton.";
+387:	return "A patch from the Mammoth Caves.";
+388:	return "A leather pouch filled with multisided dice.";
+389:	return "A pair of combat boots.";
+390:	return "A pile of coconuts.";
+391:	return "A big bass drum bearing a hole and suspicious clawmarks.";
+392:	return "It's a clue!";
+393:	return "Long lost needle nose pliers.";
+394:	return "A vase of roses.";
+395:	return "A crystal ball.  It doesn't seem to know where Kitten is.";
+396:	return "It's Princess Leia, the yodel of life.";
+397:	return "Sigmund Freud is here asking about your mother.";
+398:	return "BURRRRP!!!!  Flavorful and full of protein!";
+399:	return "A jar of library paste.";
+400:	return "These aren't ordinary beans.  They're magic beans!";
+401:	return "Some sort of electronic handheld game from the 1970s.";
+
+! The following Non Kitten Items were added by David Griffith for
+! Release 4
+!
+402:	return "Just some glop of some sort.";
+403:	return "A bottle of distilled water.";
+404:	return "A rusty slinky.  It was such a wonderful toy!";
+405:	return "Some coconut crabs are milling about here.";
+406:	return "Dancing cold water pipes.  Mikey must have been here.";
+407:	return "Ash is mumbling ~KLAATU BARATA NI<coughcough>~ here.";
+408:	return "It's a blob of white goo.";
+
+! The following Non Kitten Items were added by David Griffith from the
+! official list of NKIs.
+!
+409:	return "A gravestone stands here.  ~Izchak Miller, ascended.~";
+410:	return "Someone has written ~ad aerarium~ on the ground here.";
+410:	return "A large blue eye floats in midair.";
+411:	return "This appears to be a statue of Perseus.";
+412:	return "There is an opulent throne here.";
+413:	return "It's a squad of Keystone Kops.";
+414:	return "This seems to be junk mail addressed to the finder of the Eye of Larn.";
+415:	return "A wondrous and intricate golden amulet.  Too bad you have no neck.";
+416:	return "The swampy ground around you seems to stink with disease.";
+417:	return "An animate blob of acid.  Being metallic, you keep well away.";
+418:	return "It's a copy of Knuth with the chapter on kitten-search algorithms torn out.";
+419:	return "A crowd of people, and at the center, a popular misconception.";
+420:	return "It's a blind man.  When you touch, he exclaims ~It's a kitten prospecting robot!~";
+421:	return "It's a lost wallet.  It's owner didn't have pets, so you discard it.";
+422:	return "This place is called Antarctica.  There is no kitten here.";
+423:	return "It's a mousetrap, baited with soap.";
+424:	return "A book with ~Don't Panic~ in large friendly letters across the cover.";
+425:	return "A compendium of haiku about metals.";
+426:	return "A discredited cosmology, relic of a bygone era.";
+427:	return "A hollow voice says ~Plugh~.";
+428:	return "A knight who says ~Either I am an insane knave, or you will find kitten.~";
+429:	return "A neural net -- maybe it's trying to recognize kitten.";
+430:	return "A screwdriver.";
+431:	return "A statue of a girl holding a goose like the one in Gottingen, Germany.";
+432:	return "A tetradrachm dated ~42 B.C.~";
+433:	return "A voice booms out ~Onward, kitten soldiers...~";
+434:	return "An eminently forgettable zahir.";
+435:	return "Apparently, it's Edmund Burke.";
+436:	return "For a moment, you feel something in your hands, but it disappears!";
+437:	return "Here is a book about Robert Kennedy.";
+438:	return "Hey, robot, leave those lists alone.";
+439:	return "Ho hum.  Another synthetic a posteriori.";
+440:	return "It's Asimov's Laws of Robotics.  You feel a strange affinity for them.";
+441:	return "It's Bach's Mass in B-minor!";
+442:	return "It's a bug.";
+443:	return "It's a synthetic a priori truth!  Immanuel would be so pleased!";
+444:	return "It's the Tiki Room.";
+445:	return "Just some old play by a Czech playwright, and you can't read Czech.";
+446:	return "Kitten is the letter 'Q'.  Oh, wait, maybe not.";
+447:	return "Quidquid Latine dictum sit, kitten non est.";
+448:	return "Sutro Tower is visible at some distance through the fog.";
+449:	return "The Digital Millennium Copyright Act of 1998.";
+450:	return "The United States Court of Appeals for the Federal Circuit.";
+451:	return "The non-kitten item like this but with ~false~ and ~true~ switched is true.";
+452:	return "This is the chapter called ~A Map of the Cat?~ from Feynman's autobiography.";
+453:	return "This is the forest primeval.";
+454:	return "Werner's ~Pocket Field Guide to Things That Are Not Kitten~.";
+455:	return "You found nettik, but that's backwards.";
+456:	return "You have found some zinc, but you must not stop here, for you must find kitten.";
+457:	return "~50 Years Among the Non-Kitten Items~, by Ann Droyd.";
+458:	return "~Robot may not injure kitten, or, through inaction, ...~";
+459:	return "~Address Allocation for Private Internets~ by Yakov Rekhter et al.";
+460:	return "~Mail Routing and the Domain System~ by Craig Partridge.";
+461:	return "~The Theory and Practice of Oligarchical Collectivism~ by Emmanuel Goldstein.";
+462:	return "~201 Kitten Verbs, Fully Conjugated~.  You look for ~find~.";
+463:	return "A card shark sits here, practicing his Faro shuffle.  He ignores you.";
+463:	return "A copy of DeCSS.  They're a dime a dozen these days.";
+464:	return "A demonic voice proclaims ~There is no kitten, only Zuul~.  You flee.";
+465:	return "A lotus.  You make an interesting pair.";
+466:	return "A milk carton, with a black and white picture of kitten on the side.";
+467:	return "Any ordinary robot could see from a mile away that this wasn't kitten.";
+468:	return "A stegosaurus, escaped from the stegosaurusfindsrobot game.  It finds you.";
+469:	return "Baling wire and chewing gum.";
+470:	return "Chewing gum and baling wire.";
+471:	return "Here is no kitten but only rock, rock and no kitten and the sandy road.";
+472:	return "Hey, I bet you thought this was kitten.";
+473:	return "It is an ancient mariner, and he stoppeth one of three.";
+474:	return "It pleases you to be kind to what appears to be kitten -- but it's not!";
+475:	return "It's a blatant plug for Ogg Vorbis, http://www.vorbis.com/";
+476:	return "It's a business plan for a new startup, kitten.net.";
+477:	return "It's a revised business plan for a new startup, my.kitten.net.";
+478:	return "It's a square.";
+479:	return "It seems to be a copy of ~A Tail of Two Kitties~.";
+480:	return "It's the Donation of Constantine!";
+481:	return "It's this message, nothing more.";
+482:	return "Lysine, an essential amino acid.  Well, maybe not for robots.";
+483:	return "No kitten here.";
+484:	return "The score for a Czech composer's ~Kitten-Finding Symphony in C~.";
+485:	return "This looks like Bradley's ~Appearance and Reality~, but it's really not.";
+486:	return "This non-kitten item no verb.";
+487:	return "You feel strangely unfulfilled.";
+488:	return "You hit the non-kitten item.  The non-kitten item fails to yowl.";
+489:	return "You suddenly yearn for your distant homeland.";
+490:	return "You've found the snows of yesteryear!  So that's where they all went to.";
+491:	return "Approaching.  One car.  J.  Followed by.  Two car.  M, M.  In five. Minutes.";
+491:	return "Free Jon Johansen!";
+492:	return "Free Dmitry Sklyarov!";
+493:	return "One person shouts ~What do we want?~ The crowd answers ~Free Dmitry!~";
+494:	return "Judith Platt insults librarians.";
+495:	return "This map is not the territory.";
+496:	return "~Go back to Libraria!~, says Pat Schroeder.";
+497:	return "This is a porcelain kitten-counter.  0, 0, 0, 0, 0...";
+498:	return "An old bootable business card, unfortunately cracked down the middle.";
+499:	return "A kitten sink, for washing kitten (if only kitten liked water).";
+500:	return "A kitten source (to match the kitten sink).";
+501:	return "If it's one thing, it's not another.";
+502:	return "If it's not one thing, it's another.";
+503:	return "A caboodle.";
+504:	return "A grin.";
+505:	return "A hedgehog.  It looks like it knows something important.";
+506:	return "You've found... Oh wait, that's just a cat.";
+507:	return "Robot should not be touching that.";
+508:	return "Air Guitar!!!  NA na NA na!!";
+509:	return "An aromatherapy candle burns with healing light.";
+510:	return "You find a bright shiny penny.";
+511:	return "It's a free Jon Johansen!";
+512:	return "It's a free Dmitry Sklyarov!";
+513:	return "The rothe hits!  The rothe hits!";
+514:	return "It's an Internet chain letter about sodium laureth sulfate.";
+515:	return "Ed Witten sits here, pondering string theory.";
+516:	return "Something is written here in the dust.  You read: ~rJbotfndQkttten~.";
+517:	return "We wish you a merry kitten, and a happy New Year!";
+518:	return "Run away!  Run away!";
+519:	return "You can see right through this copy of Brin's ~Transparent Society~.";
+520:	return "This copy of ~Steal This Book~ has been stolen from a bookstore.";
+521:	return "It's Roya Naini.";
+522:	return "This kit is the fourteenth in a series of kits named with Roman letters.";
+523:	return "This is the tenth key you've found so far.";
+524:	return "You find a fraud scheme in which loans are used as security for other loans.";
+525:	return "It's the phrase ~and her~, written in ancient Greek.";
+526:	return "It's the author of ~Randomness and Mathematical Proof~.";
+527:	return "It's the crusty exoskeleton of an arthropod!";
+528:	return "It's Emporer Shaddam the 4th's planet!";
+529:	return "It's the triangle leg adjacent to an angle divided by the leg opposite it.";
+530:	return "It's a bottle of nail polish remover.";
+531:	return "You found netkit!  Way to go, robot!";
+532:	return "It's the ASCII Floating Head of Seth David Schoen!";
+533:	return "A frosted pink party-cake, half eaten.";
+534:	return "A bitchin' homemade tesla coil.";
+535:	return "Conan O'Brian, sans jawbone.";
+536:	return "It's either a mirror, or another soulless kitten-seeking robot.";
+537:	return "Preoccupation with finding kitten prevents you from investigating further.";
+538:	return "Fonzie sits here, mumbling incoherently about a shark and a pair of waterskis.";
+539:	return "The ghost of your dance instructor, his face a paper-white mask of evil.";
+540:	return "A bag of groceries taken off the shelf before the expiration date.";
+541:	return "A book: Feng Shui, Zen: the art of randomly arranging items that are not kitten.";
+542:	return "This might be the fountain of youth, but you'll never know.";
+543:	return "Tigerbot Hesh.";
+544:	return "Stimutacs.";
+545:	return "A canister of pressurized whipped cream, sans whipped cream.";
+546:	return "The non-kitten item bites!";
+547:	return "A chain hanging from two posts reminds you of the Gateway Arch.";
+548:	return "A mathematician calculates the halting probability of a Turing machine.";
+549:	return "A number of short theatrical productions are indexed 1, 2, 3, ... n.";
+550:	return "A technical university in Australia.";
+551:	return "It is -- I just feel something wonderful is about to happen.";
+552:	return "It's a Cat 5 cable.";
+553:	return "It's a U.S. president.";
+554:	return "It's a piece of cloth used to cover a stage in between performances.";
+555:	return "The ionosphere seems charged with meaning.";
+556:	return "This tomography is like, hella axial, man!";
+557:	return "It's your favorite game -- robotfindscatan!";
+558:	return "Just a man selling an albatross.";
+559:	return "The intermission from a 1930s silent movie.";
+560:	return "It's an inverted billiard ball!";
+561:	return "The spectre of Sherlock Holmes wills you onwards.";
+
+! The following Non Kitten Items were added by David Griffith for
+! Release 5
+!
+562:	return "It's a cookie shaped like a kitten.";
+563:	return "It's Professor Feedlebom.";
+564:	return "A bottle of smelling salts.";
+565:	return "Dinsdale!";
+566:	return "An Enfield Mk3 rifle.";
+567:	return "An M16 rifle.";
+568:	return "An M1911A1 pistol.";
+569:	return "An M9 pistol.";
+570:	return "It's a gun of some sort.";
+571:	return "An FN-FAL rifle.";
+572:	return "An old rusty revolver.";
+573:	return "An AK-47 rifle.";
+574:	return "An AK-97 rifle.";
+575:	return "A Remington 870 shotgun.";
+576:	return "It's a NetBSD install CD.";
+577:	return "It's a recursive recursive recursive recursive recursive...";
+578:	return "It's Brian Kernigan.";
+579:	return "It's Dennis Ritchie.";
+580:	return "It's nothing in particular.";
+581:	return "Just a box of backscratchers.";
+582:	return "An expired transistor.";
+583:	return "Air.";
+584:	return "A steam-powered bunnytron.";
+585:	return "Heeeeeeeeeeeeres Johnny!";
+586:	return "It's a catalog from some company called Infocom.";
+587:	return "A dark-emitting diode.";
+588:	return "A 256 kilobyte write-only memory chip.";
+589:	return "A box of brand-new nixie tubes.";
+590:	return "Alien underwear.";
+591:	return "A sack of hammers.";
+592:	return "A sack of wet mice.";
+593:	return "A sack of doorknobs.";
+594:	return "A rusty melon-baller.";
+595:	return "An atomic vector plotter.";
+596:	return "You really don't want to know what this is.";
+597:	return "A 100 meter long chain of jumbo paper clips.";
+598:	return "A cockatoo shrieks at you.";
+599:	return "It's Mary Poppins!";
+600:	return "A slightly-used smellovision set.";
+601:	return "Doodles Weaver is here looking over a horse race schedule.";
+602:	return "An overflowing bit bucket.";
+
+! The following Non Kitten Items were added by David Griffith for
+! Release 6
+!
+603:	return "Blarg!";
+604:	return "It's a hairy-armed hitchhiker!";
+605:	return "A wolf wearing a nightgown is in bed here.";
+606:	return "A gecko zooms about on a skateboard here.";
+607:	return "A hovercraft full of eels is parked here.";
+608:	return "A waffle iron is here and it's still hot.";
+609:	return "A huge pile of pancakes.";
+610:	return "A threadbare tweed suit.";
+611:	return "A rusted safety pin.";
+612:	return "A model of a twin-hulled sailboat.";
+613:	return "A jar of lemon curd.";
+614:	return "~We interrupt this Zen Simulation...~";
+615:	return "A sealed tin bearing only the word ~yummy~.";
+616:	return "It's a groat coated with pocket fluff.";
+617:	return "You find an Atari 2600 game cartridge with no label.";
+618:	return "A child's drawing of a kitten.";
+619:	return "It's a small bouncy creature, but obviously not kitten.";
+620:	return "It's an unknown area code.";
+621:	return "A bottle of ammonia.";
+622:	return "Tweeting birds.";
+623:	return "It's a rapidly oscillating function.";
+624:	return "A dogcow moofs at you.";
+625:	return "A puddle of purple semi-gloss latex paint.";
+626:	return "It's a merry-go-round (broken down).";
+627:	return "The pants that Curly died in.";
+628:	return "A vanilla pudding pop.";
+629:	return "It's Jesse James' severed hand and it's still moving.";
+630:	return "It's more money than you'll ever need.";
+631:	return "A tiny robot scuttles across the floor.";
+632:	return "Chunk is here doing the truffle-shuffle.";
+633:	return "Data is here setting up some booty traps.";
+634:	return "A waterlogged grand piano.";
+635:	return "One liter of fuming nitric acid.";
+636:	return "A gold-dipped rose.";
+637:	return "Bronzed baby shoes.";
+638:	return "An electric engraving pencil.";
+639:	return "A small, featureless, white cube.";
+640:	return "It's a battery-powered brass lantern.";
+641:	return "It's an elongated brown sack, smelling of hot peppers.";
+642:	return "A glass bottle containing a quantity of water.";
+643:	return "It's a blob of red goo.";
+644:	return "It's a blob of blue goo.";
+645:	return "It's a blob of yellow goo.";
+646:	return "It's a blob of green goo.";
+647:	return "It's a blob of orange goo.";
+648:	return "It's a blob of purple goo.";
+649:	return "It's a blob of black goo.";
+650:	return "It's a blob of brown goo.";
+651:	return "A Scooby Snack!  Yay!";
+652:	return "A squirrel contentedly gnaws on a sprinkler head here.";
+653:	return "Snacky things.";
+654:	return "A toupee.";
+655:	return "Seat cushion fluff.";
+656:	return "Jacket fluff.";
+657:	return "Haven't you touched this thing before?";
+658:	return "It's a copy of the Book of Found Kittens.";
+659:	return "It's a nasty knife.";
+660:	return "It's a grue.  Fortunately, they don't like to eat robots.";
+661:	return "It's a phone book for the 661 area code.";
+662:	return "A tiny velvet pouch.";
+663:	return "Brass tacks.";
+664:	return "It's a rotating potato.";
+665:	return "Leave that thing alone!";
+666:	return "It's the mark of the beast!";
+667:	return "A tube of heat sink grease.";
+668:	return "A dead battery.";
+669:	return "A pile of irrigation valves.";
+670:	return "A stony meteorite.";
+671:	return "An iron meteorite.";
+672:	return "It's a fragment of an old Russian spacecraft.";
+673:	return "A large block of dry ice.";
+674:	return "It's a Commodore 64 computer (in mint condition).";
+675:	return "It's an Apple II+ computer (in mint condition).";
+676:	return "It's a Kaypro II portable computer.";
+677:	return "It's a Texas Instruments TI-89 graphing calculator.";
+678:	return "It's an Atari 800 computer.";
+679:	return "It's an Amiga 2000 computer.";
+680:	return "An oddly familiar face shouts ~SCREWTEK!~ from this computer monitor.";
+681:	return "It's an Osborne portable computer.";
+682:	return "It's a nameless MSX computer from Japan.";
+683:	return "A vacuum cleaner appears to have exploded here.";
+684:	return "It's a model of a catamaran.";
+685:	return "A cardboard box of sheet metal screws.";
+686:	return "A brown glass vial labeled ~tincture of iodine~.";
+687:	return "Just some sort of cat toy.";
+688:	return "It's a large pile of crumpled notepaper.";
+689:	return "You've found the decoy kitten!";
+690:	return "It's a pile of wine corks.";
+691:	return "A neat pile of plastic irrigation pipe.";
+692:	return "It's one of those carpet-covered things for cats to climb.";
+693:	return "This thing appears to be an ancient Roman breastplate.";
+694:	return "A claymore.";
+695:	return "An unripe orange.";
+696:	return "A toy zeppelin.";
+697:	return "It's a bucket of mud.";
+698:	return "It's a bucket of water.";
+699:	return "A clay pot with grass growing it in sits here.";
+700:	return "A discarded envelope chewed by Kitten.";
+701:	return "A hollow voice says ~Fool!~";
+702:	return "Several hackles are here and they appear to be up.";
+703:	return "Just some spite.";
+704:	return "Vitriol.";
+705:	return "There is a small mailbox here.";
+706:	return "A large oriental rug.";
+707:	return "It's an elvish sword of great antiquity.";
+708:	return "A large coil of rope is here.";
+709:	return "You've found a speed bump.";
+710:	return "It's a whirly thing of some sort.";
+711:	return "An empty Slurpee cup.";
+712:	return "This is a disaster area.";
+713:	return "A small box of fishing weights.";
+714:	return "A street map of the city of Anaheim.";
+715:	return "Bits of red construction paper are scattered all about.";
+716:	return "You won't believe what this is.";
+717:	return "A meat-scented air-freshener on a string dances in the breeze.";
+718:	return "A intact clay pigeon.";
+719:	return "Pieces of broken clay pigeons are scattered all about.";
+720:	return "This looks like a skateboarding arcade video game.";
+721:	return "It's a steaming bowl of homemade gnocci.";
+722:	return "An electric fan lies on its side here.";
+723:	return "It's something fizzy.";
+724:	return "A hickory stump.";
+725:	return "This tiny barbecue is spotlessly clean.";
+726:	return "A saucer of milk, untouched by Kitten.";
+727:	return "Insane laughter issues from this vibrating shipping crate.";
+728:	return "Haven't you checked here already?";
+729:	return "Just some rusted lug nuts and an ancient hub cap.";
+730:	return "A rusty crowbar.";
+731:	return "A post hole digger is stuck in a pile of dirt here.";
+732:	return "It's a spade.";
+733:	return "It's the Queen of Hearts! ~Off with their heads!~, she shouts.";
+734:	return "An assortment of highly-nutritious vegetables.";
+735:	return "A dead click beetle.";
+736:	return "A roll of scratch-and-sniff stickers.";
+737:	return "A roll of duct tape.";
+738:	return "Someone dropped a cheap ballpoint pen here.";
+739:	return "Someone dropped an expensive fountain pen here.";
+740:	return "You've found the Gingerbread Man!";
+741:	return "You've found the Stinky Cheese Man!";
+742:	return "This looks like an umbrella turned inside out.";
+743:	return "3.14159...  Pi is all over the place here...";
+744:	return "You almost mistook this meatloaf for Kitten.";
+745:	return "This drawer is full of dried out rubber stoppers.";
+746:	return "A flask of hydrochloric acid is here.";
+747:	return "Why are you bothering that old man instead of finding Kitten?";
+748:	return "It's a hyperkinetic rabbity thing.";
+749:	return "A dog dressed in a cheap suit is here.";
+750:	return "~Help me Robot! You're my only hope!~";
+751:	return "You found Budgie! Too bad this isn't ~robotfindsbudgie~.";
+752:	return "It's a sleeping lion.";
+753:	return "It's an example of the infamous space-cadet keyboard.";
+754:	return "You find a random assortment of dots and dashes.";
+755:	return "Nothing but some scribbles in crayon.";
+756:	return "It's a week-old baloney sandwich.";
+757:	return "It's a red stapler.";
+758:	return "It's a red staple-remover.";
+759:	return "It's a ~Wicked Tinkers~ CD.";
+760:	return "You see a rhinestone-studded dog collar, but no dog.";
+761:	return "It's a box of lox.";
+762:	return "It's a box of pinball machine parts.";
+763:	return "You've discovered an enormous pile of socks.";
+764:	return "It's a photograph of Kitten.";
+
+! The following Non Kitten Items were added by David Griffith for
+! Release 7
+!
+765:	return "It's a copy editor, reading aloud from the Associated Press Stylebook.";
+765:	return "It's a copy editor, reading aloud from the MLA Stylebook.";
+766:	return "Kitty kibble is scattered all about.";
+767:	return "A bartender growls, ~No robots allowed!~";
+768:	return "It's a Franklin Ebookman.";
+769:	return "It's a child's kitten pull-toy.";
+770:	return "~I'm Speed Racer and I drive real fast!~";
+771:	return "~I drive real fast.  I'm gonna last.~";
+772:	return "~I'm a big pirate and I like to steal!~";
+773:	return "~I like to steal and I like to kill!~";
+774:	return "~I'm a Barbie doll but I've got brains!~";
+775:	return "~I'm your doctor and here's the bill.~";
+776:	return "Go! Go! Go, Speed Racer!";
+777:	return "It's a Boeing 777 airliner.";
+778:	return "Someone is taking time out for fun here.";
+779:	return "You see a street lamp and a lamplighter here.";
+780:	return "A broken cricket bat.";
+781:	return "It's a mint-condition IMSAI 8080 computer!";
+782:	return "A hollow voice says ~xyzzy~.";
+783:	return "Wimpy is here asking for a hamburger.";
+784:	return "You found Olive Oyl!";
+785:	return "It's Popeye!";
+786:	return "Bluto is here looking for Olive Oyl.";
+787:	return "~Et tu, Brutus?~";
+788:	return "The bodily remains of a Roman emperor.";
+789:	return "Yay! It's a hoola hoop!";
+790:	return "The Smart Patrol is here.";
+791:	return "It's an old sandal.";
+792:	return "It's a feather duster.";
+793:	return "It's a zipper.";
+794:	return "It's an old crumhorn with a broken reed.";
+795:	return "A sticky old cough drop.";
+796:	return "A jar of buttons.";
+797:	return "A bearded dragon lizard is sitting here.";
+798:	return "A garden toad.";
+799:	return "A garden gnome.";
+800:	return "A garden weasel.";
+
+! The following Non Kitten Items were added by David Griffith for
+! Release 8
+!
+801:	return "It's the hairy end of a lollipop.";
+802:	return "You found Chicken! Too bad this isn't ~robotfindschicken~.";
+803:	return "It's Monty Python's Flying Circus!";
+804:	return "It's Leroy, the god of pudding.";
+805:	return "It's Ricky, the helpful god of fingerbowls.";
+
+
+
+default: return "Unknown NKI (this should not happen)";
+	}
+];
