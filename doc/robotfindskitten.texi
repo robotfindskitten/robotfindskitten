@@ -36,7 +36,7 @@ by the Foundation.
 @end ifinfo
 
 @titlepage
-@title robotfindskitten v1.7320508.406
+@title robotfindskitten
 @subtitle Leonard: In Bakersfield they have an art gallery in the mall.
 @subtitle Al: That's where they belong.
 @author by Leonard Richardson 
@@ -72,7 +72,7 @@ This file documents the @code{robotfindskitten} Zen simulation.
 @end ifinfo
 
 @menu
-* The Niceties::		Introduction and history.
+* The Niceties::		Introduction
 * The Documentation::		Overview of robotfindskitten.
 * A Word of Warning::		Helpful word of warning.
 * Another Word of Warning::	Another helpful word of warning.
@@ -82,6 +82,7 @@ This file documents the @code{robotfindskitten} Zen simulation.
 				Hack Hack.
 * Join the Bludgeoning robotfindskitten Community!::	
 				Stand proud.
+* BEHOLD! A History of Confusion::    The dubious history  of robotfindskitten
 * A Final Thought::		Chapter and Verse.
 * Index::			Contents of tables.
 @end menu
@@ -123,9 +124,7 @@ you move around with the arrow keys (Nethack, EMACS, or otherwise) touching
 things.  If the thing you touch is kitten, you get a cute little
 animation (which was cuter in the DOS version) and the simulation
 ends. Otherwise, you get a brief description of what it is you
-touched. So far, there are 201 non-kitten objects in the simulation,
-thus the subversion number 201. Future versions will have more objects
-and thus higher subversion numbers.
+touched.
 
 @menu
 * The Parts of the Simulation::		A rundown.
@@ -238,7 +237,7 @@ robotfindskitten or the more flexible framework provided by the sequel
 (also on my software page). Now, let us part with the secret geek
 handshake!
 
-@node Join the Bludgeoning robotfindskitten Community!, A Final Thought, Technical Information for Hard-Core Geeks, Top
+@node Join the Bludgeoning robotfindskitten Community!, BEHOLD! A History of Confusion, Technical Information for Hard-Core Geeks, Top
 @chapter Join the Bludgeoning robotfindskitten Community!
 @cindex bludgeon
 @cindex clue-by-four
@@ -260,12 +259,73 @@ robotfindskitten.
 
 @cindex bickering
 @cindex sourceforge
-In addition, as of November 2000, robotfindskitten has a project on
-Sourceforge!  Simply visit @url{http://sourceforge.net/projects/rfk} and have a
-look at our bug tracking system, bickering flame war mailing lists, and
-haphazardly-branched CVS trees!
+In addition, robotfindskitten has a project on Sourceforge!  Simply
+visit @url{http://sourceforge.net/projects/rfk} and have a look at our
+bug tracking system, bickering flame war mailing lists, and
+haphazardly-branched repository trees!
 
-@node A Final Thought, Index, Join the Bludgeoning robotfindskitten Community!, Top
+@node BEHOLD! A History of Confusion, A Final Thought, Join the Bludgeoning robotfindskitten Community!, Top
+@chapter BEHOLD! A History of Confusion
+@cindex The Leonard R Kung Fu Grip
+@cindex Uncle Pedro's Oldies Bonanza
+@cindex MonkeyMaster Remix
+@cindex Neale's 2000-Inch Release
+@cindex rfk Rises From The Dead!
+@cindex Uncle Pedro
+@cindex MonkeyMaster
+@cindex Nick Moffit
+@cindex Peter Peterson
+@cindex Neale Pickett
+@cindex Ryan Finnie
+@cindex Alexey Toptygin
+@cindex Eric S. Raymond
+@cindex kung fu
+@cindex catatonia
+@cindex crack monkey
+@cindex supernal awesomeness
+
+The original DOS version of robotfindskitten, now lost to humanity
+unless there's an undiscovered copy lurking on one of Leonard
+Richardson's hard drives, dates back to 1997. 
+
+Leonard ported the code to Linux in 1999; that release is now fondly
+remembered as ``The Leonard R Kung Fu Grip'' and the tarball can still
+be found on in the project file area on Sourceforge.  It had 201 NKIs.
+
+In 2000, Peter Peterson released ``Uncle Pedro's Oldies Bonanza''.
+That version had the same 201 NKIs.
+
+In 2001, Nick Moffit autoconfiscated the code and began a CVS history.
+His release, the ``MonkeyMaster Remix'', had 248 NKIs.
+
+In 2003, Neale Pickett shipped ``Neale's 2000-Inch Release'' with 349
+NKIs.
+
+In 2005, Alexey Toptygin rewrote the code to handle external files of
+NKIs rather than having them inline in a string array. The devteam 
+agreed to adopt this version.  Then, in a fine example of the slack and
+desultory style of robotfindskitten development, everybody (including
+Alexey) wandered off and forgot about it.  The code wouldn't be merged
+into the repo until just after it could have been declared legally dead.
+
+In 2007, Ryan Finnie shipped ``rfk Rises From The Dead!''. As Ryan was
+blissfully unaware of the project repo, he shipped a tarball based on
+the 2003 code with some minor fixes and 406 NKIs.  This code wouldn't
+be merged into the repo until five years later.
+
+In 2012, Eric S. Raymond learned of the supernal awesomeness that is
+robotfundskitten.  Approaching the somnolent (indeed, nigh-catatonic)
+devteam, he offered to convert the repo to something less awful than CVS
+and gather together the scattered threads of the project's history.
+This he did, grafting on the Finnie and Toptygin releases.  He also
+added some NKIs, polished the interface, and wrote this section you're
+reading.
+
+The releases done after the turn of the 21st century use a naming scheme
+that ends with the number of NKIs wired into the code or available in
+the shipped NKI file.
+
+@node A Final Thought, Index, BEHOLD! A History of Confusion, Top
 @appendix A Final Thought
 
 @cindex abomination

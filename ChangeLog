@@ -3,7 +3,8 @@ Oct 27 2012 Eric S. Raymond <esr@thyrsus.com>
 	* Merged in Alexey Toptygin's code from 2005.
 	* ANSI/POSIX cleanup, magic-number removal, compiler warning fixes.
 	* Added some NKIs.
-	* Added comments identifying the ends of the NKI spans per version
+	* Added comments identifying the ends of the NKI spans per version.
+	* Added "BEHOLD! A History of Confusion" to the texinfo docs.
 	* Esc is no longer bound, it's too slow.
 	* Frame the paying field.
 
