@@ -7,6 +7,7 @@ Oct 27 2012 Eric S. Raymond <esr@thyrsus.com>
 	* Added "BEHOLD! A History of Confusion" to the texinfo docs.
 	* Esc is no longer bound, it's too slow.
 	* Frame the paying field.
+	* Major portion of version number changed to 1.6180339.
 
 Nov 30 2007 Ryan Finnie <ryan@finnie.org>
 	* Fixed NKI message wrapping on small terminals (Debian bug #199680)
