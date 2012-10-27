@@ -20,6 +20,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
 #include <dirent.h>
@@ -82,10 +83,11 @@
 #define NUMLOCK_DR	'3'
 
 /* EMACS keycodes - Subtracting 64 makes it a control command */
-#define EMACS_NEXT ('N' - 64)
-#define EMACS_PREVIOUS ('P' - 64)
-#define EMACS_BACKWARD ('B' - 64)
-#define EMACS_FORWARD ('F' - 64)
+#define CTRL(key)	((key) & 0x1f)
+#define EMACS_NEXT CTRL('N')
+#define EMACS_PREVIOUS CTRL('P')
+#define EMACS_BACKWARD CTRL('B')
+#define EMACS_FORWARD CTRL('F')
 
 /* allocate message readin buffer in chunks of this size */
 #define MSG_ALLOC_CHUNK 80
@@ -94,7 +96,7 @@
 
 /* miscellaneous
  * I'm paranoid about collisions with curses in the KEY_ namespace */
-#define MYKEY_REDRAW ('L' - 64)
+#define MYKEY_REDRAW CTRL('L')
 #define MYKEY_ESC 27
 #define MYKEY_q 'q'
 #define MYKEY_Q 'Q'
@@ -103,7 +105,7 @@ typedef struct {
 	int x;
 	int y;
 	int color;
-	int bold;
+	bool bold;
 	char character;
 } screen_object;
 
@@ -157,7 +159,7 @@ void read_file ( char *fname ) {
 	alloc = 0;
 
 	if ( ( fd = open ( fname, O_RDONLY ) ) ) {
-		while ( 1 ) {
+		while ( true ) {
 			ret = read ( fd, &ch, 1 );
 			if ( ret < 0 ) /* an error */
 				break;
@@ -186,7 +188,7 @@ void read_file ( char *fname ) {
 				buff[len] = ch;
 				len++;
 			}
-		} /* end while ( 1 ) */
+		} /* end while ( true ) */
 		close ( fd );
 	}
 	if ( alloc )
@@ -218,7 +220,7 @@ void do_read_messages ( char *dname ) {
 	closedir ( dir );
 }
 
-void read_messages() {
+void read_messages(void) {
 	char *temp;
 	size_t l;
 	unsigned int i;
@@ -246,7 +248,7 @@ void read_messages() {
 	do_read_messages ( "nki" );
 }
 
-void randomize_messages() {
+void randomize_messages(void) {
 	char *temp;
 	unsigned int i, j;
 
@@ -264,10 +266,10 @@ void randomize_messages() {
 #define randx() ( random() % state.cols )
 #define randy() ( random() % ( state.lines - 3 ) + 3 )
 #define randch() ( random() % ( '~' - '!' + 1 ) + '!' )
-#define randbold() ( random() % 2 )
+#define randbold() ( ( random() % 2 ) ? true : false )
 #define randcolor() ( random() % 6 + 1 )
 
-inline char randchar() {
+inline char randchar(void) {
 	char ch;
 	do { ch = randch(); } while ( ch == '#' );
 	return ch;
@@ -352,8 +354,8 @@ void init ( unsigned int num ) {
 	nonl();
 	noecho();
 	cbreak();
-	intrflush ( stdscr, 0 );
-	keypad ( stdscr, 1 );
+	intrflush ( stdscr, false );
+	keypad ( stdscr, true );
 
 	state.lines = LINES;
 	state.cols = COLS;
@@ -493,7 +495,7 @@ void draw_screen() {
 }
 
 /* captures control if the terminal shrank too much, otherwise does a refresh */
-void handle_resize() {
+void handle_resize(void) {
 	int ch;
 
 	while ( ( LINES < state.lines ) || ( COLS < state.cols ) ) {
@@ -515,7 +517,7 @@ void handle_resize() {
 	draw_screen();
 }
 
-void instructions() {
+void instructions(void) {
 	clear();
 	move ( 0, 0 );
 	printw ( "robotfindskitten %s\n", PACKAGE_VERSION );
@@ -580,7 +582,7 @@ void play_animation ( unsigned int fromright ) {
 	message ( "You found kitten! Way to go, robot!", 7 );
 }
 
-void main_loop() {
+void main_loop(void) {
 	int ch, x, y;
 	unsigned int bnum, fromright;
 

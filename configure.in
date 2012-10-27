@@ -23,7 +23,4 @@ AC_CHECK_HEADERS(ncurses.h,,
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
-dnl Checks for library functions.
-AC_TYPE_SIGNAL
-
 AC_OUTPUT(Makefile src/Makefile doc/Makefile)

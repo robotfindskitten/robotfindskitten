@@ -1,3 +1,6 @@
+Oct 27 2012 Eric S. Raymond <esr at thyrsus.com>
+	* ANSI/POSIX cleanup, magic-number removal, compiler warning fixes.
+
 Nov 30 2007 Ryan Finnie <ryan@finnie.org>
 	* Fixed NKI message wrapping on small terminals (Debian bug #199680)
 	* Converted robotfindskitten.c from CRLF to LF.  Take that, CP/M!
