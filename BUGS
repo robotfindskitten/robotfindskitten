@@ -1,14 +1,2 @@
-Possible Improvements:
-----------------------
-The code generally needs to be cleaned up.
-
-Although the code should compile on anything that has ncurses, the
-special character set used probably won't be handled correctly on
-anything but Linux/Intel. Have an option to stick to standard ASCII.
-[currently robotfindskitten is only standard ASCII.]
-
-The screen array is bigger than it needs to be. It probably shouldn't
-be an array at all, actually, since at most 1/8 of the entries are
-full. It should be a hash or something.
-
+There are no kittens here.  And no known bugs, either.
 
