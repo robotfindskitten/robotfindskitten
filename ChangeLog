@@ -1,17 +1,22 @@
-Oct 27 2012 Eric S. Raymond <esr at thyrsus.com>
+Oct 27 2012 Eric S. Raymond <esr@thyrsus.com>
+	* Repo conversion to git, including recovery of ancient history.
+	* Merged in Alexey Toptygin's code from 2005.
 	* ANSI/POSIX cleanup, magic-number removal, compiler warning fixes.
+	* Added some NKIs.
+	* Added comments identifying the ends of the NKI spans per version
+	* Esc is no longer bound, it's too slow.
 
 Nov 30 2007 Ryan Finnie <ryan@finnie.org>
 	* Fixed NKI message wrapping on small terminals (Debian bug #199680)
 	* Converted robotfindskitten.c from CRLF to LF.  Take that, CP/M!
-
 Nov 27 2007 Ryan Finnie <ryan@finnie.org>
 	* Updated the autoconf/automake system
 	* Added a manpage (originally written by CrackMonkey)
 	* Removed Debian-specific infrastructure
 	* A few small doc changes
 
-	[Time Passes]
+Oct 13 2005 Alexey Toptygin <alexeyt@freeshell.org>
+	* Complete rewrite, moving NKIs to a file.
 
 Dec 11 2000 CrackMonkey <monkeymaster@crackmonkey.org>
 	* Fixed screen redraw.
@@ -28,6 +33,18 @@ Nov 30 2000 Shazdeh <zen@emgnulation.org>
 	* added support for NetHack movement keys
 	* fixed curses initialization to not echo or buffer
 Nov 21 2000 CrackMonkey <monkeymaster@crackmonkey.org>
-	* autoconf'd up the package from crummy.com 
+	* autoconf'd up the package from crummy.com
 	* translated the robotfindskitten.documentation file to texinfo.
 	* set up http://sourceforge.net/projects/rfk
+
+There were two ancient versions before the MonkeyMaster Remix that never
+made it into the CVS repo. The entire release history up to the git
+conversion looked like this:
+
+Version       SF release      Name
+------------ ---------- -------------------------------------
+1999          2001-02-22      The Leonard R Kung Fu Grip
+1600003_201b  2000-11-22      Uncle Pedro's Oldies Bonanza
+1600003.248b  2001-02-21      MonkeyMaster Remix
+1.4142135.349 2003-01-27      Neale's 2000-Inch Release
+1.7320508.406 2007-12-03      rfk Rises From The Dead!
