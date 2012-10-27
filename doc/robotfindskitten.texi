@@ -178,8 +178,8 @@ documentation.
 
 @cindex ending the simulation prematurely
 @item
-If you want to end the program for whatever reason, just hit Escape, or
-terminate the program by hitting control-C.
+If you want to end the program for whatever reason, just hit 'q', or'Q',
+or 'x', or 'X', or terminate the program by hitting control-C.
 @end enumerate
 
 @node A Word of Warning, Another Word of Warning, Controls, Top

@@ -97,9 +97,10 @@
 /* miscellaneous
  * I'm paranoid about collisions with curses in the KEY_ namespace */
 #define MYKEY_REDRAW CTRL('L')
-#define MYKEY_ESC 27
 #define MYKEY_q 'q'
 #define MYKEY_Q 'Q'
+#define MYKEY_x 'x'
+#define MYKEY_X 'X'
 
 typedef struct {
 	int x;
@@ -521,16 +522,16 @@ void instructions(void) {
 	clear();
 	move ( 0, 0 );
 	printw ( "robotfindskitten %s\n", PACKAGE_VERSION );
-	printw ( "By the illustrious Leonard Richardson (C) 1997, 2000\n"\
-		"Written originally for the Nerth Pork robotfindskitten "\
-		"contest\n\nIn this game, you are robot (#). Your job is"\
-		" to find kitten. This task\nis complicated by the "\
-		"existence of various things which are not kitten.\n"\
-		"Robot must touch items to determine if they are kitten "\
-		"or not. The game\nends when robotfindskitten. "\
-		"Alternatively, you may end the game by hitting\nthe Esc"\
-		" key. See the documentation for more information.\n\n"\
-		"Press any key to start.\n"
+	printw ( 
+"By the illustrious Leonard Richardson (C) 1997, 2000\n"\
+"Written originally for the Nerth Pork robotfindskitten contest\n\n"\
+"In this game, you are robot (#). Your job is to find kitten. This task\n"\
+"is complicated by the existence of various things which are not kitten.\n"\
+"Robot must touch items to determine if they are kitten or not. The game\n"\
+"ends when robotfindskitten. Alternatively, you may end the game by hitting\n"
+"the q, Q, x, or x keys, or a good old-fashioned Ctrl-C.\n\n"\
+"See the documentation for more information.\n\n"\
+"Press any key to start.\n"
 	);
 	refresh();
 	if ( getch() == KEY_RESIZE )
@@ -640,9 +641,10 @@ void main_loop(void) {
 			case KEY_C3:
 			case KEY_NPAGE:
 				y++; x++; break;
-	                case MYKEY_ESC:
 	                case MYKEY_Q:
 	                case MYKEY_q:
+	                case MYKEY_X:
+	                case MYKEY_x:
 	                        finish ( 1 );
 	                        break;
 			case MYKEY_REDRAW:
@@ -653,7 +655,7 @@ void main_loop(void) {
 				break;
 	                default:
 	                        message ( "Invalid input: Use direction keys"\
-					" or Esc.", 7 );
+					" or q/Q/x/X.", 7 );
 	                        break;
 		}
 
