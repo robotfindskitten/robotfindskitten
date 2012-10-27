@@ -102,6 +102,12 @@
 #define MYKEY_x 'x'
 #define MYKEY_X 'X'
 
+/* size of header area above frame and playing field */
+#define HEADSIZE	2
+
+/* thickness of frame - can be 1 or 0, 0 suppreses framing */
+#define FRAME   	1
+
 typedef struct {
 	int x;
 	int y;
@@ -264,8 +270,8 @@ void randomize_messages(void) {
 }
  
 /* convenient macros */
-#define randx() ( random() % state.cols )
-#define randy() ( random() % ( state.lines - 3 ) + 3 )
+#define randx() ( FRAME + ( random() % ( state.cols - FRAME * 2 ) ) )
+#define randy() ( HEADSIZE + FRAME + (random() % ( state.lines - HEADSIZE - FRAME * 2 ) ) )
 #define randch() ( random() % ( '~' - '!' + 1 ) + '!' )
 #define randbold() ( ( random() % 2 ) ? true : false )
 #define randcolor() ( random() % 6 + 1 )
@@ -360,7 +366,7 @@ void init ( unsigned int num ) {
 
 	state.lines = LINES;
 	state.cols = COLS;
-	if ( ( ( state.lines - 3 ) * state.cols ) < ( num + 2 ) ) {
+	if ( ( ( state.lines - HEADSIZE - FRAME ) * state.cols ) < ( num + 2 ) ) {
 		endwin();
 		fprintf ( stderr, "Screen too small to fit all objects!\n" );
 		exit ( 1 );
@@ -384,7 +390,7 @@ void init ( unsigned int num ) {
 	for ( i = 0; i < num; i++ ) {
 		state.bogus[i].character = randchar();
 		state.bogus[i].bold = randbold();
-		while ( 1 ) {
+		while ( true ) {
 			state.bogus[i].y = randy();
 			state.bogus[i].x = randx();
 			if ( ! objcmp ( state.robot, state.bogus[i] ) )
@@ -480,9 +486,22 @@ void draw_screen() {
 	if ( state.options & OPTION_HAS_COLOR )
 		attrset ( COLOR_PAIR(7) );
 	clear();
+#if FRAME > 0
+	mvaddch(HEADSIZE, 0,      ACS_ULCORNER);
+	mvaddch(HEADSIZE, COLS-1, ACS_URCORNER);
+	mvaddch(LINES-1,  0,      ACS_LLCORNER);
+	mvaddch(LINES-1,  COLS-1, ACS_LRCORNER);
+	for (i = 1; i < COLS - 1; i++) {
+	    mvaddch(HEADSIZE,  i, ACS_HLINE);
+	    mvaddch(LINES - 1, i, ACS_HLINE);
+	}
+	for (i = FRAME + HEADSIZE; i < LINES - 1; i++) {
+	    mvaddch(i, 0,      ACS_VLINE);
+	    mvaddch(i, COLS-1, ACS_VLINE);
+	}
+#endif
 	move ( 0, 0 );
 	printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
-	for ( i = 0; i < state.cols; i++ ) printw ( "_" );
 	move ( state.kitten.y, state.kitten.x );
 	draw ( &state.kitten );
 	for ( i = 0; i < state.num_bogus; i++ ) {
@@ -660,8 +679,8 @@ void main_loop(void) {
 		}
 
 		/* it's the edge of the world as we know it... */
-		if ( ( y < 3 ) || ( y >= state.lines ) ||
-			( x < 0 ) || ( x >= state.cols ) )
+		if ( ( y < HEADSIZE + FRAME ) || ( y >= state.lines - FRAME ) ||
+			( x < FRAME ) || ( x >= state.cols - FRAME) )
 				continue;
 
 		/* let's see where we've landed */
