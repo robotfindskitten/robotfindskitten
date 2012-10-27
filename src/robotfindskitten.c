@@ -17,51 +17,41 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/stat.h>
+#include "config.h"
+
+#ifdef HAVE_NCURSES_H
+#include <ncurses.h>
+#elif defined ( HAVE_CURSES_H )
+#include <curses.h>
+#else
+#error "No (n)curses headers found, aborting"
+#endif
+
 #define SYSTEM_NKI_DIR "/usr/share/games/robotfindskitten"
-
-/* config.h ended here */
-
-typedef struct {
-	int x;
-	int y;
-	int color;
-	int bold;
-	char character;
-} screen_object;
-
-typedef struct {
-	screen_object robot;
-	screen_object kitten;
-	int lines;
-	int cols;
-	unsigned int options;
-	unsigned int num_bogus;
-	unsigned int num_messages;
-	unsigned int num_messages_alloc;
-	screen_object *bogus;
-	char **messages;
-} game_state;
-
-extern char** environ;
-extern game_state state;
-extern void read_messages();
-extern void randomize_messages();
-
-/* common.h ended here */
+#define USER_NKI_DIR ".robotfindskitten"
 
 #define DEFAULT_NUM_BOGUS 20
 
 /* option flags for state.options */
-#define OPTION_HAS_COLOR        1
-#define OPTION_MSG_COLOR        2
-#define OPTION_DISPLAY_INTRO    4
+#define OPTION_HAS_COLOR        0x01
+#define OPTION_MSG_COLOR        0x02
+#define OPTION_DISPLAY_INTRO    0x04
 
-#define DEFAULT_OPTIONS         6
+#define DEFAULT_OPTIONS         (OPTION_MSG_COLOR|OPTION_DISPLAY_INTRO)
 
 /* bits returned from test() */
-#define BROBOT	1
-#define BKITTEN	2
-#define BBOGUS	4
+#define BROBOT	0x01
+#define BKITTEN	0x02
+#define BBOGUS	0x04
 
 /* Nethack keycodes */
 #define NETHACK_down 'j'
@@ -97,6 +87,11 @@ extern void randomize_messages();
 #define EMACS_BACKWARD ('B' - 64)
 #define EMACS_FORWARD ('F' - 64)
 
+/* allocate message readin buffer in chunks of this size */
+#define MSG_ALLOC_CHUNK 80
+/* allocate the messages array in chunks of this size */
+#define MSGS_ALLOC_CHUNK 32
+
 /* miscellaneous
  * I'm paranoid about collisions with curses in the KEY_ namespace */
 #define MYKEY_REDRAW ('L' - 64)
@@ -104,21 +99,29 @@ extern void randomize_messages();
 #define MYKEY_q 'q'
 #define MYKEY_Q 'Q'
 
-/* main.h ends here */
+typedef struct {
+	int x;
+	int y;
+	int color;
+	int bold;
+	char character;
+} screen_object;
 
-#include <dirent.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include "config.h"
+typedef struct {
+	screen_object robot;
+	screen_object kitten;
+	int lines;
+	int cols;
+	unsigned int options;
+	unsigned int num_bogus;
+	unsigned int num_messages;
+	unsigned int num_messages_alloc;
+	screen_object *bogus;
+	char **messages;
+} game_state;
 
-#define USER_NKI_DIR ".robotfindskitten"
-/* allocate message readin buffer in chunks of this size */
-#define MSG_ALLOC_CHUNK 80
-/* allocate the messages array in chunks of this size */
-#define MSGS_ALLOC_CHUNK 32
+/* global state */
+static game_state state;
 
 void add_message ( char *msg, size_t len ) {
 	char *buff, **nmess;
@@ -219,6 +222,7 @@ void read_messages() {
 	char *temp;
 	size_t l;
 	unsigned int i;
+	extern char** environ;
 
 	state.messages = 0;
 	state.num_messages = 0;
@@ -256,26 +260,6 @@ void randomize_messages() {
 	}
 }
  
-/* messages.c ended here */
-
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include "config.h"
-
-#ifdef HAVE_NCURSES_H
-#include <ncurses.h>
-#elif defined ( HAVE_CURSES_H )
-#include <curses.h>
-#else
-#error "No (n)curses headers found, aborting"
-#endif
-
-/* global state */
-game_state state;
-
 /* convenient macros */
 #define randx() ( random() % state.cols )
 #define randy() ( random() % ( state.lines - 3 ) + 3 )
