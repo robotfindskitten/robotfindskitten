@@ -1,3 +1,15 @@
+Nov 30 2007 Ryan Finnie <ryan@finnie.org>
+	* Fixed NKI message wrapping on small terminals (Debian bug #199680)
+	* Converted robotfindskitten.c from CRLF to LF.  Take that, CP/M!
+
+Nov 27 2007 Ryan Finnie <ryan@finnie.org>
+	* Updated the autoconf/automake system
+	* Added a manpage (originally written by CrackMonkey)
+	* Removed Debian-specific infrastructure
+	* A few small doc changes
+
+	[Time Passes]
+
 Dec 11 2000 CrackMonkey <monkeymaster@crackmonkey.org>
 	* Fixed screen redraw.
 	* Added more NKIs.

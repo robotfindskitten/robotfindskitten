@@ -367,7 +367,7 @@ void instructions()
 {
   char dummy;
 
-  mvprintw(0,0,"robotfindskitten %s\n",ver);
+  mvprintw(0,0,"robotfindskitten v%s\n",ver);
   printw("By the illustrious Leonard Richardson (C) 1997, 2000\n");
   printw("Written originally for the Nerth Pork robotfindskitten contest\n\n");
   printw("In this game, you are robot (");
@@ -524,7 +524,7 @@ void initialize_screen()
   /*
    *Print the status portion of the screen.
    */
-  mvprintw(0,0,"robotfindskitten %s\n\n",ver);  
+  mvprintw(0,0,"robotfindskitten v%s\n\n",ver);  
   
   /*Draw a line across the screen.*/
   for (counter = X_MIN; counter <= X_MAX; counter++)

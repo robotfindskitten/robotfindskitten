@@ -32,16 +32,11 @@ anything but Linux/Intel. Have an option to stick to standard ASCII.
 [currently robotfindskitten is only standard ASCII.]
 
 
-The program shouldn't depend on a hard-wired constant for the number
-of messages.
-
 I think the list of messages should be in a text file which is read in
 at runtime, so that people can easily change the messages.
 
 The screen array is bigger than it needs to be. It probably shouldn't
 be an array at all, actually, since at most 1/8 of the entries are
 full. It should be a hash or something.
-
-The program shouldn't be hard-wired to 80x25.
 
 

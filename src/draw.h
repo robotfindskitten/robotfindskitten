@@ -34,7 +34,7 @@ void message(char* message)
 {
   move(1,0);
   clrtoeol();
-  mvprintw(1,0,"%s",message);
+  mvprintw(1,0,"%.*s",COLS,message);
   move(robot.y,robot.x);
   refresh();
 }
