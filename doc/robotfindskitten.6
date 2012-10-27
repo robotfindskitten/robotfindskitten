@@ -1,39 +1,64 @@
-.\"                                      Hey, EMACS: -*- nroff -*-
-.\" First parameter, NAME, should be all caps
-.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
-.\" other parameters are allowed: see man(7), man(1)
-.TH ROBOTFINDSKITTEN 6 "November 26, 2007"
-.\" Please adjust this date whenever revising the manpage.
+.TH ROBOTFINDSKITTEN 6 "October 11, 2005"
 .\"
-.\" Some roff macros, for reference:
-.\" .nh        disable hyphenation
-.\" .hy        enable hyphenation
-.\" .ad l      left justify
-.\" .ad b      justify to both left and right margins
-.\" .nf        disable filling
-.\" .fi        enable filling
-.\" .br        insert line break
-.\" .sp <n>    insert n+1 empty lines
-.\" for manpage-specific macros, see man(7)
 .SH NAME
-robotfindskitten \- robotfindskitten
+robotfindskitten - help robot find kitten
+.\"
 .SH SYNOPSIS
 .B robotfindskitten
 .RI [ number ]
+.\"
 .SH DESCRIPTION
-.\" TeX users may be more comfortable with the \fB<whatever>\fP and
-.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
-.\" respectively.
-\fBrobotfindskitten\fP is a Zen simulation that was originally submitted to an art contest.  The goal is to find kitten among a number of non-kitten items.
+In this game, you are robot
+.RB ( # ).
+Your job is to find kitten. This task is complicated by the existence of
+various things which are not kitten (collectively known as Non Kitten
+Items or NKIs). Robot must touch items to determine if they are kitten
+or not. The game ends when robot finds kitten.
+.P
+You can move robot with the arrow keys, the EMACS keys (^N, ^P, ^B and 
+^F for down, up, left and right), the keypad keys (all 8 directions), 
+and the nethack keys (all 8 directions; hjklyubn is left, down, up, 
+right, up-left, up-right, down-left and down-right).
+.P
+You can press Ctrl-L at any time to redraw the screen. You can press q 
+or Esc at any time to quit.
+.\"
 .SH OPTIONS
-.TP
-.B number
-Specify the number of non-kitten objects to be used in the game.  Defaults to 20 if not specified explicitly.
-.SH SEE ALSO
-The program is documented fully by
-.IR "robotfindskitten" ,
-available via the Info system.
+You can optionally specify the number of Non Kitten Items to use. The 
+default is 20.
+.\"
+.SH FILES
+.BR robotfindskitten (6)
+reads all of the files in the ~/.robotfindskitten and
+SYSTEM_NKI_DIR (FIXME)
+directories. Each line of each file becomes the description of a Non 
+Kitten Item.
+.\"
+.SH ENVIRONMENT
+.BR robotfindskitten (6)
+uses the
+.B HOME
+environment variable to find the ~/.robotfindskitten directory.
+.\"
+.SH EXIT STATUS
+The exit status is
+.B 0
+if robot found kitten;
+.B 1
+if you quit or there was a problem; and the signal number if
+.BR robotfindskitten (6)
+exits gracefully due to a signal.
+.\"
+.SH BUGS
+When robot finds kitten, a congradulatory message is displayed right 
+before the program exits. This message is only visible if your terminal 
+doesn\'t have the smcup/rmcup capabilities. If you really want to see 
+it, try entering:
+.RS
+.P
+TERM=vt100 robotfindskitten
+.RE
+.\"
 .SH AUTHOR
-
-This manual page was originally written by Nick Moffitt
-<nick@zork.net>, for the Debian GNU/Linux system.
+Written by Alexey Toptygin <alexeyt@freeshell.org> based on sources by 
+Leonard Richardson and others.
