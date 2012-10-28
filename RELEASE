@@ -1,0 +1,11 @@
+Release procedure:
+
+1. "make count" to get the number of NKIs.
+
+2. Patch the version number in configure.in.
+
+3. Make dist, triggering a reconfigure so the new version number is used.
+
+4. Commit and push to the repo.
+
+5. Ship it!
