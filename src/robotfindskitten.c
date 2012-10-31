@@ -44,10 +44,9 @@
 
 /* option flags for state.options */
 #define OPTION_HAS_COLOR        0x01
-#define OPTION_MSG_COLOR        0x02
-#define OPTION_DISPLAY_INTRO    0x04
+#define OPTION_DISPLAY_INTRO    0x02
 
-#define DEFAULT_OPTIONS         (OPTION_MSG_COLOR|OPTION_DISPLAY_INTRO)
+#define DEFAULT_OPTIONS         (OPTION_DISPLAY_INTRO)
 
 /* bits returned from test() */
 #define BROBOT	0x01
@@ -453,7 +452,6 @@ void draw ( const screen_object *o ) {
 }
 
 void message ( char *message, int color ) {
-	attr_t new;
 	int y, x;
 
 	getyx ( curscr, y, x );
@@ -464,12 +462,7 @@ void message ( char *message, int color ) {
 	clrtoeol();
 
 	if ( state.options & OPTION_HAS_COLOR ) {
-		if ( state.options & OPTION_MSG_COLOR ) {
-			new = COLOR_PAIR(color);
-		} else {
-			new = COLOR_PAIR(7);
-		}
-		attrset ( new );
+		attrset ( COLOR_PAIR(7) );
 	}
 
 	move ( 1, 0 );
@@ -742,9 +735,6 @@ int main ( int argc, char **argv ) {
 
 	instructions();
 	draw_screen();
-	if ( state.options & OPTION_HAS_COLOR ) {
-		message ( "In Glorious Color", randcolor() );
-	}
 	main_loop();
 	finish ( 0 );
 	return 0;
