@@ -82,7 +82,7 @@
 #define NUMLOCK_DOWN	'2'
 #define NUMLOCK_DR	'3'
 
-/* EMACS keycodes - Subtracting 64 makes it a control command */
+/* EMACS keycodes */
 #define CTRL(key)	((key) & 0x1f)
 #define EMACS_NEXT CTRL('N')
 #define EMACS_PREVIOUS CTRL('P')
