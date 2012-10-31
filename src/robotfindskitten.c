@@ -477,6 +477,17 @@ void draw_screen() {
 	if ( state.options & OPTION_HAS_COLOR )
 		attrset ( COLOR_PAIR(7) );
 	clear();
+	move ( 0, 0 );
+	printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
+	move ( state.kitten.y, state.kitten.x );
+	draw ( &state.kitten );
+	for ( i = 0; i < state.num_bogus; i++ ) {
+		move ( state.bogus[i].y, state.bogus[i].x );
+		draw ( &state.bogus[i] );
+	}
+	move ( state.robot.y, state.robot.x );
+	draw ( &state.robot );
+	move ( state.robot.y, state.robot.x );
 #if FRAME > 0
 	mvaddch(HEADSIZE, 0,      ACS_ULCORNER);
 	mvaddch(HEADSIZE, COLS-1, ACS_URCORNER);
@@ -490,42 +501,19 @@ void draw_screen() {
 	    mvaddch(i, 0,      ACS_VLINE);
 	    mvaddch(i, COLS-1, ACS_VLINE);
 	}
-#endif
-	move ( 0, 0 );
-	printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
-	move ( state.kitten.y, state.kitten.x );
-	draw ( &state.kitten );
-	for ( i = 0; i < state.num_bogus; i++ ) {
-		move ( state.bogus[i].y, state.bogus[i].x );
-		draw ( &state.bogus[i] );
+#else
+	for (i = 0; i < COLS; i++) {
+	    mvaddch(HEADSIZE,  i, ACS_HLINE);
 	}
-	move ( state.robot.y, state.robot.x );
-	draw ( &state.robot );
-	move ( state.robot.y, state.robot.x );
+#endif
 	refresh();
 }
 
 /* captures control if the terminal shrank too much, otherwise does a refresh */
 void handle_resize(void) {
-	int ch;
-
-	while ( ( LINES < state.lines ) || ( COLS < state.cols ) ) {
-		ch = MYKEY_REDRAW;
-		do {
-			if ( ch == KEY_RESIZE ) {
-				break;
-			} else if ( ch == MYKEY_REDRAW ) {
-				clear();
-				if ( state.options & OPTION_HAS_COLOR )
-					attrset ( COLOR_PAIR(7) );
-				move ( 0, 0 );
-				printw ( "Stop it, you're crushing me!" );
-				refresh();
-			}
-		} while  ( ( ch = getch() ) );
-				
-	}
-	draw_screen();
+    state.lines = LINES;
+    state.cols = COLS;
+    draw_screen();
 }
 
 void instructions(void) {
