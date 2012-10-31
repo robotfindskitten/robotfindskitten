@@ -105,6 +105,9 @@
 /* thickness of frame - can be 1 or 0, 0 suppreses framing */
 #define FRAME   	1
 
+/* magic index of white color pair */
+#define WHITE	7
+
 typedef struct {
 	int x;
 	int y;
@@ -428,9 +431,9 @@ void init ( unsigned int num ) {
 		init_pair ( 5, COLOR_MAGENTA, COLOR_BLACK );
 		init_pair ( 6, COLOR_CYAN, COLOR_BLACK );
 		init_pair ( 7, COLOR_WHITE, COLOR_BLACK );
-		bkgd ( COLOR_PAIR(7) );
+		bkgd ( COLOR_PAIR(WHITE) );
 
-		state.robot.color = 7;
+		state.robot.color = WHITE;
 		state.kitten.color = randcolor();
 		for ( i = 0; i < state.num_bogus; i++ ) {
 			state.bogus[i].color = randcolor();
@@ -456,13 +459,13 @@ void message ( char *message, int color ) {
 
 	getyx ( curscr, y, x );
 	if ( state.options & OPTION_HAS_COLOR ) {
-		attrset ( COLOR_PAIR(7) );
+		attrset ( COLOR_PAIR(WHITE) );
 	}
 	move ( 1, 0 );
 	clrtoeol();
 
 	if ( state.options & OPTION_HAS_COLOR ) {
-		attrset ( COLOR_PAIR(7) );
+		attrset ( COLOR_PAIR(WHITE) );
 	}
 
 	move ( 1, 0 );
@@ -475,7 +478,7 @@ void draw_screen() {
 	unsigned int i;
 
 	if ( state.options & OPTION_HAS_COLOR )
-		attrset ( COLOR_PAIR(7) );
+		attrset ( COLOR_PAIR(WHITE) );
 	clear();
 	move ( 0, 0 );
 	printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
@@ -488,6 +491,8 @@ void draw_screen() {
 	move ( state.robot.y, state.robot.x );
 	draw ( &state.robot );
 	move ( state.robot.y, state.robot.x );
+	if ( state.options & OPTION_HAS_COLOR )
+		attrset ( COLOR_PAIR(WHITE) );
 #if FRAME > 0
 	mvaddch(HEADSIZE, 0,      ACS_ULCORNER);
 	mvaddch(HEADSIZE, COLS-1, ACS_URCORNER);
@@ -542,7 +547,7 @@ void play_animation ( unsigned int fromright ) {
 	char kitty;
 
 	if ( state.options & OPTION_HAS_COLOR )
-		attrset ( COLOR_PAIR(7) );
+		attrset ( COLOR_PAIR(WHITE) );
 	move ( 1, 0 );
 	clrtoeol();
 
@@ -578,7 +583,7 @@ void play_animation ( unsigned int fromright ) {
 		refresh();
 		sleep ( 1 );
 	}
-	message ( "You found kitten! Way to go, robot!", 7 );
+	message ( "You found kitten! Way to go, robot!", WHITE );
 }
 
 void main_loop(void) {
@@ -651,7 +656,7 @@ void main_loop(void) {
 				break;
 	                default:
 	                        message ( "Invalid input: Use direction keys"\
-					" or q.", 7 );
+					" or q.", WHITE );
 	                        break;
 		}
 
@@ -685,7 +690,7 @@ void main_loop(void) {
 					state.bogus[bnum].color );
 				break;
 			default:
-				message ( "Well, that was unexpected...", 7 );
+				message ( "Well, that was unexpected...", WHITE );
 				break;
 		}
 	}
