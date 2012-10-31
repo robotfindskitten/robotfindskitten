@@ -711,7 +711,7 @@ int main ( int argc, char **argv ) {
 	read_messages();
 
 	if (state.num_messages == 0) {
-		fprintf ( stderr, "No NKIs found\n" );
+		fprintf ( stderr, "No NKIs found.\n" );
 		exit ( 1 );
 	}
 
@@ -720,14 +720,14 @@ int main ( int argc, char **argv ) {
 	if ( argc > 1 ) {
 		nbogus = atoi ( argv[1] );
 		if ( nbogus <= 0 ) {
-			fprintf ( stderr, "Argument must be positive\n" );
+			fprintf ( stderr, "Argument must be positive.\n" );
 			exit ( 1 );
 		}
 	} else {
 		nbogus = DEFAULT_NUM_BOGUS;
 	}
 	if ( nbogus > state.num_messages ) {
-		fprintf ( stderr, "More NKIs used then messages available\n" );
+		fprintf ( stderr, "More NKIs used then messages available.\n" );
 		exit ( 1 );
 	} else {
 		init ( nbogus );
