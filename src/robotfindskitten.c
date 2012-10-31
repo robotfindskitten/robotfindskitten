@@ -544,7 +544,7 @@ void instructions(void) {
 	clear();
 }
 
-void play_animation ( unsigned int fromright ) {
+void play_animation ( bool fromright ) {
 	int i, animation_meet;
 	char kitty;
 
@@ -590,26 +590,27 @@ void play_animation ( unsigned int fromright ) {
 
 void main_loop(void) {
 	int ch, x, y;
-	unsigned int bnum, fromright;
+	unsigned int bnum; 
+	bool fromright;
 
 	while ( ( ch = getch() ) ) {
 		y = state.items[ROBOT].y;
 		x = state.items[ROBOT].x;
-		fromright = 0;
+		fromright = false;
 		switch ( ch ) {
 			case NETHACK_UL:
 			case NETHACK_ul:
 			case NUMLOCK_UL:
 			case KEY_A1:
 			case KEY_HOME:
-				y--; x--; fromright = 1; break;
+				y--; x--; fromright = true; break;
 			case EMACS_PREVIOUS:
 			case NETHACK_UP:
 			case NETHACK_up:
 			case NUMLOCK_UP:
 			case KEY_UP:
 				/* fromright: special case */
-				y--; fromright = 1; break;
+				y--; fromright = true; break;
 			case NETHACK_UR:
 			case NETHACK_ur:
 			case NUMLOCK_UR:
@@ -621,7 +622,7 @@ void main_loop(void) {
 			case NETHACK_left:
 			case NUMLOCK_LEFT:
 			case KEY_LEFT:
-				x--; fromright = 1; break;
+				x--; fromright = true; break;
 			case EMACS_FORWARD:
 			case NETHACK_RIGHT:
 			case NETHACK_right:
@@ -633,7 +634,7 @@ void main_loop(void) {
 			case NUMLOCK_DL:
 			case KEY_C1:
 			case KEY_END:
-				y++; x--; fromright = 1; break;
+				y++; x--; fromright = true; break;
 			case EMACS_NEXT:
 			case NETHACK_DOWN:
 			case NETHACK_down:
@@ -648,7 +649,7 @@ void main_loop(void) {
 				y++; x++; break;
 	                case MYKEY_Q:
 	                case MYKEY_q:
-	                        finish ( 1 );
+	                        finish ( EXIT_FAILURE );
 	                        break;
 			case MYKEY_REDRAW:
 				draw_screen();
