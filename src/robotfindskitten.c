@@ -350,7 +350,7 @@ void init ( unsigned int num ) {
 	/* allocate memory */
 	if ( ! ( state.bogus = calloc ( num, sizeof ( screen_object ) ) ) ) {
 		fprintf ( stderr, "Cannot malloc.\n" );
-		exit ( 1 );
+		exit ( EXIT_FAILURE );
 	}
 
 	/* install exit handler */
@@ -369,7 +369,7 @@ void init ( unsigned int num ) {
 	if ( ( ( state.lines - HEADSIZE - FRAME ) * state.cols ) < ( num + 2 ) ) {
 		endwin();
 		fprintf ( stderr, "Screen too small to fit all objects!\n" );
-		exit ( 1 );
+		exit ( EXIT_FAILURE );
 	}
 
 	/* set up robot */
@@ -697,31 +697,45 @@ void main_loop(void) {
 }
 
 int main ( int argc, char **argv ) {
-	int nbogus;
+    int option, seed = time ( 0 ), nbogus = DEFAULT_NUM_BOGUS;
+
+	while ((option = getopt(argc, argv, "n:s:V")) != -1) {
+	    switch (option) {
+	    case 'n':
+		nbogus = atoi ( optarg );
+		if ( nbogus <= 0 ) {
+			fprintf ( stderr, "Argument must be positive.\n" );
+			exit ( EXIT_FAILURE );
+		}
+		break;
+	    case 's':
+		seed = atoi(optarg);
+		break;
+	    case 'V':
+		(void)printf("robotfindskitten: %s\n", PACKAGE_VERSION);
+		exit(EXIT_SUCCESS);
+	    case 'h':
+	    case '?':
+	    default:
+		(void)printf("usage: %s [-n nitems] [-s seed] [-V]\n", argv[0]);
+		exit(EXIT_SUCCESS);
+	    }
+	}
 
 	state.options = DEFAULT_OPTIONS;
-	srandom ( time ( 0 ) );
+	srandom ( seed );
 	read_messages();
 
 	if (state.num_messages == 0) {
 		fprintf ( stderr, "No NKIs found.\n" );
-		exit ( 1 );
+		exit ( EXIT_FAILURE );
 	}
 
 	randomize_messages();
 
-	if ( argc > 1 ) {
-		nbogus = atoi ( argv[1] );
-		if ( nbogus <= 0 ) {
-			fprintf ( stderr, "Argument must be positive.\n" );
-			exit ( 1 );
-		}
-	} else {
-		nbogus = DEFAULT_NUM_BOGUS;
-	}
 	if ( nbogus > state.num_messages ) {
 		fprintf ( stderr, "More NKIs used then messages available.\n" );
-		exit ( 1 );
+		exit ( EXIT_FAILURE );
 	} else {
 		init ( nbogus );
 	}

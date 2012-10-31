@@ -135,13 +135,13 @@ touched.
 @cindex non-kitten objects
 
 The first part of the simulation is the command line used to invoke
-it. It is here where you can control the number of non-kitten objects
-on the screen in any one instance of the simulation. To exercise this
-control, simply enter a number between 0 and 201 inclusive on the
-command line. For instance, to play with 32 objects on the screen, you
-would invoke the program with the command @command{robotfindskitten 32} (or,
-more likely, @command{./robotfindskitten 32}). The default is twenty
-non-kitten objects.
+it. It is here where you can control the number of non-kitten objects on
+the screen in any one instance of the simulation. To exercise this
+control, simply use the -n option on the command line. For instance, to
+play with 32 objects on the screen, you would invoke the program with
+the command @command{robotfindskitten -n 32} (or, more likely,
+@command{./robotfindskitten -n 32}). The default is twenty non-kitten
+objects.
 
 @cindex title screen
 The second part of the simulation is the title screen. It should be

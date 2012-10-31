@@ -5,7 +5,11 @@ robotfindskitten - help robot find kitten
 .\"
 .SH SYNOPSIS
 .B robotfindskitten
-.RI [ number ]
+[
+.BR -n number 
+] [
+.BR -s seed
+]
 .\"
 .SH DESCRIPTION
 In this game, you are robot
@@ -24,8 +28,11 @@ You can press Ctrl-L at any time to redraw the screen. You can press q
 at any time to quit.  A good old-fashioned Ctrl-C quits too.
 .\"
 .SH OPTIONS
-You can optionally specify the number of Non Kitten Items to use. The 
-default is 20.
+You can optionally specify the number of Non Kitten Items to use with
+the -s option. The default is 20.
+
+You can set the random-number seed, normally initialized from the
+system clock, with the -t option.  This may be useful for debugging.
 .\"
 .SH FILES
 .BR robotfindskitten (6)
