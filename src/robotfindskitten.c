@@ -281,6 +281,9 @@ void randomize_messages(void) {
 #define randch() ( random() % ( '~' - '!' + 1 ) + '!' )
 #define randbold() ( ( random() % 2 ) ? true : false )
 #define randcolor() ( random() % 6 + 1 )
+#define randint(m, n) ((m) + (random() % ((n) + 1)))
+#define abs(n) ((n) < 0 ? -n : n)
+#define sgn(n) ((n) == 0 ? 0 : ((n) < 0 ? -1 : 1))  
 
 inline char randchar(void) {
 	char ch;
@@ -349,9 +352,28 @@ void finish ( int sig ) {
 	exit ( sig );
 }
 
-void init ( unsigned int num ) {
+void sort_items(void)
+{
+	int i, j, temp;
 	screen_object tmpobj;
-	unsigned int i, j, temp;
+
+	/* sort the NKIs */ /* bubbly! */
+	for ( i = BOGUS; i < state.num_items - 1; i++ ) {
+		temp = i;
+		for ( j = i; j < state.num_items; j++ ) {
+			if ( objcmp ( state.items[j], state.items[temp] ) < 0 )
+				temp = j;
+		}
+		if ( temp != i ) {
+			tmpobj = state.items[i];
+			state.items[i] = state.items[temp];
+			state.items[temp] = tmpobj;
+		}
+	}
+}
+
+void init ( unsigned int num ) {
+	unsigned int i, j;
 
 	/* allocate memory */
 	if ( ! ( state.items = calloc ( num, sizeof ( screen_object ) ) ) ) {
@@ -412,19 +434,7 @@ void init ( unsigned int num ) {
 	}
 	state.num_items = BOGUS + num;
 
-	/* now sort the NKIs */ /* bubbly! */
-	for ( i = BOGUS; i < state.num_items - 1; i++ ) {
-		temp = i;
-		for ( j = i; j < state.num_items; j++ ) {
-			if ( objcmp ( state.items[j], state.items[temp] ) < 0 )
-				temp = j;
-		}
-		if ( temp != i ) {
-			tmpobj = state.items[i];
-			state.items[i] = state.items[temp];
-			state.items[temp] = tmpobj;
-		}
-	}
+	sort_items();
 
 	/* set up colors */
 	start_color();
@@ -516,10 +526,41 @@ void draw_screen() {
 	refresh();
 }
 
-/* captures control if the terminal shrank too much, otherwise does a refresh */
 void handle_resize(void) {
+    int ysgn = sgn(LINES - state.lines);
+    int xsgn = sgn(COLS - state.cols);
+    int i, bnum;
+
     state.lines = LINES;
     state.cols = COLS;
+
+    for ( i = 0; i < state.num_items; i++ ) {
+	int newx = state.items[i].x + randint(0, 1) * xsgn;
+	int newy = state.items[i].y + randint(0, 1) * ysgn;
+
+	if (newx < FRAME)
+		newx = FRAME;
+	if (newy < HEADSIZE + FRAME)
+		newy = HEADSIZE + FRAME;
+	if (newx > COLS - 1 - FRAME)
+		newx = COLS - 1 - FRAME;
+	if (newy > LINES - 1 - FRAME)
+		newy = LINES - 1 - FRAME;
+
+	if (newx != state.items[i].x || newy != state.items[i].y) {
+		if (test(newy, newx, &bnum) == 0) {
+		    state.items[i].y = newy;
+		    state.items[i].x = newx;
+		} else {
+		    endwin();
+		    fprintf(stderr, "You crushed the simulation. And the robot. And the kitten.\n");
+		    exit(EXIT_FAILURE);
+		}
+	}
+    }
+
+    sort_items();
+
     draw_screen();
 }
 
