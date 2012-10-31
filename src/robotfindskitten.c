@@ -480,19 +480,6 @@ void draw_screen() {
 	if ( state.options & OPTION_HAS_COLOR )
 		attrset ( COLOR_PAIR(WHITE) );
 	clear();
-	move ( 0, 0 );
-	printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
-	move ( state.kitten.y, state.kitten.x );
-	draw ( &state.kitten );
-	for ( i = 0; i < state.num_bogus; i++ ) {
-		move ( state.bogus[i].y, state.bogus[i].x );
-		draw ( &state.bogus[i] );
-	}
-	move ( state.robot.y, state.robot.x );
-	draw ( &state.robot );
-	move ( state.robot.y, state.robot.x );
-	if ( state.options & OPTION_HAS_COLOR )
-		attrset ( COLOR_PAIR(WHITE) );
 #if FRAME > 0
 	mvaddch(HEADSIZE, 0,      ACS_ULCORNER);
 	mvaddch(HEADSIZE, COLS-1, ACS_URCORNER);
@@ -511,6 +498,19 @@ void draw_screen() {
 	    mvaddch(HEADSIZE,  i, ACS_HLINE);
 	}
 #endif
+	move ( 0, 0 );
+	printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
+	move ( state.kitten.y, state.kitten.x );
+	draw ( &state.kitten );
+	for ( i = 0; i < state.num_bogus; i++ ) {
+		move ( state.bogus[i].y, state.bogus[i].x );
+		draw ( &state.bogus[i] );
+	}
+	move ( state.robot.y, state.robot.x );
+	draw ( &state.robot );
+	move ( state.robot.y, state.robot.x );
+	if ( state.options & OPTION_HAS_COLOR )
+		attrset ( COLOR_PAIR(WHITE) );
 	refresh();
 }
 
