@@ -108,6 +108,11 @@
 /* magic index of white color pair */
 #define WHITE	7
 
+/* special indices in the items array */
+#define ROBOT   	0
+#define KITTEN  	1
+#define BOGUS	2
+
 typedef struct {
 	int x;
 	int y;
@@ -117,15 +122,13 @@ typedef struct {
 } screen_object;
 
 typedef struct {
-	screen_object robot;
-	screen_object kitten;
 	int lines;
 	int cols;
 	unsigned int options;
-	unsigned int num_bogus;
+	unsigned int num_items;
 	unsigned int num_messages;
 	unsigned int num_messages_alloc;
-	screen_object *bogus;
+	screen_object *items;
 	char **messages;
 } game_state;
 
@@ -237,6 +240,9 @@ void read_messages(void) {
 	state.num_messages = 0;
 	state.num_messages_alloc = 0;
 
+	add_message("You found...yourself?", 21);
+	add_message("You found kitten! Way to go, robot!", 35);
+
 	do_read_messages ( SYSTEM_NKI_DIR );
 	for ( i = 0; environ[i]; i++ ) {
 		if ( ! strncmp ( environ[i], "HOME=", 5 ) ) {
@@ -259,7 +265,7 @@ void randomize_messages(void) {
 	char *temp;
 	unsigned int i, j;
 
-	for ( i = 0; i < ( state.num_messages - 1 ); i++ ) {
+	for ( i = BOGUS; i < ( state.num_messages - 1 ); i++ ) {
 		j = i + ( random() % ( state.num_messages - i ) );
 		if ( i != j ) {
 			temp = state.messages[i];
@@ -309,17 +315,17 @@ unsigned int test ( int y, int x, unsigned int *bnum ) {
 	result = 0;
 	s.x = x;
 	s.y = y;
-	if ( ! objcmp ( state.robot, s ) )
+	if ( ! objcmp ( state.items[ROBOT], s ) )
 		result |= BROBOT;
-	if ( ! objcmp ( state.kitten, s ) )
+	if ( ! objcmp ( state.items[KITTEN], s ) )
 		result |= BKITTEN;
 
-	/* search bogus array */
+	/* search items array */
 	low = 0;
-	high = state.num_bogus - 1;
+	high = state.num_items - 1;
 	while ( low <= high ) {
 		mid = ( low + high ) / 2;
-		switch ( objcmp ( s, state.bogus[mid] ) ) {
+		switch ( objcmp ( s, state.items[mid] ) ) {
 		case 0:
 			*bnum = mid;
 			return ( result | BBOGUS );
@@ -348,7 +354,7 @@ void init ( unsigned int num ) {
 	unsigned int i, j, temp;
 
 	/* allocate memory */
-	if ( ! ( state.bogus = calloc ( num, sizeof ( screen_object ) ) ) ) {
+	if ( ! ( state.items = calloc ( num, sizeof ( screen_object ) ) ) ) {
 		fprintf ( stderr, "Cannot malloc.\n" );
 		exit ( EXIT_FAILURE );
 	}
@@ -373,50 +379,50 @@ void init ( unsigned int num ) {
 	}
 
 	/* set up robot */
-	state.robot.character = '#';
-	state.robot.bold = 0; /* we are a timid robot */
-	state.robot.y = randy();
-	state.robot.x = randx();
+	state.items[ROBOT].character = '#';
+	state.items[ROBOT].bold = false; /* we are a timid robot */
+	state.items[ROBOT].y = randy();
+	state.items[ROBOT].x = randx();
 
 	/* set up kitten */
-	state.kitten.character = randchar();
-	state.kitten.bold = randbold();
+	state.items[KITTEN].character = randchar();
+	state.items[KITTEN].bold = randbold();
 	do {
-		state.kitten.y = randy();
-		state.kitten.x = randx();
-	} while ( ! objcmp ( state.robot, state.kitten ) );
+		state.items[KITTEN].y = randy();
+		state.items[KITTEN].x = randx();
+	} while ( ! objcmp ( state.items[ROBOT], state.items[KITTEN] ) );
 
-	/* set up bogus */
-	for ( i = 0; i < num; i++ ) {
-		state.bogus[i].character = randchar();
-		state.bogus[i].bold = randbold();
+	/* set up items */
+	for ( i = BOGUS; i < BOGUS + num; i++ ) {
+		state.items[i].character = randchar();
+		state.items[i].bold = randbold();
 		while ( true ) {
-			state.bogus[i].y = randy();
-			state.bogus[i].x = randx();
-			if ( ! objcmp ( state.robot, state.bogus[i] ) )
+			state.items[i].y = randy();
+			state.items[i].x = randx();
+			if ( ! objcmp ( state.items[ROBOT], state.items[i] ) )
 				continue;
-			if ( ! objcmp ( state.kitten, state.bogus[i] ) )
+			if ( ! objcmp ( state.items[KITTEN], state.items[i] ) )
 				continue;
 			for ( j = 0; j < i; j++ ) {
-				if ( ! objcmp ( state.bogus[j], 
-					state.bogus[i] ) ) break;
+				if ( ! objcmp ( state.items[j], 
+					state.items[i] ) ) break;
 			}
 			if ( j == i ) break;
 		}
 	}
-	state.num_bogus = num;
+	state.num_items = BOGUS + num;
 
-	/* now sort the bogus items */ /* bubbly! */
-	for ( i = 0; i < state.num_bogus - 1; i++ ) {
+	/* now sort the NKIs */ /* bubbly! */
+	for ( i = BOGUS; i < state.num_items - 1; i++ ) {
 		temp = i;
-		for ( j = i; j < state.num_bogus; j++ ) {
-			if ( objcmp ( state.bogus[j], state.bogus[temp] ) < 0 )
+		for ( j = i; j < state.num_items; j++ ) {
+			if ( objcmp ( state.items[j], state.items[temp] ) < 0 )
 				temp = j;
 		}
 		if ( temp != i ) {
-			tmpobj = state.bogus[i];
-			state.bogus[i] = state.bogus[temp];
-			state.bogus[temp] = tmpobj;
+			tmpobj = state.items[i];
+			state.items[i] = state.items[temp];
+			state.items[temp] = tmpobj;
 		}
 	}
 
@@ -433,10 +439,10 @@ void init ( unsigned int num ) {
 		init_pair ( 7, COLOR_WHITE, COLOR_BLACK );
 		bkgd ( COLOR_PAIR(WHITE) );
 
-		state.robot.color = WHITE;
-		state.kitten.color = randcolor();
-		for ( i = 0; i < state.num_bogus; i++ ) {
-			state.bogus[i].color = randcolor();
+		state.items[ROBOT].color = WHITE;
+		state.items[KITTEN].color = randcolor();
+		for ( i = BOGUS; i < state.num_items; i++ ) {
+			state.items[i].color = randcolor();
 		}
 	} else {
 		state.options &= ~ OPTION_HAS_COLOR;
@@ -500,15 +506,11 @@ void draw_screen() {
 #endif
 	move ( 0, 0 );
 	printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
-	move ( state.kitten.y, state.kitten.x );
-	draw ( &state.kitten );
-	for ( i = 0; i < state.num_bogus; i++ ) {
-		move ( state.bogus[i].y, state.bogus[i].x );
-		draw ( &state.bogus[i] );
+	for ( i = 0; i < state.num_items; i++ ) {
+		move ( state.items[i].y, state.items[i].x );
+		draw ( &state.items[i] );
 	}
-	move ( state.robot.y, state.robot.x );
-	draw ( &state.robot );
-	move ( state.robot.y, state.robot.x );
+	move ( state.items[ROBOT].y, state.items[ROBOT].x );
 	if ( state.options & OPTION_HAS_COLOR )
 		attrset ( COLOR_PAIR(WHITE) );
 	refresh();
@@ -553,33 +555,33 @@ void play_animation ( unsigned int fromright ) {
 
 	animation_meet = state.cols / 2;
 
-	kitty = state.kitten.character;
+	kitty = state.items[KITTEN].character;
 	for ( i = 4; i > 0; i-- ) {
-		state.robot.character = ' ';
-		state.kitten.character = ' ';
+		state.items[ROBOT].character = ' ';
+		state.items[KITTEN].character = ' ';
 
-		move ( state.robot.y, state.robot.x );
-		draw ( &state.robot );
-		move ( state.kitten.y, state.kitten.x );
-		draw ( &state.kitten );
+		move ( state.items[ROBOT].y, state.items[ROBOT].x );
+		draw ( &state.items[ROBOT] );
+		move ( state.items[KITTEN].y, state.items[KITTEN].x );
+		draw ( &state.items[KITTEN] );
 
-		state.robot.character = '#';
-		state.kitten.character = kitty;
-		state.robot.y = 1;
-		state.kitten.y = 1;
+		state.items[ROBOT].character = '#';
+		state.items[KITTEN].character = kitty;
+		state.items[ROBOT].y = 1;
+		state.items[KITTEN].y = 1;
 		if ( fromright ) {
-			state.robot.x = animation_meet + i;
-			state.kitten.x = animation_meet - i + 1;
+			state.items[ROBOT].x = animation_meet + i;
+			state.items[KITTEN].x = animation_meet - i + 1;
 		} else {
-			state.robot.x = animation_meet - i + 1;
-			state.kitten.x = animation_meet + i;
+			state.items[ROBOT].x = animation_meet - i + 1;
+			state.items[KITTEN].x = animation_meet + i;
 		}
 
-		move ( state.robot.y, state.robot.x );
-		draw ( &state.robot );
-		move ( state.kitten.y, state.kitten.x );
-		draw ( &state.kitten );
-		move ( state.robot.y, state.robot.x );
+		move ( state.items[ROBOT].y, state.items[ROBOT].x );
+		draw ( &state.items[ROBOT] );
+		move ( state.items[KITTEN].y, state.items[KITTEN].x );
+		draw ( &state.items[KITTEN] );
+		move ( state.items[ROBOT].y, state.items[ROBOT].x );
 		refresh();
 		sleep ( 1 );
 	}
@@ -591,8 +593,8 @@ void main_loop(void) {
 	unsigned int bnum, fromright;
 
 	while ( ( ch = getch() ) ) {
-		y = state.robot.y;
-		x = state.robot.x;
+		y = state.items[ROBOT].y;
+		x = state.items[ROBOT].x;
 		fromright = 0;
 		switch ( ch ) {
 			case NETHACK_UL:
@@ -669,13 +671,13 @@ void main_loop(void) {
 		switch ( test ( y, x, &bnum ) ) {
 			case 0:
 				/* robot moved */
-				state.robot.character = ' ';
-				draw ( &state.robot );
-				state.robot.y = y;
-				state.robot.x = x;
-				state.robot.character = '#';
+				state.items[ROBOT].character = ' ';
+				draw ( &state.items[ROBOT] );
+				state.items[ROBOT].y = y;
+				state.items[ROBOT].x = x;
+				state.items[ROBOT].character = '#';
 				move ( y, x );
-				draw ( &state.robot );
+				draw ( &state.items[ROBOT] );
 				move ( y, x );
 				refresh();
 			case BROBOT:
@@ -687,7 +689,7 @@ void main_loop(void) {
 				break;
 			case BBOGUS:
 				message ( state.messages[bnum], 
-					state.bogus[bnum].color );
+					state.items[bnum].color );
 				break;
 			default:
 				message ( "Well, that was unexpected...", WHITE );
