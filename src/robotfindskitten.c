@@ -99,8 +99,6 @@
 #define MYKEY_REDRAW CTRL('L')
 #define MYKEY_q 'q'
 #define MYKEY_Q 'Q'
-#define MYKEY_x 'x'
-#define MYKEY_X 'X'
 
 /* size of header area above frame and playing field */
 #define HEADSIZE	2
@@ -548,7 +546,7 @@ void instructions(void) {
 "is complicated by the existence of various things which are not kitten.\n"\
 "Robot must touch items to determine if they are kitten or not. The game\n"\
 "ends when robotfindskitten. Alternatively, you may end the game by hitting\n"
-"the q, Q, x, or x keys, or a good old-fashioned Ctrl-C.\n\n"\
+"the q key or a good old-fashioned Ctrl-C.\n\n"\
 "See the documentation for more information.\n\n"\
 "Press any key to start.\n"
 	);
@@ -662,8 +660,6 @@ void main_loop(void) {
 				y++; x++; break;
 	                case MYKEY_Q:
 	                case MYKEY_q:
-	                case MYKEY_X:
-	                case MYKEY_x:
 	                        finish ( 1 );
 	                        break;
 			case MYKEY_REDRAW:
@@ -674,7 +670,7 @@ void main_loop(void) {
 				break;
 	                default:
 	                        message ( "Invalid input: Use direction keys"\
-					" or q/Q/x/X.", 7 );
+					" or q.", 7 );
 	                        break;
 		}
 

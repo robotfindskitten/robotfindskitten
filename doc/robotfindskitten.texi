@@ -175,8 +175,8 @@ documentation.
 
 @cindex ending the simulation prematurely
 @item
-If you want to end the program for whatever reason, just hit 'q', or'Q',
-or 'x', or 'X', or terminate the program by hitting control-C.
+If you want to end the program for whatever reason, just hit 'q'
+or a good old-fashioned Control-C.
 @comment older versions used Esc as exit; this has been changed
 @end enumerate
 
