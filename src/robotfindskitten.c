@@ -743,8 +743,8 @@ int main ( int argc, char **argv ) {
 	instructions();
 	draw_screen();
 	main_loop();
-	finish ( 0 );
-	return 0;
+	finish ( EXIT_SUCCESS );
+	return EXIT_SUCCESS;
 }
 
 /* end */
