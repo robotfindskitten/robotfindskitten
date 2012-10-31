@@ -128,7 +128,7 @@ A traffic signal. It appears to have been recently vandalized.
 "There is no kitten!" cackles the old crone. You are shocked by her blasphemy.
 This is a Lagrange point. Don't come too close now.
 The dirty old tramp bemoans the loss of his harmonica.
-Look, it's Fanny the Irishman!
+# Look, it's Fanny the Irishman! # --unfunny, commented by pedro 20121031
 What in blazes is this?
 It's the instruction manual for a previous version of this game.
 A brain cell. Oddly enough, it seems to be functioning.
@@ -165,7 +165,7 @@ Three half-pennies and a wooden nickel.
 It's the missing chapter to "A Clockwork Orange".
 It's a burrito stand flyer. "Taqueria El Ranchito".
 This smiling family is happy because they eat LARD.
-Roger Avery, persona un famoso de los Estados Unidos.
+# Roger Avery, persona un famoso de los Estados Unidos. # --deleted by pedro 20121031
 Ne'er but a potted plant.
 A parrot, kipping on its back.
 A forgotten telephone switchboard.
@@ -188,7 +188,7 @@ Grind 'em up, spit 'em out, they're twigs.
 The boom box cranks out an old Ethel Merman tune.
 It's "Finding kitten", published by O'Reilly and Associates.
 Pumpkin pie spice.
-It's the Bass-Matic '76! Mmm, that's good bass!
+# It's the Bass-Matic '76! Mmm, that's good bass! # --fixed by pedro 20121031
 "Lend us a fiver 'til Thursday", pleas Andy Capp.
 It's a tape of '70s rock. All original hits! All original artists!
 You've found the fabled America Online disk graveyard!
@@ -292,7 +292,7 @@ It's a bug.
 It's a synthetic a priori truth!  Immanuel would be so pleased!
 It's the Tiki Room.
 Just some old play by a Czech playwright, and you can't read Czech.
-Kitten is the letter 'Q'.  Oh, wait, maybe not.
+# Kitten is the letter 'Q'.  Oh, wait, maybe not. # --edited by pedro 20121031
 Quidquid Latine dictum sit, kitten non est.
 Sutro Tower is visible at some distance through the fog.
 The Digital Millennium Copyright Act of 1998.
@@ -387,7 +387,7 @@ You found netkit! Way to go, robot!
 It's the ASCII Floating Head of Seth David Schoen!
 A frosted pink party-cake, half eaten.
 A bitchin' homemade tesla coil.
-Conan O'Brian, sans jawbone.
+# Conan O'Brian, sans jawbone. # -- changed by pedro 20121031
 It's either a mirror, or another soulless kitten-seeking robot.
 Preoccupation with finding kitten prevents you from investigating further.
 Fonzie sits here, mumbling incoherently about a shark and a pair of waterskis.
@@ -439,3 +439,9 @@ Blod.
 #
 # NKIs from the aftermath of ESR's git conversion and cleanup patches end here.
 #
+# NKI fixes from October 2012 by pedro on 20121031 (2 muted, 3 changed, 1 new)
+#
+It's the Super Bass-O-Matic '76! Mmm, that's good bass!
+It's the jawbone of an ass.
+A hastily scribbled note reads: "Kitten is the letter Q!"
+A pile of discarded "no dumping" signs.
