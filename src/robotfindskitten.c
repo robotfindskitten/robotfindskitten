@@ -547,13 +547,13 @@ void instructions(void) {
 void play_animation ( bool fromright ) {
 	int i, animation_meet;
 	char kitty;
+#define WIN_MESSAGE	"You found kitten! Way to go, robot!"
 
-	if ( state.options & OPTION_HAS_COLOR )
-		attrset ( COLOR_PAIR(WHITE) );
 	move ( 1, 0 );
 	clrtoeol();
+	message ( WIN_MESSAGE, WHITE );
 
-	animation_meet = state.cols / 2;
+	animation_meet = (sizeof(WIN_MESSAGE) + 10);
 
 	kitty = state.items[KITTEN].character;
 	for ( i = 4; i > 0; i-- ) {
@@ -585,7 +585,6 @@ void play_animation ( bool fromright ) {
 		refresh();
 		sleep ( 1 );
 	}
-	message ( "You found kitten! Way to go, robot!", WHITE );
 }
 
 void main_loop(void) {
