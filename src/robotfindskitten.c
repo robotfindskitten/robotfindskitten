@@ -716,6 +716,12 @@ int main ( int argc, char **argv ) {
 	state.options = DEFAULT_OPTIONS;
 	srandom ( time ( 0 ) );
 	read_messages();
+
+	if (state.num_messages == 0) {
+		fprintf ( stderr, "No NKIs found\n" );
+		exit ( 1 );
+	}
+
 	randomize_messages();
 
 	if ( argc > 1 ) {
