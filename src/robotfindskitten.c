@@ -303,71 +303,26 @@ inline int objcmp ( const screen_object a, const screen_object b ) {
 	}
 }
 
-/* returns a combination of robot kitten and bogus bits, based on what is 
-	at the coordinates; if bogus bit is set, bnum will be set to the 
-	index of the bogus object in the state.bogus array.
-	more than one bit should never be returned, but shit happens */
-/* I can't believe this is how I wrote it; but it makes so much sense */
 unsigned int test ( int y, int x, unsigned int *bnum ) {
-	int low, high, mid; /* have to be signed due to algorithm */
-	screen_object s;
-	unsigned int result;
-
-	result = 0;
-	s.x = x;
-	s.y = y;
-	if ( ! objcmp ( state.items[ROBOT], s ) )
-		result |= BROBOT;
-	if ( ! objcmp ( state.items[KITTEN], s ) )
-		result |= BKITTEN;
-
-	/* search items array */
-	low = 0;
-	high = state.num_items - 1;
-	while ( low <= high ) {
-		mid = ( low + high ) / 2;
-		switch ( objcmp ( s, state.items[mid] ) ) {
-		case 0:
-			*bnum = mid;
-			return ( result | BBOGUS );
-			break;
-		case 1:
-			low = mid + 1;
-			break;
-		case -1:
-			high = mid - 1;
-			break;
-		default:
-			abort(); /* poop pants */
-			break;
-		}
+	int i;
+	for (i = 0; i < state.num_items; i++) {
+	    if (state.items[i].x == x && state.items[i].y == y) {
+		*bnum = i;
+		if (i == ROBOT)
+		    return BROBOT;
+		else if (i == KITTEN)
+		    return BKITTEN;
+		else
+		    return BBOGUS;
+	    }
 	}
-	return result;
+
+	return 0;
 }
 
 void finish ( int sig ) {
 	endwin();
 	exit ( sig );
-}
-
-void sort_items(void)
-{
-	int i, j, temp;
-	screen_object tmpobj;
-
-	/* sort the NKIs */ /* bubbly! */
-	for ( i = BOGUS; i < state.num_items - 1; i++ ) {
-		temp = i;
-		for ( j = i; j < state.num_items; j++ ) {
-			if ( objcmp ( state.items[j], state.items[temp] ) < 0 )
-				temp = j;
-		}
-		if ( temp != i ) {
-			tmpobj = state.items[i];
-			state.items[i] = state.items[temp];
-			state.items[temp] = tmpobj;
-		}
-	}
 }
 
 void init ( unsigned int num ) {
@@ -431,8 +386,6 @@ void init ( unsigned int num ) {
 		}
 	}
 	state.num_items = BOGUS + num;
-
-	sort_items();
 
 	/* set up colors */
 	start_color();
