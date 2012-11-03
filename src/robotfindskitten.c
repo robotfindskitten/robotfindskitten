@@ -240,8 +240,8 @@ void read_messages(void) {
 	state.num_messages = 0;
 	state.num_messages_alloc = 0;
 
-	add_message("You found...yourself?", 21);
-	add_message("You found kitten! Way to go, robot!", 35);
+	for (i = 0; i < BOGUS; i++)
+	    add_message("", 0);
 
 	do_read_messages ( SYSTEM_NKI_DIR );
 	for ( i = 0; environ[i]; i++ ) {
@@ -527,9 +527,7 @@ void play_animation ( bool fromright ) {
 
 	move ( 1, 0 );
 	clrtoeol();
-	message ( WIN_MESSAGE, WHITE );
-
-	animation_meet = (sizeof(WIN_MESSAGE) + 10);
+	animation_meet = (COLS / 2);
 
 	kitty = state.items[KITTEN].character;
 	for ( i = 4; i > 0; i-- ) {
@@ -561,6 +559,8 @@ void play_animation ( bool fromright ) {
 		refresh();
 		sleep ( 1 );
 	}
+	message ( WIN_MESSAGE, WHITE );
+	sleep ( 1 );
 }
 
 void main_loop(void) {
