@@ -282,8 +282,6 @@ void randomize_messages(void) {
 #define randbold() ( ( random() % 2 ) ? true : false )
 #define randcolor() ( random() % 6 + 1 )
 #define randint(m, n) ((m) + (random() % ((n) + 1)))
-#define abs(n) ((n) < 0 ? -n : n)
-#define sgn(n) ((n) == 0 ? 0 : ((n) < 0 ? -1 : 1))  
 
 inline char randchar(void) {
 	char ch;
@@ -527,41 +525,25 @@ void draw_screen() {
 }
 
 void handle_resize(void) {
-    int ysgn = sgn(LINES - state.lines);
-    int xsgn = sgn(COLS - state.cols);
-    int i, bnum;
-
-    state.lines = LINES;
-    state.cols = COLS;
-
-    for ( i = 0; i < state.num_items; i++ ) {
-	int newx = state.items[i].x + randint(0, 1) * xsgn;
-	int newy = state.items[i].y + randint(0, 1) * ysgn;
-
-	if (newx < FRAME)
-		newx = FRAME;
-	if (newy < HEADSIZE + FRAME)
-		newy = HEADSIZE + FRAME;
-	if (newx > COLS - 1 - FRAME)
-		newx = COLS - 1 - FRAME;
-	if (newy > LINES - 1 - FRAME)
-		newy = LINES - 1 - FRAME;
-
-	if (newx != state.items[i].x || newy != state.items[i].y) {
-		if (test(newy, newx, &bnum) == 0) {
-		    state.items[i].y = newy;
-		    state.items[i].x = newx;
-		} else {
-		    endwin();
-		    fprintf(stderr, "You crushed the simulation. And the robot. And the kitten.\n");
-		    exit(EXIT_FAILURE);
-		}
+    int i, xbound = 0, ybound = 0;
+	for ( i = 0; i < state.num_items; i++ ) {
+	    if (state.items[i].x > xbound)
+		xbound = state.items[i].x;
+	    if (state.items[i].y > ybound)
+		ybound = state.items[i].y;
 	}
-    }
 
-    sort_items();
+	/* has the resize hidden any items? */ 
+	if (xbound >= COLS - FRAME*2 || ybound >= HEADSIZE + LINES - FRAME*2) {
+		endwin();
+		fprintf(stderr, 
+			"You crushed the simulation. And robot. And kitten.\n");
+		exit(EXIT_FAILURE);
+	}
 
-    draw_screen();
+	state.lines = LINES;
+	state.cols = COLS;
+	draw_screen();
 }
 
 void instructions(void) {
