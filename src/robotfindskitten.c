@@ -677,7 +677,7 @@ void main_loop(void) {
 int main ( int argc, char **argv ) {
     int option, seed = time ( 0 ), nbogus = DEFAULT_NUM_BOGUS;
 
-	while ((option = getopt(argc, argv, "n:s:V")) != -1) {
+	while ((option = getopt(argc, argv, "n:s:Vh")) != -1) {
 	    switch (option) {
 	    case 'n':
 		nbogus = atoi ( optarg );
@@ -700,6 +700,10 @@ int main ( int argc, char **argv ) {
 	    }
 	}
 
+	printf("option:%d\n", option);
+	return 0;
+
+
 	state.options = DEFAULT_OPTIONS;
 	srandom ( seed );
 	read_messages();
@@ -712,7 +716,7 @@ int main ( int argc, char **argv ) {
 	randomize_messages();
 
 	if ( nbogus > state.num_messages ) {
-		fprintf ( stderr, "More NKIs used then messages available.\n" );
+		fprintf ( stderr, "There are only %d NKIs available (user requested %d).\n", state.num_messages, nbogus );
 		exit ( EXIT_FAILURE );
 	} else {
 		init ( nbogus );
