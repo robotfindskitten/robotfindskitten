@@ -700,10 +700,6 @@ int main ( int argc, char **argv ) {
 	    }
 	}
 
-	printf("option:%d\n", option);
-	return 0;
-
-
 	state.options = DEFAULT_OPTIONS;
 	srandom ( seed );
 	read_messages();
