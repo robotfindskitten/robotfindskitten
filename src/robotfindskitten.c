@@ -240,8 +240,8 @@ void read_messages(void) {
 	state.num_messages = 0;
 	state.num_messages_alloc = 0;
 
-	add_message("You found...yourself?", 21);
-	add_message("You found kitten! Way to go, robot!", 35);
+	for (i = 0; i < BOGUS; i++)
+	    add_message("", 0);
 
 	do_read_messages ( SYSTEM_NKI_DIR );
 	for ( i = 0; environ[i]; i++ ) {
@@ -282,8 +282,6 @@ void randomize_messages(void) {
 #define randbold() ( ( random() % 2 ) ? true : false )
 #define randcolor() ( random() % 6 + 1 )
 #define randint(m, n) ((m) + (random() % ((n) + 1)))
-#define abs(n) ((n) < 0 ? -n : n)
-#define sgn(n) ((n) == 0 ? 0 : ((n) < 0 ? -1 : 1))  
 
 inline char randchar(void) {
 	char ch;
@@ -305,71 +303,26 @@ inline int objcmp ( const screen_object a, const screen_object b ) {
 	}
 }
 
-/* returns a combination of robot kitten and bogus bits, based on what is 
-	at the coordinates; if bogus bit is set, bnum will be set to the 
-	index of the bogus object in the state.bogus array.
-	more than one bit should never be returned, but shit happens */
-/* I can't believe this is how I wrote it; but it makes so much sense */
 unsigned int test ( int y, int x, unsigned int *bnum ) {
-	int low, high, mid; /* have to be signed due to algorithm */
-	screen_object s;
-	unsigned int result;
-
-	result = 0;
-	s.x = x;
-	s.y = y;
-	if ( ! objcmp ( state.items[ROBOT], s ) )
-		result |= BROBOT;
-	if ( ! objcmp ( state.items[KITTEN], s ) )
-		result |= BKITTEN;
-
-	/* search items array */
-	low = 0;
-	high = state.num_items - 1;
-	while ( low <= high ) {
-		mid = ( low + high ) / 2;
-		switch ( objcmp ( s, state.items[mid] ) ) {
-		case 0:
-			*bnum = mid;
-			return ( result | BBOGUS );
-			break;
-		case 1:
-			low = mid + 1;
-			break;
-		case -1:
-			high = mid - 1;
-			break;
-		default:
-			abort(); /* poop pants */
-			break;
-		}
+	int i;
+	for (i = 0; i < state.num_items; i++) {
+	    if (state.items[i].x == x && state.items[i].y == y) {
+		*bnum = i;
+		if (i == ROBOT)
+		    return BROBOT;
+		else if (i == KITTEN)
+		    return BKITTEN;
+		else
+		    return BBOGUS;
+	    }
 	}
-	return result;
+
+	return 0;
 }
 
 void finish ( int sig ) {
 	endwin();
 	exit ( sig );
-}
-
-void sort_items(void)
-{
-	int i, j, temp;
-	screen_object tmpobj;
-
-	/* sort the NKIs */ /* bubbly! */
-	for ( i = BOGUS; i < state.num_items - 1; i++ ) {
-		temp = i;
-		for ( j = i; j < state.num_items; j++ ) {
-			if ( objcmp ( state.items[j], state.items[temp] ) < 0 )
-				temp = j;
-		}
-		if ( temp != i ) {
-			tmpobj = state.items[i];
-			state.items[i] = state.items[temp];
-			state.items[temp] = tmpobj;
-		}
-	}
 }
 
 void init ( unsigned int num ) {
@@ -433,8 +386,6 @@ void init ( unsigned int num ) {
 		}
 	}
 	state.num_items = BOGUS + num;
-
-	sort_items();
 
 	/* set up colors */
 	start_color();
@@ -527,41 +478,25 @@ void draw_screen() {
 }
 
 void handle_resize(void) {
-    int ysgn = sgn(LINES - state.lines);
-    int xsgn = sgn(COLS - state.cols);
-    int i, bnum;
-
-    state.lines = LINES;
-    state.cols = COLS;
-
-    for ( i = 0; i < state.num_items; i++ ) {
-	int newx = state.items[i].x + randint(0, 1) * xsgn;
-	int newy = state.items[i].y + randint(0, 1) * ysgn;
-
-	if (newx < FRAME)
-		newx = FRAME;
-	if (newy < HEADSIZE + FRAME)
-		newy = HEADSIZE + FRAME;
-	if (newx > COLS - 1 - FRAME)
-		newx = COLS - 1 - FRAME;
-	if (newy > LINES - 1 - FRAME)
-		newy = LINES - 1 - FRAME;
-
-	if (newx != state.items[i].x || newy != state.items[i].y) {
-		if (test(newy, newx, &bnum) == 0) {
-		    state.items[i].y = newy;
-		    state.items[i].x = newx;
-		} else {
-		    endwin();
-		    fprintf(stderr, "You crushed the simulation. And the robot. And the kitten.\n");
-		    exit(EXIT_FAILURE);
-		}
+    int i, xbound = 0, ybound = 0;
+	for ( i = 0; i < state.num_items; i++ ) {
+	    if (state.items[i].x > xbound)
+		xbound = state.items[i].x;
+	    if (state.items[i].y > ybound)
+		ybound = state.items[i].y;
 	}
-    }
 
-    sort_items();
+	/* has the resize hidden any items? */ 
+	if (xbound >= COLS - FRAME*2 || ybound >= HEADSIZE + LINES - FRAME*2) {
+		endwin();
+		fprintf(stderr, 
+			"You crushed the simulation. And robot. And kitten.\n");
+		exit(EXIT_FAILURE);
+	}
 
-    draw_screen();
+	state.lines = LINES;
+	state.cols = COLS;
+	draw_screen();
 }
 
 void instructions(void) {
@@ -592,9 +527,7 @@ void play_animation ( bool fromright ) {
 
 	move ( 1, 0 );
 	clrtoeol();
-	message ( WIN_MESSAGE, WHITE );
-
-	animation_meet = (sizeof(WIN_MESSAGE) + 10);
+	animation_meet = (COLS / 2);
 
 	kitty = state.items[KITTEN].character;
 	for ( i = 4; i > 0; i-- ) {
@@ -626,6 +559,8 @@ void play_animation ( bool fromright ) {
 		refresh();
 		sleep ( 1 );
 	}
+	message ( WIN_MESSAGE, WHITE );
+	sleep ( 1 );
 }
 
 void main_loop(void) {
