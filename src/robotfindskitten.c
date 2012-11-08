@@ -37,7 +37,7 @@
 #error "No (n)curses headers found, aborting"
 #endif
 
-#define SYSTEM_NKI_DIR "/usr/share/games/robotfindskitten"
+/* #define SYSTEM_NKI_DIR "/usr/share/games/robotfindskitten" */
 #define USER_NKI_DIR ".robotfindskitten"
 
 #define DEFAULT_NUM_BOGUS 20

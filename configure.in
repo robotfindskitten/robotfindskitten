@@ -23,4 +23,4 @@ AC_CHECK_HEADERS(ncurses.h,,
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
-AC_OUTPUT(Makefile src/Makefile doc/Makefile)
+AC_OUTPUT(Makefile src/Makefile doc/Makefile nki/Makefile)
