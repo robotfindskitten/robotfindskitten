@@ -567,18 +567,20 @@ void play_animation ( bool fromright ) {
 		sleep ( 1 );
 	}
 	message ( WIN_MESSAGE, WHITE );
+	curs_set(0);
 	sleep ( 1 );
 }
 
 void main_loop(void) {
 	int ch, x, y;
-	unsigned int bnum; 
+	unsigned int bnum;
 	bool fromright;
+
+	fromright = false;
 
 	while ( ( ch = getch() ) ) {
 		y = state.items[ROBOT].y;
 		x = state.items[ROBOT].x;
-		fromright = false;
 		switch ( ch ) {
 			case NETHACK_UL:
 			case NETHACK_ul:
@@ -610,7 +612,7 @@ void main_loop(void) {
 			case NETHACK_right:
 			case NUMLOCK_RIGHT:
 			case KEY_RIGHT:
-				x++; break;
+				x++; fromright = false; break;
 			case NETHACK_DL:
 			case NETHACK_dl:
 			case NUMLOCK_DL:
