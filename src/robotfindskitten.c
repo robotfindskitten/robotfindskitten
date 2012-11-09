@@ -40,6 +40,8 @@
 /* #define SYSTEM_NKI_DIR "/usr/share/games/robotfindskitten" */
 #define USER_NKI_DIR ".robotfindskitten"
 
+#define NKI_EXT		"nki"
+
 #define DEFAULT_NUM_BOGUS 20
 
 /* option flags for state.options */
@@ -207,6 +209,7 @@ void read_file ( char *fname ) {
 
 void do_read_messages ( char *dname ) {
 	char *fname;
+	char *ext;
 	DIR *dir;
 	size_t len, plen;
 	struct dirent *dent;
@@ -222,7 +225,11 @@ void do_read_messages ( char *dname ) {
 			strcpy ( ( fname + plen + 1 ), dent->d_name );
 			if ( ! stat ( fname, &sb ) &&
 				( sb.st_mode & S_IFREG ) ) {
-					read_file ( fname );
+					ext = malloc(sizeof(char) * strlen(fname) + 1);
+					strncpy(ext, fname+(strlen(fname) - 3), strlen(fname));
+					if (strncmp(ext, NKI_EXT, 3) == 0) {
+						read_file ( fname );
+					}
 			}
 			free ( fname );
 		}
