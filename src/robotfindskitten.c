@@ -248,7 +248,7 @@ void read_messages(void) {
 	state.num_messages_alloc = 0;
 
 	for (i = 0; i < BOGUS; i++)
-	    add_message("", 0);
+	    add_message ( "", 1 );
 
 	do_read_messages ( SYSTEM_NKI_DIR );
 	for ( i = 0; environ[i]; i++ ) {
