@@ -238,10 +238,12 @@ void do_read_messages ( char *dname ) {
 }
 
 void read_messages(void) {
-	char *temp;
-	size_t l;
 	unsigned int i;
 	extern char** environ;
+	char *home_dir;
+	size_t home_len;
+	char *user_nki_dir;
+	size_t user_nki_len;
 
 	state.messages = 0;
 	state.num_messages = 0;
@@ -251,20 +253,23 @@ void read_messages(void) {
 	    add_message ( "", 1 );
 
 	do_read_messages ( SYSTEM_NKI_DIR );
-	for ( i = 0; environ[i]; i++ ) {
-		if ( ! strncmp ( environ[i], "HOME=", 5 ) ) {
-			l = strlen ( environ[i] );
-			temp = malloc ( l + strlen ( USER_NKI_DIR ) - 4 );
-			if ( temp ) {
-				strcpy ( temp, ( environ[i] + 5 ) );
-				temp[( l - 5 )] = '/';
-				strcpy ( ( temp + l - 4 ), USER_NKI_DIR );
-				do_read_messages ( temp );
-				free ( temp );
-			}
-			break;	
+
+	home_dir = getenv ( "HOME" );
+	if ( home_dir ) {
+		home_len = strlen ( home_dir );
+		user_nki_len = home_len + 1 + strlen ( USER_NKI_DIR ) + 1;
+		if ( ! ( user_nki_dir = malloc ( user_nki_len ) ) ) {
+			fprintf ( stderr, "Cannot malloc for user NKI directory.\n" );
+			exit ( EXIT_FAILURE );
 		}
+
+		strcpy ( user_nki_dir, home_dir );
+		user_nki_dir[ home_len ] = '/';
+		strcpy ( user_nki_dir + home_len + 1, USER_NKI_DIR );
+		do_read_messages ( user_nki_dir );
+		free ( user_nki_dir );
 	}
+
 	do_read_messages ( "nki" );
 }
 
