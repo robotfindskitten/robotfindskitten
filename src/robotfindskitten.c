@@ -239,7 +239,6 @@ void do_read_messages ( char *dname ) {
 
 void read_messages(void) {
 	unsigned int i;
-	extern char** environ;
 	char *home_dir;
 	size_t home_len;
 	char *user_nki_dir;
