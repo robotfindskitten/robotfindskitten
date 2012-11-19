@@ -230,6 +230,7 @@ void do_read_messages ( char *dname ) {
 					if (strncmp(ext, NKI_EXT, 3) == 0) {
 						read_file ( fname );
 					}
+					free ( ext );
 			}
 			free ( fname );
 		}
