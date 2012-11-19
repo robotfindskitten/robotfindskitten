@@ -336,7 +336,7 @@ void init ( unsigned int num ) {
 	unsigned int i, j;
 
 	/* allocate memory */
-	if ( ! ( state.items = calloc ( num, sizeof ( screen_object ) ) ) ) {
+	if ( ! ( state.items = calloc ( num + BOGUS, sizeof ( screen_object ) ) ) ) {
 		fprintf ( stderr, "Cannot malloc.\n" );
 		exit ( EXIT_FAILURE );
 	}
