@@ -22,7 +22,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#ifndef S_SPLINT_S
 #include <unistd.h>
+#endif /* S_SPLINT_S */
 #include <dirent.h>
 #include <fcntl.h>
 #include <string.h>
@@ -137,7 +139,7 @@ typedef struct {
 /* global state */
 static game_state state;
 
-void add_message ( char *msg, size_t len ) {
+static void add_message ( char *msg, size_t len ) {
 	char *buff, **nmess;
 
 	if ( state.num_messages_alloc <= state.num_messages ) {
@@ -162,7 +164,7 @@ void add_message ( char *msg, size_t len ) {
 	}
 }
 
-void read_file ( char *fname ) {
+static void read_file ( char *fname ) {
 	int fd;
 	char ch, *buff, *buff2;
 	size_t len, alloc;
@@ -207,7 +209,7 @@ void read_file ( char *fname ) {
 		free ( buff );
 }
 
-void do_read_messages ( char *dname ) {
+static void do_read_messages ( char *dname ) {
 	char *fname;
 	char *ext;
 	DIR *dir;
@@ -238,7 +240,7 @@ void do_read_messages ( char *dname ) {
 	closedir ( dir );
 }
 
-void read_messages(void) {
+static void read_messages(void) {
 	unsigned int i;
 	char *home_dir;
 	char *user_nki_dir;
@@ -271,7 +273,7 @@ void read_messages(void) {
 	do_read_messages ( "nki" );
 }
 
-void randomize_messages(void) {
+static void randomize_messages(void) {
 	char *temp;
 	unsigned int i, j;
 
@@ -293,13 +295,13 @@ void randomize_messages(void) {
 #define randcolor() ( random() % 6 + 1 )
 #define randint(m, n) ((m) + (random() % ((n) + 1)))
 
-inline char randchar(void) {
+static inline char randchar(void) {
 	char ch;
 	do { ch = randch(); } while ( ch == '#' );
 	return ch;
 }
 
-inline int objcmp ( const screen_object a, const screen_object b ) {
+static inline int objcmp ( const screen_object a, const screen_object b ) {
 	if ( a.x > b.x ) {
 		return 1;
 	} else if ( a.x < b.x ) {
@@ -313,7 +315,7 @@ inline int objcmp ( const screen_object a, const screen_object b ) {
 	}
 }
 
-unsigned int test ( int y, int x, unsigned int *bnum ) {
+static unsigned int test ( int y, int x, unsigned int *bnum ) {
 	int i;
 	for (i = 0; i < state.num_items; i++) {
 	    if (state.items[i].x == x && state.items[i].y == y) {
@@ -330,12 +332,12 @@ unsigned int test ( int y, int x, unsigned int *bnum ) {
 	return 0;
 }
 
-void finish ( int sig ) {
+static void finish ( int sig ) {
 	endwin();
 	exit ( sig );
 }
 
-void init ( unsigned int num ) {
+static void init ( unsigned int num ) {
 	unsigned int i, j;
 
 	/* allocate memory */
@@ -420,7 +422,7 @@ void init ( unsigned int num ) {
 	}
 }
 
-void draw ( const screen_object *o ) {
+static void draw ( const screen_object *o ) {
 	attr_t new;
 
 	if ( state.options & OPTION_HAS_COLOR ) {
@@ -431,7 +433,7 @@ void draw ( const screen_object *o ) {
 	addch ( o->character );
 }
 
-void message ( char *message, int color ) {
+static void message ( char *message, int color ) {
 	int y, x;
 
 	getyx ( curscr, y, x );
@@ -451,7 +453,7 @@ void message ( char *message, int color ) {
 	refresh();
 }
 
-void draw_screen() {
+static void draw_screen() {
 	unsigned int i;
 
 	if ( state.options & OPTION_HAS_COLOR )
@@ -487,7 +489,7 @@ void draw_screen() {
 	refresh();
 }
 
-void handle_resize(void) {
+static void handle_resize(void) {
     int i, xbound = 0, ybound = 0;
 	for ( i = 0; i < state.num_items; i++ ) {
 	    if (state.items[i].x > xbound)
@@ -509,7 +511,7 @@ void handle_resize(void) {
 	draw_screen();
 }
 
-void instructions(void) {
+static void instructions(void) {
 	clear();
 	move ( 0, 0 );
 	printw ( "robotfindskitten %s\n", PACKAGE_VERSION );
@@ -530,7 +532,7 @@ void instructions(void) {
 	clear();
 }
 
-void play_animation ( bool fromright ) {
+static void play_animation ( bool fromright ) {
 	int i, animation_meet;
 	char kitty;
 #define WIN_MESSAGE	"You found kitten! Way to go, robot!"
@@ -574,7 +576,7 @@ void play_animation ( bool fromright ) {
 	sleep ( 1 );
 }
 
-void main_loop(void) {
+static void main_loop(void) {
 	int ch, x, y;
 	unsigned int bnum;
 	bool fromright;
