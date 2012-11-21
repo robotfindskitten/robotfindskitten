@@ -203,7 +203,7 @@ static void read_file ( char *fname ) {
 				len++;
 			}
 		} /* end while ( true ) */
-		close ( fd );
+		(void) close ( fd );
 	}
 	if ( alloc )
 		free ( buff );
@@ -237,7 +237,7 @@ static void do_read_messages ( char *dname ) {
 			free ( fname );
 		}
 	}
-	closedir ( dir );
+	(void) closedir ( dir );
 }
 
 static void read_messages(void) {
@@ -400,7 +400,7 @@ static void init ( unsigned int num ) {
 	state.num_items = BOGUS + num;
 
 	/* set up colors */
-	start_color();
+	(void) start_color();
 	if ( has_colors() && ( COLOR_PAIRS > 7 ) ) {
 		state.options |= OPTION_HAS_COLOR;
 		(void) init_pair ( 1, COLOR_GREEN, COLOR_BLACK );
@@ -478,15 +478,15 @@ static void draw_screen() {
 	}
 #endif
 	(void) move ( 0, 0 );
-	printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
+	(void) printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
 	for ( i = 0; i < state.num_items; i++ ) {
 		(void) move ( state.items[i].y, state.items[i].x );
 		draw ( &state.items[i] );
 	}
-	move ( state.items[ROBOT].y, state.items[ROBOT].x );
+	(void) move ( state.items[ROBOT].y, state.items[ROBOT].x );
 	if ( state.options & OPTION_HAS_COLOR )
 		(void) attrset ( COLOR_PAIR(WHITE) );
-	refresh();
+	(void) refresh();
 }
 
 static void handle_resize(void) {
@@ -546,9 +546,9 @@ static void play_animation ( bool fromright ) {
 		state.items[ROBOT].character = ' ';
 		state.items[KITTEN].character = ' ';
 
-		move ( state.items[ROBOT].y, state.items[ROBOT].x );
+		(void) move ( state.items[ROBOT].y, state.items[ROBOT].x );
 		draw ( &state.items[ROBOT] );
-		move ( state.items[KITTEN].y, state.items[KITTEN].x );
+		(void) move ( state.items[KITTEN].y, state.items[KITTEN].x );
 		draw ( &state.items[KITTEN] );
 
 		state.items[ROBOT].character = '#';
@@ -563,13 +563,13 @@ static void play_animation ( bool fromright ) {
 			state.items[KITTEN].x = animation_meet + i;
 		}
 
-		move ( state.items[ROBOT].y, state.items[ROBOT].x );
+		(void) move ( state.items[ROBOT].y, state.items[ROBOT].x );
 		draw ( &state.items[ROBOT] );
-		move ( state.items[KITTEN].y, state.items[KITTEN].x );
+		(void) move ( state.items[KITTEN].y, state.items[KITTEN].x );
 		draw ( &state.items[KITTEN] );
-		move ( state.items[ROBOT].y, state.items[ROBOT].x );
-		refresh();
-		sleep ( 1 );
+		(void) move ( state.items[ROBOT].y, state.items[ROBOT].x );
+		(void) refresh();
+		(void) sleep ( 1 );
 	}
 	message ( WIN_MESSAGE, WHITE );
 	(void) curs_set(0);
