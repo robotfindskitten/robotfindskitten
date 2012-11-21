@@ -111,19 +111,19 @@
 #define FRAME   	1
 
 /* magic index of white color pair */
-#define WHITE	7
+#define WHITE		7
 
 /* special indices in the items array */
 #define ROBOT   	0
 #define KITTEN  	1
-#define BOGUS	2
+#define BOGUS		2
 
 typedef struct {
 	int x;
 	int y;
 	unsigned int color;
 	bool bold;
-	char character;
+	chtype character;
 } screen_object;
 
 typedef struct {
@@ -253,7 +253,9 @@ static void read_messages(void) {
 	for (i = 0; i < BOGUS; i++)
 	    add_message ( "", 1 );
 
+#ifndef S_SPLINT_S
 	do_read_messages ( SYSTEM_NKI_DIR );
+#endif /* S_SPLINT_S */
 
 	home_dir = getenv ( "HOME" );
 	if ( home_dir ) {
@@ -357,13 +359,13 @@ static void init ( unsigned int num ) {
 	}
 
 	/* set up robot */
-	state.items[ROBOT].character = '#';
+	state.items[ROBOT].character = (chtype)'#';
 	state.items[ROBOT].bold = false; /* we are a timid robot */
 	state.items[ROBOT].y = randy();
 	state.items[ROBOT].x = randx();
 
 	/* set up kitten */
-	state.items[KITTEN].character = randchar();
+	state.items[KITTEN].character = (chtype)randchar();
 	state.items[KITTEN].bold = randbold();
 	do {
 		state.items[KITTEN].y = randy();
@@ -372,7 +374,7 @@ static void init ( unsigned int num ) {
 
 	/* set up items */
 	for ( i = BOGUS; i < BOGUS + num; i++ ) {
-		state.items[i].character = randchar();
+		state.items[i].character = (chtype)randchar();
 		state.items[i].bold = randbold();
 		while ( true ) {
 			state.items[i].y = randy();
@@ -521,7 +523,7 @@ static void instructions(void) {
 
 static void play_animation ( bool fromright ) {
 	int i, animation_meet;
-	char kitty;
+	chtype kitty;
 #define WIN_MESSAGE	"You found kitten! Way to go, robot!"
 
 	(void) move ( 1, 0 );
@@ -530,15 +532,15 @@ static void play_animation ( bool fromright ) {
 
 	kitty = state.items[KITTEN].character;
 	for ( i = 4; i > 0; i-- ) {
-		state.items[ROBOT].character = ' ';
-		state.items[KITTEN].character = ' ';
+		state.items[ROBOT].character = (chtype)' ';
+		state.items[KITTEN].character = (chtype)' ';
 
 		(void) move ( state.items[ROBOT].y, state.items[ROBOT].x );
 		draw ( &state.items[ROBOT] );
 		(void) move ( state.items[KITTEN].y, state.items[KITTEN].x );
 		draw ( &state.items[KITTEN] );
 
-		state.items[ROBOT].character = '#';
+		state.items[ROBOT].character = (chtype)'#';
 		state.items[KITTEN].character = kitty;
 		state.items[ROBOT].y = 1;
 		state.items[KITTEN].y = 1;
@@ -565,7 +567,7 @@ static void play_animation ( bool fromright ) {
 
 static void main_loop(void) {
 	int ch, x, y;
-	unsigned int bnum;
+	unsigned int bnum = 0;
 	bool fromright;
 
 	fromright = false;
@@ -648,11 +650,11 @@ static void main_loop(void) {
 		switch ( test ( y, x, &bnum ) ) {
 			case 0:
 				/* robot moved */
-				state.items[ROBOT].character = ' ';
+				state.items[ROBOT].character = (chtype)' ';
 				draw ( &state.items[ROBOT] );
 				state.items[ROBOT].y = y;
 				state.items[ROBOT].x = x;
-				state.items[ROBOT].character = '#';
+				state.items[ROBOT].character = (chtype)'#';
 				(void) move ( y, x );
 				draw ( &state.items[ROBOT] );
 				(void) move ( y, x );
