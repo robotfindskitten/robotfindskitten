@@ -260,7 +260,7 @@ static void read_messages(void) {
 	char *home_dir;
 	char *user_nki_dir;
 
-	/*@-mustfreeonly@*/
+	/*@-mustfreefresh -mustfreeonly@*/
 	state.messages = 0;
 	state.num_messages = 0;
 	state.num_messages_alloc = 0;
@@ -287,7 +287,7 @@ static void read_messages(void) {
 		do_read_messages ( user_nki_dir );
 		(void) free ( user_nki_dir );
 	}
-	/*@=mustfreeonly@*/
+	/*@=mustfreefresh =mustfreeonly@*/
 
 	do_read_messages ( "nki" );
 }
@@ -349,13 +349,13 @@ static void finish ( int sig ) {
 static void init ( unsigned int num ) {
 	unsigned int i, j;
 
-	/*@-mustfreefresh@*/
+	/*@-mustfreefresh -mustfreeonly@*/
 	/* allocate memory */
 	if ( ! ( state.items = calloc ( (size_t)num + BOGUS, sizeof ( screen_object ) ) ) ) {
 		fprintf ( stderr, "Cannot malloc.\n" );
 		exit ( EXIT_FAILURE );
 	}
-	/*@=mustfreefresh@*/
+	/*@=mustfreefresh =mustfreeonly@*/
 
 	/* install exit handler */
 	(void) signal ( SIGINT, finish );
@@ -436,6 +436,7 @@ static void init ( unsigned int num ) {
 static void draw ( const screen_object *o ) {
 	attr_t new;
 
+	assert ( curscr != NULL);
 	if ( ( state.options & OPTION_HAS_COLOR ) != 0 ) {
 		new = COLOR_PAIR(o->color);
 		if ( o->bold ) { new |= A_BOLD; }
