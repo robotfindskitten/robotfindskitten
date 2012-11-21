@@ -6,5 +6,6 @@ AM_CPPFLAGS = -DSYSTEM_NKI_DIR=\"$(datadir)/games/robotfindskitten\"
 robotfindskitten_SOURCES= messages.h robotfindskitten.c 
 #robotfindskitten_LDADD= -lncurses 
 
+# Run a static type check on the code
 cppcheck: robotfindskitten.c
-	cppcheck --template gcc --enable=all robotfindskitten.c #--inline-suppr
+	cppcheck -I .. --template gcc --enable=all robotfindskitten.c
