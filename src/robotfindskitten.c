@@ -121,7 +121,7 @@
 typedef struct {
 	int x;
 	int y;
-	int color;
+	unsigned int color;
 	bool bold;
 	char character;
 } screen_object;
@@ -144,7 +144,7 @@ static void add_message ( char *msg, size_t len ) {
 	char *buff, **nmess;
 
 	if ( state.num_messages_alloc <= state.num_messages ) {
-		nmess = calloc ( state.num_messages + MSGS_ALLOC_CHUNK,
+	    nmess = calloc ( (size_t)state.num_messages + MSGS_ALLOC_CHUNK,
 			sizeof ( char * ) );
 		if ( nmess ) {
 			state.num_messages_alloc =
@@ -175,7 +175,7 @@ static void read_file ( char *fname ) {
 
 	if ( ( fd = open ( fname, O_RDONLY ) ) != -1 ) {
 		while ( true ) {
-			int ret = read ( fd, &ch, 1 );
+			ssize_t ret = read ( fd, &ch, 1 );
 			if ( ret < 0 ) /* an error */
 				break;
 			if ( alloc <= len ) { /* grow buff */
@@ -257,7 +257,7 @@ static void read_messages(void) {
 
 	home_dir = getenv ( "HOME" );
 	if ( home_dir ) {
-		int home_len = strlen ( home_dir );
+		size_t home_len = strlen ( home_dir );
 		size_t user_nki_len = home_len + 1 + strlen ( USER_NKI_DIR ) + 1;
 		if ( ! ( user_nki_dir = malloc ( user_nki_len ) ) ) {
 			(void) fprintf ( stderr, "Cannot malloc for user NKI directory.\n" );
@@ -307,7 +307,7 @@ static inline bool object_equal ( const screen_object a, const screen_object b )
 }
 
 static unsigned int test ( int y, int x, unsigned int *bnum ) {
-	int i;
+	unsigned int i;
 	for (i = 0; i < state.num_items; i++) {
 	    if (state.items[i].x == x && state.items[i].y == y) {
 		*bnum = i;
@@ -424,7 +424,7 @@ static void draw ( const screen_object *o ) {
 	(void) addch ( o->character );
 }
 
-static void message ( char *message, int color ) {
+static void message ( char *message, unsigned int color ) {
 	int y, x;
 
 	getyx ( curscr, y, x );
@@ -455,17 +455,17 @@ static void draw_screen() {
 	(void) mvaddch(HEADSIZE, COLS-1, ACS_URCORNER);
 	(void) mvaddch(LINES-1,  0,      ACS_LLCORNER);
 	(void) mvaddch(LINES-1,  COLS-1, ACS_LRCORNER);
-	for (i = 1; i < COLS - 1; i++) {
-	    (void) mvaddch(HEADSIZE,  i, ACS_HLINE);
-	    (void) mvaddch(LINES - 1, i, ACS_HLINE);
+	for (i = 1; i < (unsigned int)COLS - 1; i++) {
+	    (void) mvaddch(HEADSIZE,  (int)i, ACS_HLINE);
+	    (void) mvaddch(LINES - 1, (int)i, ACS_HLINE);
 	}
-	for (i = FRAME + HEADSIZE; i < LINES - 1; i++) {
-	    (void) mvaddch(i, 0,      ACS_VLINE);
-	    (void) mvaddch(i, COLS-1, ACS_VLINE);
+	for (i = FRAME + HEADSIZE; i < (unsigned int)LINES - 1; i++) {
+	    (void) mvaddch((int)i, 0,      ACS_VLINE);
+	    (void) mvaddch((int)i, COLS-1, ACS_VLINE);
 	}
 #else
 	for (i = 0; i < COLS; i++) {
-	    (void) mvaddch(HEADSIZE,  i, ACS_HLINE);
+	    (void) mvaddch(HEADSIZE,  (int)i, ACS_HLINE);
 	}
 #endif
 	(void) move ( 0, 0 );
@@ -481,7 +481,8 @@ static void draw_screen() {
 }
 
 static void handle_resize(void) {
-    int i, xbound = 0, ybound = 0;
+	int xbound = 0, ybound = 0;
+	unsigned int i;
 	for ( i = 0; i < state.num_items; i++ ) {
 	    if (state.items[i].x > xbound)
 		xbound = state.items[i].x;
@@ -661,6 +662,7 @@ static void main_loop(void) {
 				draw ( &state.items[ROBOT] );
 				(void) move ( y, x );
 				(void) refresh();
+				break;
 			case BROBOT:
 				/* nothing happened */
 				break;
@@ -680,7 +682,7 @@ static void main_loop(void) {
 }
 
 int main ( int argc, char **argv ) {
-    int option, seed = time ( 0 ), nbogus = DEFAULT_NUM_BOGUS;
+    int option, seed = (int) time ( 0 ), nbogus = DEFAULT_NUM_BOGUS;
 
 	while ((option = getopt(argc, argv, "n:s:Vh")) != -1) {
 	    switch (option) {
@@ -706,7 +708,9 @@ int main ( int argc, char **argv ) {
 	}
 
 	state.options = DEFAULT_OPTIONS;
+#ifndef S_SPLINT_S
 	srandom ( seed );
+#endif /* S_SPLINT_S */
 	read_messages();
 
 	if (state.num_messages == 0) {
@@ -716,11 +720,11 @@ int main ( int argc, char **argv ) {
 
 	randomize_messages();
 
-	if ( nbogus > state.num_messages ) {
-		(void) fprintf ( stderr, "There are only %d NKIs available (user requested %d).\n", state.num_messages, nbogus );
+	if ( nbogus > (int)state.num_messages ) {
+		(void) fprintf ( stderr, "There are only %u NKIs available (user requested %d).\n", state.num_messages, nbogus );
 		exit ( EXIT_FAILURE );
 	} else {
-		init ( nbogus );
+	    init ( (unsigned int)nbogus );
 	}
 
 	instructions();
