@@ -173,7 +173,7 @@ static void read_file ( char *fname ) {
 	len = 0;
 	alloc = 0;
 
-	if ( ( fd = open ( fname, O_RDONLY ) ) ) {
+	if ( ( fd = open ( fname, O_RDONLY ) ) != -1 ) {
 		while ( true ) {
 			int ret = read ( fd, &ch, 1 );
 			if ( ret < 0 ) /* an error */
@@ -183,7 +183,7 @@ static void read_file ( char *fname ) {
 				if ( ! buff2 )
 					break;
 				(void) memcpy ( buff2, buff, alloc );
-				if ( alloc )
+				if ( alloc != 0 )
 					free ( buff );
 				buff = buff2;
 				alloc = alloc + MSG_ALLOC_CHUNK;
@@ -192,7 +192,7 @@ static void read_file ( char *fname ) {
 			if ( ( ret == 0 ) || ( ch == '\n' ) || ( ch == '\r' ) )
 			{
 				/* ignore blank lines and comments */
-				if ( len && ( buff[0] != '#' ) ) {
+				if ( len != 0 && ( buff[0] != '#' ) ) {
 					buff[len] = '\0';
 					add_message ( buff, len + 1 );
 				}
@@ -206,7 +206,7 @@ static void read_file ( char *fname ) {
 		} /* end while ( true ) */
 		(void) close ( fd );
 	}
-	if ( alloc )
+	if ( alloc != 0 )
 		free ( buff );
 }
 
@@ -226,8 +226,8 @@ static void do_read_messages ( char *dname ) {
 			(void) strcpy ( fname, dname );
 			fname[plen] = '/';
 			(void) strcpy ( ( fname + plen + 1 ), dent->d_name );
-			if ( ! stat ( fname, &sb ) &&
-				( sb.st_mode & S_IFREG ) ) {
+			if ( stat ( fname, &sb ) == 0 &&
+			     ( ( sb.st_mode & S_IFREG ) != 0 ) ) {
 					ext = malloc(sizeof(char) * strlen(fname) + 1);
 					(void) strncpy(ext, fname+(strlen(fname) - 3), strlen(fname));
 					if (strncmp(ext, NKI_EXT, 3) == 0) {
@@ -303,7 +303,7 @@ static inline char randchar(void) {
 }
 
 static inline bool object_equal ( const screen_object a, const screen_object b ) {
-    return a.x == b.x && a.y == b.y;
+	return a.x == b.x && a.y == b.y;
 }
 
 static unsigned int test ( int y, int x, unsigned int *bnum ) {
@@ -416,7 +416,7 @@ static void init ( unsigned int num ) {
 static void draw ( const screen_object *o ) {
 	attr_t new;
 
-	if ( state.options & OPTION_HAS_COLOR ) {
+	if ( ( state.options & OPTION_HAS_COLOR ) != 0 ) {
 		new = COLOR_PAIR(o->color);
 		if ( o->bold ) { new |= A_BOLD; }
 		(void) attrset ( new );
@@ -428,13 +428,13 @@ static void message ( char *message, int color ) {
 	int y, x;
 
 	getyx ( curscr, y, x );
-	if ( state.options & OPTION_HAS_COLOR ) {
+	if ( ( state.options & OPTION_HAS_COLOR ) != 0 ) {
 		attrset ( COLOR_PAIR(WHITE) );
 	}
 	(void) move ( 1, 0 );
 	(void) clrtoeol();
 
-	if ( state.options & OPTION_HAS_COLOR ) {
+	if ( ( state.options & OPTION_HAS_COLOR ) != 0 ) {
 		(void) attrset ( COLOR_PAIR(WHITE) );
 	}
 
@@ -447,7 +447,7 @@ static void message ( char *message, int color ) {
 static void draw_screen() {
 	unsigned int i;
 
-	if ( state.options & OPTION_HAS_COLOR )
+	if ( ( state.options & OPTION_HAS_COLOR ) != 0 )
 		attrset ( COLOR_PAIR(WHITE) );
 	(void) clear();
 #if FRAME > 0
@@ -475,7 +475,7 @@ static void draw_screen() {
 		draw ( &state.items[i] );
 	}
 	(void) move ( state.items[ROBOT].y, state.items[ROBOT].x );
-	if ( state.options & OPTION_HAS_COLOR )
+	if ( ( state.options & OPTION_HAS_COLOR ) != 0 )
 		(void) attrset ( COLOR_PAIR(WHITE) );
 	(void) refresh();
 }
@@ -574,7 +574,7 @@ static void main_loop(void) {
 
 	fromright = false;
 
-	while ( ( ch = getch() ) ) {
+	while ( ( ch = getch() ) != 0 ) {
 		y = state.items[ROBOT].y;
 		x = state.items[ROBOT].x;
 		switch ( ch ) {
