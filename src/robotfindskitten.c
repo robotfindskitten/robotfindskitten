@@ -30,6 +30,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <getopt.h>
+#include <assert.h>
 #include "config.h"
 
 #ifdef HAVE_NCURSES_H
@@ -143,8 +144,9 @@ static game_state state;
 static void add_message ( char *msg, size_t len ) {
 	char *buff, **nmess;
 
+	/*@-mustfreefresh@ (this is a memory allocator) */
 	if ( state.num_messages_alloc <= state.num_messages ) {
-	    nmess = calloc ( (size_t)state.num_messages + MSGS_ALLOC_CHUNK,
+		nmess = calloc ( (size_t)state.num_messages + MSGS_ALLOC_CHUNK,
 			sizeof ( char * ) );
 		if ( nmess ) {
 			state.num_messages_alloc =
@@ -163,6 +165,7 @@ static void add_message ( char *msg, size_t len ) {
 		state.messages[state.num_messages] = buff;
 		state.num_messages++;
 	}
+	/*@=mustfreefresh@*/
 }
 
 static void read_file ( char *fname ) {
@@ -173,6 +176,7 @@ static void read_file ( char *fname ) {
 	len = 0;
 	alloc = 0;
 
+	/*@-mustfreefresh@*/
 	if ( ( fd = open ( fname, O_RDONLY ) ) != -1 ) {
 		while ( true ) {
 			ssize_t ret = read ( fd, &ch, 1 );
@@ -206,6 +210,7 @@ static void read_file ( char *fname ) {
 		} /* end while ( true ) */
 		(void) close ( fd );
 	}
+	/*@=mustfreefresh@*/
 	if ( alloc != 0 )
 		free ( buff );
 }
@@ -218,17 +223,25 @@ static void do_read_messages ( char *dname ) {
 	struct dirent *dent;
 	struct stat sb;
 
+	/*@-mustfreefresh@ (this is a memory allocator) */
 	if ( ! ( dir = opendir ( dname ) ) ) return;
 	plen = strlen ( dname );
 	while ( ( dent = readdir ( dir ) ) ) {
 		len = plen + strlen ( dent->d_name ) + 2;
-		if ( ( fname = malloc ( len ) ) ) {
+		if ( ( fname = malloc ( len ) ) ==  NULL ) {
+			(void) fprintf ( stderr, "Cannot malloc for message storage.\n" );
+			exit ( EXIT_FAILURE );
+		} else {
 			(void) strcpy ( fname, dname );
 			fname[plen] = '/';
 			(void) strcpy ( ( fname + plen + 1 ), dent->d_name );
 			if ( stat ( fname, &sb ) == 0 &&
 			     ( ( sb.st_mode & S_IFREG ) != 0 ) ) {
 					ext = malloc(sizeof(char) * strlen(fname) + 1);
+					if ( ext == NULL ) {
+						(void) fprintf ( stderr, "Cannot malloc for message storage.\n" );
+						exit ( EXIT_FAILURE );
+					}
 					(void) strncpy(ext, fname+(strlen(fname) - 3), strlen(fname));
 					if (strncmp(ext, NKI_EXT, 3) == 0) {
 						read_file ( fname );
@@ -239,6 +252,7 @@ static void do_read_messages ( char *dname ) {
 		}
 	}
 	(void) closedir ( dir );
+	/*@=mustfreefresh@*/
 }
 
 static void read_messages(void) {
@@ -246,6 +260,7 @@ static void read_messages(void) {
 	char *home_dir;
 	char *user_nki_dir;
 
+	/*@-mustfreeonly@*/
 	state.messages = 0;
 	state.num_messages = 0;
 	state.num_messages_alloc = 0;
@@ -272,6 +287,7 @@ static void read_messages(void) {
 		do_read_messages ( user_nki_dir );
 		(void) free ( user_nki_dir );
 	}
+	/*@=mustfreeonly@*/
 
 	do_read_messages ( "nki" );
 }
@@ -281,7 +297,7 @@ static void randomize_messages(void) {
 	unsigned int i, j;
 
 	for ( i = BOGUS; i < ( state.num_messages - 1 ); i++ ) {
-		j = i + ( random() % ( state.num_messages - i ) );
+	    /*@i1@*/j = i + ( random() % ( state.num_messages - i ) );
 		if ( i != j ) {
 			temp = state.messages[i];
 			state.messages[i] = state.messages[j];
@@ -333,11 +349,13 @@ static void finish ( int sig ) {
 static void init ( unsigned int num ) {
 	unsigned int i, j;
 
+	/*@-mustfreefresh@*/
 	/* allocate memory */
-	if ( ! ( state.items = calloc ( num + BOGUS, sizeof ( screen_object ) ) ) ) {
+	if ( ! ( state.items = calloc ( (size_t)num + BOGUS, sizeof ( screen_object ) ) ) ) {
 		fprintf ( stderr, "Cannot malloc.\n" );
 		exit ( EXIT_FAILURE );
 	}
+	/*@=mustfreefresh@*/
 
 	/* install exit handler */
 	(void) signal ( SIGINT, finish );
@@ -429,6 +447,7 @@ static void draw ( const screen_object *o ) {
 static void message ( char *message ) {
 	int y, x;
 
+	assert ( curscr != NULL);
 	getyx ( curscr, y, x );
 	if ( ( state.options & OPTION_HAS_COLOR ) != 0 ) {
 		attrset ( COLOR_PAIR(WHITE) );
@@ -444,6 +463,7 @@ static void message ( char *message ) {
 static void draw_screen() {
 	unsigned int i;
 
+	assert ( curscr != NULL);
 	if ( ( state.options & OPTION_HAS_COLOR ) != 0 )
 		attrset ( COLOR_PAIR(WHITE) );
 	(void) clear();
