@@ -424,7 +424,7 @@ static void draw ( const screen_object *o ) {
 	(void) addch ( o->character );
 }
 
-static void message ( char *message, unsigned int color ) {
+static void message ( char *message ) {
 	int y, x;
 
 	getyx ( curscr, y, x );
@@ -433,11 +433,6 @@ static void message ( char *message, unsigned int color ) {
 	}
 	(void) move ( 1, 0 );
 	(void) clrtoeol();
-
-	if ( ( state.options & OPTION_HAS_COLOR ) != 0 ) {
-		(void) attrset ( COLOR_PAIR(WHITE) );
-	}
-
 	(void) move ( 1, 0 );
 	(void) printw ( "%.*s", state.cols, message );
 	(void) move ( y, x );
@@ -563,7 +558,7 @@ static void play_animation ( bool fromright ) {
 		(void) refresh();
 		(void) sleep ( 1 );
 	}
-	message ( WIN_MESSAGE, WHITE );
+	message ( WIN_MESSAGE );
 	(void) curs_set(0);
 	(void) sleep ( 1 );
 }
@@ -640,7 +635,7 @@ static void main_loop(void) {
 				break;
 	                default:
 	                        message ( "Invalid input: Use direction keys"\
-					" or q.", WHITE );
+					" or q." );
 	                        break;
 		}
 
@@ -671,11 +666,10 @@ static void main_loop(void) {
 				finish ( 0 );
 				break;
 			case BBOGUS:
-				message ( state.messages[bnum], 
-					state.items[bnum].color );
+				message ( state.messages[bnum] );
 				break;
 			default:
-				message ( "Well, that was unexpected...", WHITE );
+				message ( "Well, that was unexpected..." );
 				break;
 		}
 	}
