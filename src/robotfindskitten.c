@@ -163,7 +163,7 @@ void add_message ( char *msg, size_t len ) {
 }
 
 void read_file ( char *fname ) {
-	int fd, ret;
+	int fd;
 	char ch, *buff, *buff2;
 	size_t len, alloc;
 
@@ -172,7 +172,7 @@ void read_file ( char *fname ) {
 
 	if ( ( fd = open ( fname, O_RDONLY ) ) ) {
 		while ( true ) {
-			ret = read ( fd, &ch, 1 );
+			int ret = read ( fd, &ch, 1 );
 			if ( ret < 0 ) /* an error */
 				break;
 			if ( alloc <= len ) { /* grow buff */
@@ -241,9 +241,7 @@ void do_read_messages ( char *dname ) {
 void read_messages(void) {
 	unsigned int i;
 	char *home_dir;
-	size_t home_len;
 	char *user_nki_dir;
-	size_t user_nki_len;
 
 	state.messages = 0;
 	state.num_messages = 0;
@@ -256,8 +254,8 @@ void read_messages(void) {
 
 	home_dir = getenv ( "HOME" );
 	if ( home_dir ) {
-		home_len = strlen ( home_dir );
-		user_nki_len = home_len + 1 + strlen ( USER_NKI_DIR ) + 1;
+		int home_len = strlen ( home_dir );
+		size_t user_nki_len = home_len + 1 + strlen ( USER_NKI_DIR ) + 1;
 		if ( ! ( user_nki_dir = malloc ( user_nki_len ) ) ) {
 			fprintf ( stderr, "Cannot malloc for user NKI directory.\n" );
 			exit ( EXIT_FAILURE );
