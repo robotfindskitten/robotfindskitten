@@ -148,9 +148,9 @@ static void add_message ( char *msg, size_t len ) {
 		if ( nmess ) {
 			state.num_messages_alloc =
 				state.num_messages + MSGS_ALLOC_CHUNK;
-			memcpy ( nmess, state.messages, 
+			(void) memcpy ( nmess, state.messages, 
 				( state.num_messages * sizeof ( char * ) ) );
-			free ( state.messages );
+			(void) free ( state.messages );
 			state.messages = nmess;
 		} else {
 			return; /* fail silently */
@@ -158,7 +158,7 @@ static void add_message ( char *msg, size_t len ) {
 	}
 
 	if ( ( buff = malloc ( len ) ) ) {
-		strcpy ( buff, msg );
+		(void) strcpy ( buff, msg );
 		state.messages[state.num_messages] = buff;
 		state.num_messages++;
 	}
@@ -181,7 +181,7 @@ static void read_file ( char *fname ) {
 				buff2 = malloc ( alloc + MSG_ALLOC_CHUNK );
 				if ( ! buff2 )
 					break;
-				memcpy ( buff2, buff, alloc );
+				(void) memcpy ( buff2, buff, alloc );
 				if ( alloc )
 					free ( buff );
 				buff = buff2;
@@ -222,13 +222,13 @@ static void do_read_messages ( char *dname ) {
 	while ( ( dent = readdir ( dir ) ) ) {
 		len = plen + strlen ( dent->d_name ) + 2;
 		if ( ( fname = malloc ( len ) ) ) {
-			strcpy ( fname, dname );
+			(void) strcpy ( fname, dname );
 			fname[plen] = '/';
-			strcpy ( ( fname + plen + 1 ), dent->d_name );
+			(void) strcpy ( ( fname + plen + 1 ), dent->d_name );
 			if ( ! stat ( fname, &sb ) &&
 				( sb.st_mode & S_IFREG ) ) {
 					ext = malloc(sizeof(char) * strlen(fname) + 1);
-					strncpy(ext, fname+(strlen(fname) - 3), strlen(fname));
+					(void) strncpy(ext, fname+(strlen(fname) - 3), strlen(fname));
 					if (strncmp(ext, NKI_EXT, 3) == 0) {
 						read_file ( fname );
 					}
@@ -259,15 +259,15 @@ static void read_messages(void) {
 		int home_len = strlen ( home_dir );
 		size_t user_nki_len = home_len + 1 + strlen ( USER_NKI_DIR ) + 1;
 		if ( ! ( user_nki_dir = malloc ( user_nki_len ) ) ) {
-			fprintf ( stderr, "Cannot malloc for user NKI directory.\n" );
+			(void) fprintf ( stderr, "Cannot malloc for user NKI directory.\n" );
 			exit ( EXIT_FAILURE );
 		}
 
-		strcpy ( user_nki_dir, home_dir );
+		(void) strcpy ( user_nki_dir, home_dir );
 		user_nki_dir[ home_len ] = '/';
-		strcpy ( user_nki_dir + home_len + 1, USER_NKI_DIR );
+		(void) strcpy ( user_nki_dir + home_len + 1, USER_NKI_DIR );
 		do_read_messages ( user_nki_dir );
-		free ( user_nki_dir );
+		(void) free ( user_nki_dir );
 	}
 
 	do_read_messages ( "nki" );
@@ -333,7 +333,7 @@ static unsigned int test ( int y, int x, unsigned int *bnum ) {
 }
 
 static void finish ( int sig ) {
-	endwin();
+	(void) endwin();
 	exit ( sig );
 }
 
@@ -347,21 +347,21 @@ static void init ( unsigned int num ) {
 	}
 
 	/* install exit handler */
-	signal ( SIGINT, finish );
+	(void) signal ( SIGINT, finish );
 
 	/* set up (n)curses */
-	initscr();
-	nonl();
-	noecho();
-	cbreak();
-	intrflush ( stdscr, false );
-	keypad ( stdscr, true );
+	(void) initscr();
+	(void) nonl();
+	(void) noecho();
+	(void) cbreak();
+	(void) intrflush ( stdscr, false );
+	(void) keypad ( stdscr, true );
 
 	state.lines = LINES;
 	state.cols = COLS;
 	if ( ( ( state.lines - HEADSIZE - FRAME ) * state.cols ) < ( num + 2 ) ) {
-		endwin();
-		fprintf ( stderr, "Screen too small to fit all objects!\n" );
+		(void) endwin();
+		(void) fprintf ( stderr, "Screen too small to fit all objects!\n" );
 		exit ( EXIT_FAILURE );
 	}
 
@@ -403,14 +403,14 @@ static void init ( unsigned int num ) {
 	start_color();
 	if ( has_colors() && ( COLOR_PAIRS > 7 ) ) {
 		state.options |= OPTION_HAS_COLOR;
-		init_pair ( 1, COLOR_GREEN, COLOR_BLACK );
-		init_pair ( 2, COLOR_RED, COLOR_BLACK );
-		init_pair ( 3, COLOR_YELLOW, COLOR_BLACK );
-		init_pair ( 4, COLOR_BLUE, COLOR_BLACK );
-		init_pair ( 5, COLOR_MAGENTA, COLOR_BLACK );
-		init_pair ( 6, COLOR_CYAN, COLOR_BLACK );
-		init_pair ( 7, COLOR_WHITE, COLOR_BLACK );
-		bkgd ( COLOR_PAIR(WHITE) );
+		(void) init_pair ( 1, COLOR_GREEN, COLOR_BLACK );
+		(void) init_pair ( 2, COLOR_RED, COLOR_BLACK );
+		(void) init_pair ( 3, COLOR_YELLOW, COLOR_BLACK );
+		(void) init_pair ( 4, COLOR_BLUE, COLOR_BLACK );
+		(void) init_pair ( 5, COLOR_MAGENTA, COLOR_BLACK );
+		(void) init_pair ( 6, COLOR_CYAN, COLOR_BLACK );
+		(void) init_pair ( 7, COLOR_WHITE, COLOR_BLACK );
+		(void) bkgd ( COLOR_PAIR(WHITE) );
 
 		state.items[ROBOT].color = WHITE;
 		state.items[KITTEN].color = randcolor();
@@ -428,9 +428,9 @@ static void draw ( const screen_object *o ) {
 	if ( state.options & OPTION_HAS_COLOR ) {
 		new = COLOR_PAIR(o->color);
 		if ( o->bold ) { new |= A_BOLD; }
-		attrset ( new );
+		(void) attrset ( new );
 	}
-	addch ( o->character );
+	(void) addch ( o->character );
 }
 
 static void message ( char *message, int color ) {
@@ -440,17 +440,17 @@ static void message ( char *message, int color ) {
 	if ( state.options & OPTION_HAS_COLOR ) {
 		attrset ( COLOR_PAIR(WHITE) );
 	}
-	move ( 1, 0 );
-	clrtoeol();
+	(void) move ( 1, 0 );
+	(void) clrtoeol();
 
 	if ( state.options & OPTION_HAS_COLOR ) {
-		attrset ( COLOR_PAIR(WHITE) );
+		(void) attrset ( COLOR_PAIR(WHITE) );
 	}
 
-	move ( 1, 0 );
-	printw ( "%.*s", state.cols, message );
-	move ( y, x );
-	refresh();
+	(void) move ( 1, 0 );
+	(void) printw ( "%.*s", state.cols, message );
+	(void) move ( y, x );
+	(void) refresh();
 }
 
 static void draw_screen() {
@@ -458,34 +458,34 @@ static void draw_screen() {
 
 	if ( state.options & OPTION_HAS_COLOR )
 		attrset ( COLOR_PAIR(WHITE) );
-	clear();
+	(void) clear();
 #if FRAME > 0
-	mvaddch(HEADSIZE, 0,      ACS_ULCORNER);
-	mvaddch(HEADSIZE, COLS-1, ACS_URCORNER);
-	mvaddch(LINES-1,  0,      ACS_LLCORNER);
-	mvaddch(LINES-1,  COLS-1, ACS_LRCORNER);
+	(void) mvaddch(HEADSIZE, 0,      ACS_ULCORNER);
+	(void) mvaddch(HEADSIZE, COLS-1, ACS_URCORNER);
+	(void) mvaddch(LINES-1,  0,      ACS_LLCORNER);
+	(void) mvaddch(LINES-1,  COLS-1, ACS_LRCORNER);
 	for (i = 1; i < COLS - 1; i++) {
-	    mvaddch(HEADSIZE,  i, ACS_HLINE);
-	    mvaddch(LINES - 1, i, ACS_HLINE);
+	    (void) mvaddch(HEADSIZE,  i, ACS_HLINE);
+	    (void) mvaddch(LINES - 1, i, ACS_HLINE);
 	}
 	for (i = FRAME + HEADSIZE; i < LINES - 1; i++) {
-	    mvaddch(i, 0,      ACS_VLINE);
-	    mvaddch(i, COLS-1, ACS_VLINE);
+	    (void) mvaddch(i, 0,      ACS_VLINE);
+	    (void) mvaddch(i, COLS-1, ACS_VLINE);
 	}
 #else
 	for (i = 0; i < COLS; i++) {
-	    mvaddch(HEADSIZE,  i, ACS_HLINE);
+	    (void) mvaddch(HEADSIZE,  i, ACS_HLINE);
 	}
 #endif
-	move ( 0, 0 );
+	(void) move ( 0, 0 );
 	printw ( "robotfindskitten %s\n\n", PACKAGE_VERSION );
 	for ( i = 0; i < state.num_items; i++ ) {
-		move ( state.items[i].y, state.items[i].x );
+		(void) move ( state.items[i].y, state.items[i].x );
 		draw ( &state.items[i] );
 	}
 	move ( state.items[ROBOT].y, state.items[ROBOT].x );
 	if ( state.options & OPTION_HAS_COLOR )
-		attrset ( COLOR_PAIR(WHITE) );
+		(void) attrset ( COLOR_PAIR(WHITE) );
 	refresh();
 }
 
@@ -500,8 +500,8 @@ static void handle_resize(void) {
 
 	/* has the resize hidden any items? */ 
 	if (xbound >= COLS - FRAME*2 || ybound >= HEADSIZE + LINES - FRAME*2) {
-		endwin();
-		fprintf(stderr, 
+		(void) endwin();
+		(void) fprintf(stderr, 
 			"You crushed the simulation. And robot. And kitten.\n");
 		exit(EXIT_FAILURE);
 	}
@@ -512,10 +512,10 @@ static void handle_resize(void) {
 }
 
 static void instructions(void) {
-	clear();
-	move ( 0, 0 );
-	printw ( "robotfindskitten %s\n", PACKAGE_VERSION );
-	printw ( 
+	(void) clear();
+	(void) move ( 0, 0 );
+	(void) printw ( "robotfindskitten %s\n", PACKAGE_VERSION );
+	(void) printw ( 
 "By the illustrious Leonard Richardson (C) 1997, 2000\n"\
 "Written originally for the Nerth Pork robotfindskitten contest\n\n"\
 "In this game, you are robot (#). Your job is to find kitten. This task\n"\
@@ -526,10 +526,10 @@ static void instructions(void) {
 "See the documentation for more information.\n\n"\
 "Press any key to start.\n"
 	);
-	refresh();
+	(void) refresh();
 	if ( getch() == KEY_RESIZE )
 		handle_resize();
-	clear();
+	(void) clear();
 }
 
 static void play_animation ( bool fromright ) {
@@ -537,8 +537,8 @@ static void play_animation ( bool fromright ) {
 	char kitty;
 #define WIN_MESSAGE	"You found kitten! Way to go, robot!"
 
-	move ( 1, 0 );
-	clrtoeol();
+	(void) move ( 1, 0 );
+	(void) clrtoeol();
 	animation_meet = (COLS / 2);
 
 	kitty = state.items[KITTEN].character;
@@ -572,8 +572,8 @@ static void play_animation ( bool fromright ) {
 		sleep ( 1 );
 	}
 	message ( WIN_MESSAGE, WHITE );
-	curs_set(0);
-	sleep ( 1 );
+	(void) curs_set(0);
+	(void) sleep ( 1 );
 }
 
 static void main_loop(void) {
@@ -666,10 +666,10 @@ static void main_loop(void) {
 				state.items[ROBOT].y = y;
 				state.items[ROBOT].x = x;
 				state.items[ROBOT].character = '#';
-				move ( y, x );
+				(void) move ( y, x );
 				draw ( &state.items[ROBOT] );
-				move ( y, x );
-				refresh();
+				(void) move ( y, x );
+				(void) refresh();
 			case BROBOT:
 				/* nothing happened */
 				break;
@@ -696,7 +696,7 @@ int main ( int argc, char **argv ) {
 	    case 'n':
 		nbogus = atoi ( optarg );
 		if ( nbogus <= 0 ) {
-			fprintf ( stderr, "Argument must be positive.\n" );
+			(void) fprintf ( stderr, "Argument must be positive.\n" );
 			exit ( EXIT_FAILURE );
 		}
 		break;
@@ -704,12 +704,12 @@ int main ( int argc, char **argv ) {
 		seed = atoi(optarg);
 		break;
 	    case 'V':
-		(void)printf("robotfindskitten: %s\n", PACKAGE_VERSION);
+		(void) printf("robotfindskitten: %s\n", PACKAGE_VERSION);
 		exit(EXIT_SUCCESS);
 	    case 'h':
 	    case '?':
 	    default:
-		(void)printf("usage: %s [-n nitems] [-s seed] [-V]\n", argv[0]);
+		(void) printf("usage: %s [-n nitems] [-s seed] [-V]\n", argv[0]);
 		exit(EXIT_SUCCESS);
 	    }
 	}
@@ -719,14 +719,14 @@ int main ( int argc, char **argv ) {
 	read_messages();
 
 	if (state.num_messages == 0) {
-		fprintf ( stderr, "No NKIs found.\n" );
+		(void) fprintf ( stderr, "No NKIs found.\n" );
 		exit ( EXIT_FAILURE );
 	}
 
 	randomize_messages();
 
 	if ( nbogus > state.num_messages ) {
-		fprintf ( stderr, "There are only %d NKIs available (user requested %d).\n", state.num_messages, nbogus );
+		(void) fprintf ( stderr, "There are only %d NKIs available (user requested %d).\n", state.num_messages, nbogus );
 		exit ( EXIT_FAILURE );
 	} else {
 		init ( nbogus );
