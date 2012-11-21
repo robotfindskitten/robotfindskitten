@@ -29,6 +29,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <getopt.h>
 #include "config.h"
 
 #ifdef HAVE_NCURSES_H
@@ -301,18 +302,8 @@ static inline char randchar(void) {
 	return ch;
 }
 
-static inline int objcmp ( const screen_object a, const screen_object b ) {
-	if ( a.x > b.x ) {
-		return 1;
-	} else if ( a.x < b.x ) {
-		return -1;
-	} else if ( a.y > b.y ) {
-		return 1;
-	} else if ( a.y < b.y ) {
-		return -1;
-	} else {
-		return 0;
-	}
+static inline bool object_equal ( const screen_object a, const screen_object b ) {
+    return a.x == b.x && a.y == b.y;
 }
 
 static unsigned int test ( int y, int x, unsigned int *bnum ) {
@@ -377,7 +368,7 @@ static void init ( unsigned int num ) {
 	do {
 		state.items[KITTEN].y = randy();
 		state.items[KITTEN].x = randx();
-	} while ( ! objcmp ( state.items[ROBOT], state.items[KITTEN] ) );
+	} while ( object_equal ( state.items[ROBOT], state.items[KITTEN] ) );
 
 	/* set up items */
 	for ( i = BOGUS; i < BOGUS + num; i++ ) {
@@ -386,12 +377,12 @@ static void init ( unsigned int num ) {
 		while ( true ) {
 			state.items[i].y = randy();
 			state.items[i].x = randx();
-			if ( ! objcmp ( state.items[ROBOT], state.items[i] ) )
+			if ( object_equal ( state.items[ROBOT], state.items[i] ) )
 				continue;
-			if ( ! objcmp ( state.items[KITTEN], state.items[i] ) )
+			if ( object_equal ( state.items[KITTEN], state.items[i] ) )
 				continue;
 			for ( j = 0; j < i; j++ ) {
-				if ( ! objcmp ( state.items[j], 
+				if ( object_equal ( state.items[j], 
 					state.items[i] ) ) break;
 			}
 			if ( j == i ) break;
