@@ -10,7 +10,6 @@ robotfindskitten_SOURCES= messages.h robotfindskitten.c
 cppcheck: robotfindskitten.c
 	cppcheck -I .. --template gcc --enable=all robotfindskitten.c
 
-# splint is nowhere near running clean
 SPLINT_SUPPRESSIONS = +charintliteral +charindex
 splint:
 	splint +quiet +posixlib $(SPLINT_SUPPRESSIONS) -I .. *.c

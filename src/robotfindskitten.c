@@ -176,7 +176,7 @@ static void read_file ( char *fname ) {
 	len = 0;
 	alloc = 0;
 
-	/*@-mustfreefresh@*/
+	/*@-mustfreefresh@ -usedef@*/
 	if ( ( fd = open ( fname, O_RDONLY ) ) != -1 ) {
 		while ( true ) {
 			ssize_t ret = read ( fd, &ch, 1 );
@@ -210,9 +210,9 @@ static void read_file ( char *fname ) {
 		} /* end while ( true ) */
 		(void) close ( fd );
 	}
-	/*@=mustfreefresh@*/
 	if ( alloc != 0 )
 		free ( buff );
+	/*@=mustfreefresh =usedef@*/
 }
 
 static void do_read_messages ( char *dname ) {
@@ -255,6 +255,7 @@ static void do_read_messages ( char *dname ) {
 	/*@=mustfreefresh@*/
 }
 
+/*@-nullstate@*/
 static void read_messages(void) {
 	unsigned int i;
 	char *home_dir;
@@ -287,9 +288,9 @@ static void read_messages(void) {
 		do_read_messages ( user_nki_dir );
 		(void) free ( user_nki_dir );
 	}
-	/*@=mustfreefresh =mustfreeonly@*/
 
 	do_read_messages ( "nki" );
+	/*@=mustfreefresh =mustfreeonly@*/
 }
 
 static void randomize_messages(void) {
@@ -305,6 +306,7 @@ static void randomize_messages(void) {
 		}
 	}
 }
+/*@=nullstate@*/
  
 /* convenient macros */
 #define randx() ( FRAME + ( random() % ( state.cols - FRAME * 2 ) ) )
@@ -370,7 +372,7 @@ static void init ( unsigned int num ) {
 
 	state.lines = LINES;
 	state.cols = COLS;
-	if ( ( ( state.lines - HEADSIZE - FRAME ) * state.cols ) < ( num + 2 ) ) {
+	if ( ( ( state.lines - HEADSIZE - FRAME ) * state.cols ) < (int) ( num + 2 ) ) {
 		(void) endwin();
 		(void) fprintf ( stderr, "Screen too small to fit all objects!\n" );
 		exit ( EXIT_FAILURE );
@@ -421,7 +423,7 @@ static void init ( unsigned int num ) {
 		(void) init_pair ( 5, COLOR_MAGENTA, COLOR_BLACK );
 		(void) init_pair ( 6, COLOR_CYAN, COLOR_BLACK );
 		(void) init_pair ( 7, COLOR_WHITE, COLOR_BLACK );
-		(void) bkgd ( COLOR_PAIR(WHITE) );
+		(void) bkgd ( (chtype) COLOR_PAIR(WHITE) );
 
 		state.items[ROBOT].color = WHITE;
 		state.items[KITTEN].color = randcolor();
@@ -433,9 +435,11 @@ static void init ( unsigned int num ) {
 	}
 }
 
+/*@-globstate@*/
 static void draw ( const screen_object *o ) {
 	attr_t new;
 
+	/*@-nullpass@*/
 	assert ( curscr != NULL);
 	if ( ( state.options & OPTION_HAS_COLOR ) != 0 ) {
 		new = COLOR_PAIR(o->color);
@@ -443,12 +447,13 @@ static void draw ( const screen_object *o ) {
 		(void) attrset ( new );
 	}
 	(void) addch ( o->character );
+	/*@+nullpass@*/
 }
 
 static void message ( char *message ) {
 	int y, x;
 
-	assert ( curscr != NULL);
+	/*@-nullpass@*/
 	getyx ( curscr, y, x );
 	if ( ( state.options & OPTION_HAS_COLOR ) != 0 ) {
 		attrset ( COLOR_PAIR(WHITE) );
@@ -459,12 +464,13 @@ static void message ( char *message ) {
 	(void) printw ( "%.*s", state.cols, message );
 	(void) move ( y, x );
 	(void) refresh();
+	/*@=nullpass@*/
 }
 
 static void draw_screen() {
 	unsigned int i;
 
-	assert ( curscr != NULL);
+	/*@-nullpass@*/
 	if ( ( state.options & OPTION_HAS_COLOR ) != 0 )
 		attrset ( COLOR_PAIR(WHITE) );
 	(void) clear();
@@ -496,7 +502,9 @@ static void draw_screen() {
 	if ( ( state.options & OPTION_HAS_COLOR ) != 0 )
 		(void) attrset ( COLOR_PAIR(WHITE) );
 	(void) refresh();
+	/*@=nullpass@*/
 }
+/*@=globstate@*/
 
 static void handle_resize(void) {
 	int xbound = 0, ybound = 0;
