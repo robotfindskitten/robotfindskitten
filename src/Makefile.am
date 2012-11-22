@@ -11,6 +11,6 @@ cppcheck: robotfindskitten.c
 	cppcheck -I .. --template gcc --enable=all robotfindskitten.c
 
 # splint is nowhere near running clean
-SPLINT_SUPPRESSIONS =
+SPLINT_SUPPRESSIONS = +charintliteral +charindex
 splint:
 	splint +quiet +posixlib $(SPLINT_SUPPRESSIONS) -I .. *.c
