@@ -124,6 +124,7 @@ typedef struct {
 	int y;
 	unsigned int color;
 	bool bold;
+	bool reverse;
 	chtype character;
 } screen_object;
 
@@ -382,12 +383,14 @@ static void init ( unsigned int num ) {
 	/* set up robot */
 	state.items[ROBOT].character = (chtype)'#';
 	state.items[ROBOT].bold = false; /* we are a timid robot */
+	state.items[ROBOT].reverse = false;
 	state.items[ROBOT].y = randy();
 	state.items[ROBOT].x = randx();
 
 	/* set up kitten */
 	state.items[KITTEN].character = (chtype)randchar();
 	state.items[KITTEN].bold = randbold();
+	state.items[KITTEN].reverse = false;
 	do {
 		state.items[KITTEN].y = randy();
 		state.items[KITTEN].x = randx();
@@ -397,6 +400,7 @@ static void init ( unsigned int num ) {
 	for ( i = BOGUS; i < BOGUS + num; i++ ) {
 		state.items[i].character = (chtype)randchar();
 		state.items[i].bold = randbold();
+		state.items[i].reverse = false;
 		while ( true ) {
 			state.items[i].y = randy();
 			state.items[i].x = randx();
@@ -418,7 +422,7 @@ static void init ( unsigned int num ) {
 	if ( has_colors() && ( COLOR_PAIRS > 7 ) ) {
 		state.options |= OPTION_HAS_COLOR;
 		(void) init_pair ( 1, COLOR_GREEN, COLOR_BLACK );
-		(void) init_pair ( 2, COLOR_RED, COLOR_BLACK );
+		(void) init_pair ( 2, COLOR_RED	, COLOR_BLACK );
 		(void) init_pair ( 3, COLOR_YELLOW, COLOR_BLACK );
 		(void) init_pair ( 4, COLOR_BLUE, COLOR_BLACK );
 		(void) init_pair ( 5, COLOR_MAGENTA, COLOR_BLACK );
@@ -445,6 +449,7 @@ static void draw ( const screen_object *o ) {
 	if ( ( state.options & OPTION_HAS_COLOR ) != 0 ) {
 		new = COLOR_PAIR(o->color);
 		if ( o->bold ) { new |= A_BOLD; }
+		if ( o->reverse ) { new |= A_REVERSE; }
 		(void) attrset ( new );
 	}
 	(void) addch ( o->character );
@@ -553,12 +558,18 @@ static void instructions(void) {
 
 static void play_animation ( bool fromright ) {
 	int i, animation_meet;
+	screen_object robot;
+	screen_object kitten;
 	chtype kitty;
 #define WIN_MESSAGE	"You found kitten! Way to go, robot!"
 
 	(void) move ( 1, 0 );
 	(void) clrtoeol();
 	animation_meet = (COLS / 2);
+
+	memcpy(&kitten, &state.items[KITTEN], sizeof kitten);
+	memcpy(&robot, &state.items[ROBOT], sizeof robot);
+	robot.reverse = true;
 
 	kitty = state.items[KITTEN].character;
 	for ( i = 4; i > 0; i-- ) {
@@ -581,6 +592,11 @@ static void play_animation ( bool fromright ) {
 			state.items[ROBOT].x = animation_meet - i + 1;
 			state.items[KITTEN].x = animation_meet + i;
 		}
+
+		(void) move ( kitten.y, kitten.x );
+		draw ( &kitten );
+		(void) move ( robot.y, robot.x );
+		draw ( &robot );
 
 		(void) move ( state.items[ROBOT].y, state.items[ROBOT].x );
 		draw ( &state.items[ROBOT] );
