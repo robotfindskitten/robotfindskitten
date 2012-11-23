@@ -273,6 +273,7 @@ static void read_messages(void) {
 	do_read_messages ( SYSTEM_NKI_DIR );
 #endif /* S_SPLINT_S */
 
+	/* coverity[tainted_data] Safe, never handed to exec */
 	home_dir = getenv ( "HOME" );
 	if ( home_dir ) {
 		size_t home_len = strlen ( home_dir );
