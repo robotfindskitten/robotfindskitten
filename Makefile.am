@@ -1,5 +1,5 @@
 SUBDIRS=src doc 
-EXTRA_DIST=BUGS RELEASE
+EXTRA_DIST=BUGS RELEASE nki
 
 # Test the code in place
 test:
