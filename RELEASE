@@ -2,10 +2,12 @@ Release procedure:
 
 1. "make count" to get the number of NKIs.
 
-2. Patch the version number in configure.in.
+2. Patch the version number and tagline in configure.in.
 
-3. Make dist, triggering a reconfigure so the new version number is used.
+4. Create a directory corresponding to the tagline on SourceForge.
 
-4. Commit and push to the repo.
+5. Make dist, triggering a reconfigure so the new version number is used.
 
-5. Ship it!
+6. Commit and push to the repo.
+
+7. Do 'make ship'.
