@@ -139,6 +139,8 @@ typedef struct {
 	char **messages;
 } game_state;
 
+char *nki_file;
+
 /* global state */
 static game_state state;
 
@@ -224,9 +226,15 @@ static void do_read_messages ( char *dname ) {
 	struct dirent *dent;
 	struct stat sb;
 
+	if (nki_file != NULL) {
+	    read_file(nki_file);
+	    return;
+	}
+
 	/*@-mustfreefresh@ (this is a memory allocator) */
 	if ( ! ( dir = opendir ( dname ) ) ) return;
 	plen = strlen ( dname );
+
 	while ( ( dent = readdir ( dir ) ) ) {
 		len = plen + strlen ( dent->d_name ) + 2;
 		if ( ( fname = malloc ( len ) ) ==  NULL ) {
@@ -726,8 +734,11 @@ static void main_loop(void) {
 int main ( int argc, char **argv ) {
     int option, seed = (int) time ( 0 ), nbogus = DEFAULT_NUM_BOGUS;
 
-	while ((option = getopt(argc, argv, "n:s:Vh")) != -1) {
+	while ((option = getopt(argc, argv, "n:s:f:Vh")) != -1) {
 	    switch (option) {
+	    case 'f':
+		nki_file = strdup(optarg);
+		break;
 	    case 'n':
 		nbogus = atoi ( optarg );
 		if ( nbogus <= 0 ) {
@@ -744,7 +755,7 @@ int main ( int argc, char **argv ) {
 	    case 'h':
 	    case '?':
 	    default:
-		(void) printf("usage: %s [-n nitems] [-s seed] [-V]\n", argv[0]);
+		(void) printf("usage: %s [-f nkifile] [-n nitems] [-s seed] [-V]\n", argv[0]);
 		exit(EXIT_SUCCESS);
 	    }
 	}
