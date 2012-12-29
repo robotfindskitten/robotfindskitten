@@ -199,7 +199,8 @@ static void read_file ( char *fname ) {
 			if ( ( ret == 0 ) || ( ch == '\n' ) || ( ch == '\r' ) )
 			{
 				/* ignore blank lines and comments */
-				if ( len != 0 && ( buff[0] != '#' ) ) {
+				if ( len != 0 && ( buff[0] != '#' ) 
+					&& ( buff[0] != '%')) {
 					buff[len] = '\0';
 					add_message ( buff, len + 1 );
 				}
