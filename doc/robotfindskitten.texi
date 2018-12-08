@@ -5,6 +5,9 @@
 @finalout
 @setchapternewpage odd
 @dircategory Games
+@direntry
+* robotfindskitten: (robotfindskitten).	Zen simulation.
+@end direntry
 @c %**end of header
 
 
