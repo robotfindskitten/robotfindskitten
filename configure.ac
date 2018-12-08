@@ -4,6 +4,7 @@ AM_INIT_AUTOMAKE([gnu])
 dnl Make builds less verbose.  Shuts off Makefile portability checks.
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
+AC_CONFIG_MACRO_DIRS([m4])
 AM_CONFIG_HEADER(config.h)
 AC_LANG_C
 

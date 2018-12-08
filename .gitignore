@@ -1,8 +1,10 @@
+*~
 INSTALL
 Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache/
+compile
 config.guess
 config.h.in
 config.h
@@ -17,6 +19,7 @@ doc/texinfo.tex
 install-sh
 libtool
 ltmain.sh
+m4/
 missing
 src/.deps/
 src/Makefile

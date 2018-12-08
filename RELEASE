@@ -2,7 +2,7 @@ Release procedure:
 
 1. "make count" to get the number of NKIs.
 
-2. Patch the version number and tagline in configure.in.
+2. Patch the version number and tagline in configure.ac.
 
 4. Create a directory corresponding to the tagline on SourceForge.
 

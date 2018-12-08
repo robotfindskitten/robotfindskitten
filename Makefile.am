@@ -1,5 +1,6 @@
 SUBDIRS=src doc 
 EXTRA_DIST=BUGS RELEASE
+ACLOCAL_AMFLAGS=-I m4
 
 # Test the code in place
 test:
