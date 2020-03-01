@@ -1,5 +1,5 @@
 SUBDIRS=src doc 
-EXTRA_DIST=BUGS RELEASE
+EXTRA_DIST=BUGS RELEASE nki
 ACLOCAL_AMFLAGS=-I m4
 
 # Test the code in place
