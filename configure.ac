@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(robotfindskitten, [2.7182818.701], [rfk-dev@sourceforge.net], robotfindskitten)
+AC_INIT(robotfindskitten, [2.8284271.702], [rfk-dev@sourceforge.net], robotfindskitten)
 AM_INIT_AUTOMAKE([gnu])
 dnl Make builds less verbose.  Shuts off Makefile portability checks.
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -23,7 +23,7 @@ AC_CHECK_HEADERS(ncurses.h,,
 		AC_MSG_ERROR(Could not find ncurses headers!))])
 
 # This will become the directory name on SourceForge
-TAGLINE='mayan_apocalypse_edition'
+TAGLINE='ship_it_anyway'
 AC_SUBST(TAGLINE)
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile nki/Makefile)
