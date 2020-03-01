@@ -682,7 +682,7 @@ static void main_loop(void) {
 				y++; x++; break;
 	                case MYKEY_Q:
 	                case MYKEY_q:
-	                        finish ( EXIT_FAILURE );
+	                        finish ( EXIT_SUCCESS );
 	                        break;
 			case MYKEY_REDRAW:
 				draw_screen();
