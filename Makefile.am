@@ -2,8 +2,8 @@ SUBDIRS=src doc
 EXTRA_DIST=BUGS RELEASE nki
 ACLOCAL_AMFLAGS=-I m4
 
-# Test the code in place
-test:
+# Run the built code
+run:
 	src/robotfindskitten
 
 # Count NKIs. Useful for generating the minor part of a release number
