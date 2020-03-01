@@ -1,5 +1,5 @@
-SUBDIRS=src doc 
-EXTRA_DIST=BUGS RELEASE nki
+SUBDIRS=src doc nki
+EXTRA_DIST=BUGS
 ACLOCAL_AMFLAGS=-I m4
 
 # Run the built code
