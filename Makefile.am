@@ -10,11 +10,11 @@ run:
 count:
 	@wc -l nki/*.nki
 
-# This has the project location on SourceForge wired in.
-# Furthermore it will only work if your SF ID is your local username.
-# It just does the POSIX release; others have to be uploaded by hand.
+# Make a ship.
 ship:
-	rsync -avP -e ssh \
-		robotfindskitten-$(PACKAGE_VERSION).tar.gz \
-		${LOGNAME},rfk@frs.sourceforge.net:'/home/frs/project/r/rf/rfk/robotfindskitten-POSIX/@TAGLINE@/robotfindskitten-$(PACKAGE_VERSION).tar.gz'
+	@echo ''
+	@echo '          _!'
+	@echo '     _  _| %\_'
+	@echo '~~~~~\o______/~~~~~'
+	@echo ''
 
