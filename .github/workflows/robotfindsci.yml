@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Dependency packages
-      run: sudo apt-get -y install gnulib libncurses-dev texlive-latex-recommended
+      run: sudo apt-get -y install gnulib libncurses-dev texinfo texlive-latex-recommended
     - name: autoreconf
       run: autoreconf -ifv
     - name: configure
