@@ -23,3 +23,8 @@ jobs:
       run: make check
     - name: make distcheck
       run: make distcheck
+    - name: Upload dist
+      uses: actions/upload-artifact@v2
+      with:
+        name: robotfindskitten-dist-${{ github.job }}-${{ github.run_id }}.${{ github.run_number }}
+        path: robotfindskitten-*.tar.gz
