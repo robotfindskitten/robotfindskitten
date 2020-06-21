@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=true
+Name=robotfindskitten
+GenericName=robotfindskitten
+Categories=Game;LogicGame;
+Keywords=text;ncurses;terminal;console;game;puzzle;zen;simulation;robot;kitten;
+Exec=robotfindskitten
+Icon=robotfindskitten
+Comment=Zen Simulation of robot finding kitten

@@ -1,4 +1,4 @@
-SUBDIRS=src doc nki
+SUBDIRS=src doc nki share
 EXTRA_DIST=BUGS
 ACLOCAL_AMFLAGS=-I m4
 

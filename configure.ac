@@ -26,4 +26,4 @@ AC_CHECK_HEADERS(ncurses.h,,
 TAGLINE='ship_it_anyway'
 AC_SUBST(TAGLINE)
 
-AC_OUTPUT(Makefile src/Makefile doc/Makefile nki/Makefile)
+AC_OUTPUT(Makefile src/Makefile doc/Makefile nki/Makefile share/Makefile)

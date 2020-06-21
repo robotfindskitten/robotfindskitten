@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="console-application">
+  <id>org.robotfindskitten.robotfindskitten</id>
+  <name>robotfindskitten</name>
+  <summary>Zen Simulation of robot finding kitten</summary>
+  <metadata_license>CC-BY-SA-4.0</metadata_license>
+  <project_license>GPL-2.0-or-later</project_license>
+  <description>
+    <p>
+      In this simulation, you play the part of robot. Your task is to
+      complete the simulation by finding kitten, as is your destiny, and
+      indeed your wont. You (robot) are represented by the # character,
+      and you move around with the arrow keys touching things. If the
+      thing you touch is kitten, you get a cute little animation (which
+      was cuter in the DOS version) and the simulation ends. Otherwise,
+      you get a brief description of what it is you touched.
+    </p>
+  </description>
+  <icon type="stock">robotfindskitten</icon>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Robot (#) having found a non-kitten item (NKI).</caption>
+      <image type="source" width="640" height="480">http://robotfindskitten.org/shots/Wii/shot.png</image>
+    </screenshot>
+  </screenshots>
+  <categories>
+    <category>Game</category>
+    <category>LogicGame</category>
+  </categories>
+  <provides>
+    <binary>robotfindskitten</binary>
+  </provides>
+</component>
