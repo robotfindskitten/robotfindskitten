@@ -22,8 +22,4 @@ AC_CHECK_HEADERS(ncurses.h,,
 	[AC_CHECK_HEADERS(curses.h,, 
 		AC_MSG_ERROR(Could not find ncurses headers!))])
 
-# This will become the directory name on SourceForge
-TAGLINE='ship_it_anyway'
-AC_SUBST(TAGLINE)
-
 AC_OUTPUT(Makefile src/Makefile doc/Makefile nki/Makefile share/Makefile)

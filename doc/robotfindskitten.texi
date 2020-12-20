@@ -253,10 +253,25 @@ robotfindskitten.
 
 @cindex bickering
 @cindex sourceforge
-In addition, robotfindskitten has a project on Sourceforge!  Simply
-visit @url{http://sourceforge.net/projects/rfk} and have a look at our
-bug tracking system, bickering flame war mailing lists, and
-haphazardly-branched repository trees!
+@cindex github
+
+For awhile (and by awhile, I mean a few decades), robotfindskitten's
+main project was on Sourceforge.  This was a problem, primarily being
+robotfindskitten became "that project which is still on Sourceforge",
+which was a fairly moderate social faux pas. Nobody wanted to say
+anything or act too rashly, but it was clear something had to be done.
+
+Sometime in 2020, Sourceforge broke the stalemate by corrupting the Git
+repository and making it impossible to write to, and a backup of the
+repository was put on GitHub.  So we went from the evil platform which
+has a history of injecting projects with spyware... to the platform
+owned by Microsoft.  This was somehow seen as a net positive.
+
+The Sourceforge project is still at
+@url{https://sourceforge.net/projects/rfk/} and contains the existing
+mailing lists, but development is currently being done at
+@url{https://github.com/robotfindskitten/robotfindskitten} and
+contributions are welcome!
 
 @node BEHOLD! A History of Confusion, A Final Thought, Join the Bludgeoning robotfindskitten Community!, Top
 @chapter BEHOLD! A History of Confusion
