@@ -18,8 +18,8 @@ AC_CHECK_LIB(ncurses, initscr, ,curses)
 
 dnl Checks for header files.
 AC_CHECK_HEADERS(signal.h)
-AC_CHECK_HEADERS(ncurses.h,, 
-	[AC_CHECK_HEADERS(curses.h,, 
+AC_CHECK_HEADERS(ncurses.h,,
+	[AC_CHECK_HEADERS(curses.h,,
 		AC_MSG_ERROR(Could not find ncurses headers!))])
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile nki/Makefile share/Makefile)

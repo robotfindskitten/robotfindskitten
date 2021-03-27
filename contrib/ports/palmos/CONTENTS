@@ -2,7 +2,7 @@ Makefile - it's a makefile
 constants.h - numbers that one should think hard before changing
 [messages.h - need to set the -I in Makefile to find it where it really lives]
 rfk-palm.c - this is where all the action is
-rfk-memo.{c,h} - get optional extra non-kitten-items from "rfk-fortune" memo 
+rfk-memo.{c,h} - get optional extra non-kitten-items from "rfk-fortune" memo
 rfk.bmp - picture for the about screen (this why I am not an art major)
 robotfindskitten.bmp - the regular application icon
 robotfindskitten.def - one line of text used by 'build-prc' not very exciting

@@ -10,4 +10,4 @@ appstream_DATA = org.robotfindskitten.robotfindskitten.metainfo.xml
 desktopdir = $(datadir)/applications
 desktop_DATA = robotfindskitten.desktop
 
-EXTRA_DIST=$(appicon512_DATA) $(appiconscalable_DATA) $(appstream_DATA) $(desktop_DATA)
+EXTRA_DIST = $(appicon512_DATA) $(appiconscalable_DATA) $(appstream_DATA) $(desktop_DATA)

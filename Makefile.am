@@ -1,6 +1,6 @@
-SUBDIRS=src doc nki share
-EXTRA_DIST=BUGS
-ACLOCAL_AMFLAGS=-I m4
+SUBDIRS = src doc nki share
+EXTRA_DIST = BUGS
+ACLOCAL_AMFLAGS = -I m4
 
 # Run the built code
 run:

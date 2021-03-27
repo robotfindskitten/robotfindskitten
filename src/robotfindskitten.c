@@ -154,7 +154,7 @@ static void add_message ( char *msg, size_t len ) {
 		if ( nmess ) {
 			state.num_messages_alloc =
 				state.num_messages + MSGS_ALLOC_CHUNK;
-			(void) memcpy ( nmess, state.messages, 
+			(void) memcpy ( nmess, state.messages,
 				( state.num_messages * sizeof ( char * ) ) );
 			(void) free ( state.messages );
 			state.messages = nmess;
@@ -199,7 +199,7 @@ static void read_file ( char *fname ) {
 			if ( ( ret == 0 ) || ( ch == '\n' ) || ( ch == '\r' ) )
 			{
 				/* ignore blank lines and comments */
-				if ( len != 0 && ( buff[0] != '#' ) 
+				if ( len != 0 && ( buff[0] != '#' )
 					&& ( buff[0] != '%')) {
 					buff[len] = '\0';
 					add_message ( buff, len + 1 );
@@ -318,7 +318,7 @@ static void randomize_messages(void) {
 	}
 }
 /*@=nullstate@*/
- 
+
 /* convenient macros */
 #define randx() ( FRAME + ( random() % ( state.cols - FRAME * 2 ) ) )
 #define randy() ( HEADSIZE + FRAME + (random() % ( state.lines - HEADSIZE - FRAME * 2 ) ) )
@@ -418,7 +418,7 @@ static void init ( unsigned int num ) {
 			if ( object_equal ( state.items[KITTEN], state.items[i] ) )
 				continue;
 			for ( j = 0; j < i; j++ ) {
-				if ( object_equal ( state.items[j], 
+				if ( object_equal ( state.items[j],
 					state.items[i] ) ) break;
 			}
 			if ( j == i ) break;
@@ -531,10 +531,10 @@ static void handle_resize(void) {
 		ybound = state.items[i].y;
 	}
 
-	/* has the resize hidden any items? */ 
+	/* has the resize hidden any items? */
 	if (xbound >= COLS - FRAME*2 || ybound >= HEADSIZE + LINES - FRAME*2) {
 		(void) endwin();
-		(void) fprintf(stderr, 
+		(void) fprintf(stderr,
 			"You crushed the simulation. And robot. And kitten.\n");
 		exit(EXIT_FAILURE);
 	}
@@ -548,7 +548,7 @@ static void instructions(void) {
 	(void) clear();
 	(void) move ( 0, 0 );
 	(void) printw ( "robotfindskitten %s\n", PACKAGE_VERSION );
-	(void) printw ( 
+	(void) printw (
 "By the illustrious Leonard Richardson (C) 1997, 2000\n"\
 "Written originally for the Nerth Pork robotfindskitten contest\n\n"\
 "In this game, you are robot (#). Your job is to find kitten. This task\n"\

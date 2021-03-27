@@ -4,19 +4,19 @@
  *                    i0lanthe@robotfindskitten.org
  *
  * Original robotfindskitten is
- * Copyright (C) 1997,2000 Leonard Richardson 
+ * Copyright (C) 1997,2000 Leonard Richardson
  *                         leonardr@segfault.org
- * 
+ *
  *    This program is free software; you can redistribute it and/or
  *    modify it under the terms of the GNU General Public License as
  *    published by the Free Software Foundation; either version 2 of
  *    the License, or (at your option) any later version.
- * 
+ *
  *    This program is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or EXISTENCE OF KITTEN.  See the GNU General
  *    Public License for more details.
- * 
+ *
  *    http://www.gnu.org/copyleft/gpl.html
  *
  **************************************************************************/
@@ -122,7 +122,7 @@ void draw(screen_object o)
   Short row = o.y, col = o.x;
   UChar ch = o.character;
   Short cheat;
-    
+
   // calculate pixel position of "row, col" and put char there
   cheat = cell_W - FntCharWidth(ch); // center the variable width characters
 
@@ -227,7 +227,7 @@ void play_animation()
     WinSetTextColor(my_red);
   }
 #endif /* I_AM_COLOR */
-  WinDrawChars(&c, 1, kx*cell_W + cell_W/2, (Y_MIN+1)*cell_H + 2);  
+  WinDrawChars(&c, 1, kx*cell_W + cell_W/2, (Y_MIN+1)*cell_H + 2);
 #ifdef I_AM_COLOR
   if (color) {
     WinPopDrawState();
@@ -254,7 +254,7 @@ void move_me(Short dir)
   /*Check for going off the edge of the screen.*/
   if (y < Y_MIN || y > Y_MAX || x < X_MIN || x > X_MAX)
     return; /*Do nothing.*/
-  
+
   /*Check for collision*/
   if (screen[x][y] != EMPTY) {
     switch (screen[x][y]) {
@@ -316,7 +316,7 @@ void LeaveForm()
 Boolean buttonsHandleEvent(EventPtr e)
 {
   Short dir = DIR_NONE;
-  
+
   if ((e->data.keyDown.chr != hard1Chr)
       && (e->data.keyDown.chr != hard2Chr)
       && (e->data.keyDown.chr != hard3Chr)
@@ -335,7 +335,7 @@ Boolean buttonsHandleEvent(EventPtr e)
   }
   // ok we are in the HuntForm for sure now, handling only the
   // hard?Chr where ?==1..4, plus the pageup/pagedown.
-  
+
   if (found) {
     // we're in "hit any key to start a new game" state..
     LeaveForm();
@@ -365,7 +365,7 @@ Boolean buttonsHandleEvent(EventPtr e)
     return false;
   }
 
-  // move_me will do all the redrawing needed, 
+  // move_me will do all the redrawing needed,
   // and check whether you have found the kitten and stuff
   move_me(dir);
 
@@ -476,7 +476,7 @@ Boolean Hunt_Form_HandleEvent(EventPtr e)
 	tmp_x -= 80; tmp_y -= 80;
       }
       dir = convert_to_dir(tmp_x, tmp_y);
-      // move_me will do all the redrawing needed, 
+      // move_me will do all the redrawing needed,
       // and check whether you have found the kitten
       // and do animation and going to start_form foo.
       move_me(dir);
@@ -530,7 +530,7 @@ void print_descr(Short i)
     if (wwlen >= StrLen(p)) break;
     p += wwlen;
   }
-  
+
   x = (160 - maxw) / 2;
   y = ((y >= THINGFORM_H) ? 0 : (THINGFORM_H-y)/2 );
   p = msg; // rewind...
@@ -572,7 +572,7 @@ Boolean Thing_Form_HandleEvent(EventPtr e)
   case keyDownEvent:
     // ignore the key that they pressed to "get here" in case it's held down
     if (e->data.keyDown.chr == last_key) return true;
-    // else Fall Through.    
+    // else Fall Through.
   case penDownEvent:
     LeaveForm();
     handled = true;
@@ -595,7 +595,7 @@ Boolean About_Form_HandleEvent(EventPtr e)
 {
   Boolean handled = false;
   FormPtr frm;
-    
+
   switch (e->eType) {
 
   case frmOpenEvent:
@@ -648,11 +648,11 @@ void initialize_arrays()
   empty.x = 0; empty.y = 0;  // these were -1
   empty.character = ' ';
   empty.memo = false;
-  
+
   for (i = 0; i <= X_MAX; i++)
     for (j = 0; j <= Y_MAX; j++)
       screen[i][j] = EMPTY;
-  
+
   for (i = 0; i < MESSAGES; i++)
     used_messages[i] = false;
   reinit_used_fortunes();
@@ -708,11 +708,11 @@ void initialize_kitten()
     kitten.x = randx();
     kitten.y = randy();
   } while (screen[kitten.x][kitten.y] != EMPTY);
-  
+
   /*Assign the kitten a character (and a color if we had color).*/
   do {
     kitten.character = randchar();
-  } while (!(validchar(kitten.character))); 
+  } while (!(validchar(kitten.character)));
   screen[kitten.x][kitten.y] = KITTEN;
 #ifdef I_AM_COLOR
   if (color) {
@@ -732,7 +732,7 @@ void initialize_bogus()
   for (j = 0; j < num_bogus; j++) {
     /*Give it a character.*/
     do {  c = randchar(); }
-    while (!validchar(c)); 
+    while (!validchar(c));
     bogus[j].character = c;
 
     // also a color
@@ -748,7 +748,7 @@ void initialize_bogus()
     while (screen[x][y] != EMPTY);
     bogus[j].x = x; bogus[j].y = y;
     screen[x][y] = j + STARTBOGUS;
-      
+
     /*Find a message for this object.*/
     msg_count = MESSAGES;
     // Might use some fortunes from a database record.
@@ -815,7 +815,7 @@ Boolean Start_Form_HandleEvent(EventPtr e)
   Boolean handled = false;
   FormPtr frm;
   FieldPtr fld;
-    
+
   switch (e->eType) {
 
   case frmOpenEvent:
@@ -834,7 +834,7 @@ Boolean Start_Form_HandleEvent(EventPtr e)
       WinDrawChars(buf, StrLen(buf), 5, 103);
       if (fortune_exists)
 	StrPrintF(buf, "%d fortunes found", fortune_ctr);
-      else 
+      else
 	StrPrintF(buf, "No fortunes found", fortune_ctr);
       WinDrawChars(buf, StrLen(buf), 5, 103-11);
     }
@@ -911,7 +911,7 @@ Boolean Prefs_Form_HandleEvent(EventPtr e)
   FieldPtr fld;
   ControlPtr checkbox;
   Short n;
-    
+
   switch (e->eType) {
 
   case frmOpenEvent:
@@ -964,7 +964,7 @@ Boolean Prefs_Form_HandleEvent(EventPtr e)
 	}
 	writePrefs();
 	LeaveForm();
-	if (redraw) initialize_screen(); // since we turned 'color' on or off 
+	if (redraw) initialize_screen(); // since we turned 'color' on or off
       }
       handled = true;
       break;
@@ -1084,9 +1084,9 @@ static Word StartApplication(void)
   find_fortune();
   // Seed the random number generator.
   SysRandom(TimGetSeconds());
-  
+
   FrmGotoForm(StartForm);
-  
+
   return error;
 }
 
@@ -1113,7 +1113,7 @@ static void EventLoop(void)
 {
     Word err;
     EventType e;
-     
+
     do {
 	EvtGetEvent(&e, evtWaitForever);
 	// first see if it's a hardware button thing!!!

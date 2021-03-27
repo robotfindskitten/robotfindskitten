@@ -42,7 +42,7 @@ by the Foundation.
 @title robotfindskitten
 @subtitle Leonard: In Bakersfield they have an art gallery in the mall.
 @subtitle Al: That's where they belong.
-@author by Leonard Richardson 
+@author by Leonard Richardson
 @email{leonardr@@segfault.org}
 My site: @url{http://www.crummy.com/}
 My software: @url{http://www.crummy.com/devel/}
@@ -90,7 +90,7 @@ This file documents the @code{robotfindskitten} Zen simulation.
 
 
 @node The Niceties, The Documentation, Top, Top
-@chapter The Niceties 
+@chapter The Niceties
 
 @cindex Nerth Pork
 @cindex Peter Peterson II
@@ -295,7 +295,7 @@ contributions are welcome!
 
 The original DOS version of robotfindskitten, now lost to humanity
 unless there's an undiscovered copy lurking on one of Leonard
-Richardson's hard drives, dates back to 1997. 
+Richardson's hard drives, dates back to 1997.
 
 Leonard ported the code to Linux in 1999; that release is now fondly
 remembered as ``The Leonard R Kung Fu Grip'' and the tarball can still
@@ -311,7 +311,7 @@ In 2003, Neale Pickett shipped ``Neale's 2000-Inch Release'' with 349
 NKIs.
 
 In 2005, Alexey Toptygin rewrote the code to handle external files of
-NKIs rather than having them inline in a string array. The devteam 
+NKIs rather than having them inline in a string array. The devteam
 agreed to adopt this version.  Then, in a fine example of the slack and
 desultory style of robotfindskitten development, everybody (including
 Alexey) wandered off and forgot about it.  The code wouldn't be merged

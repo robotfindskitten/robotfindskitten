@@ -26,12 +26,12 @@
 !
 ! Developed with Inform 6.21.4 as installed from NetBSD's pkgsrc tree
 ! and Frotz 2.42.
-! 
+!
 !
 ! Compile it with:
 !	inform "-~S" kitten.inf  <-- Assuming Unix
 !		 ^
-!		 | 
+!		 |
 !		Gets rid of debugging code which doesn't really do
 !		this sort of program any good in the first place.
 !
@@ -208,7 +208,7 @@ Global Real_Release = 0;
 !
 [ Banner i;
 	if (Story ~= 0) {
-		style bold; 
+		style bold;
 		print (string) Story;
 		style roman;
 	}
@@ -249,7 +249,7 @@ Array inbuf -> INBUFSIZE;
 			maxnum = MESSAGE_NUM;
 		} else {
 			maxnum = Nonkitten_Max;
-		} 
+		}
 
 		print "^Please enter the number of nonkittens you
 			wish to search through.^(1 to ", maxnum, " only)^^> ";
@@ -283,7 +283,7 @@ Array inbuf -> INBUFSIZE;
 		if (cx < len && inbuf->(2+cx) == '.')
 			break;
 
-		! If user just hits return, use what we have already. 
+		! If user just hits return, use what we have already.
 		if (len == 0)
 			return init;
 		if (cx == len || inbuf->(2+cx) < '0' || inbuf->(2+cx) > '9') {
@@ -403,7 +403,7 @@ main menu. This is another bug in Windows Frotz which causes the
 interpreter to follow Windows' suggestion that something less than 24 or
 25 lines is okay.^
 ^
-[Press any key to continue.] "; 
+[Press any key to continue.] ";
 	getkey();
 ];
 
@@ -425,7 +425,7 @@ cursor keys, the numeric keypad (make sure numlock is on), or using the
 vi/rogue/nethack movement keys. The game ends when robotfindskitten.
 Alternatively, you may end the game by hitting the Esc or Q keys.^
 ^
-[Press any key to continue.] "; 
+[Press any key to continue.] ";
 	getkey();
 ];
 
@@ -442,9 +442,9 @@ print "^
 A Final Thought.^
 ^
 Day and night I feverishly worked upon the machine, creating both a soul
-which could desire its goal, and a body with which it could realize 
+which could desire its goal, and a body with which it could realize
 it. Many who saw my creation called it an abomination, and denied me
-grant money.  But they could not dissuade me from my impossible 
+grant money.  But they could not dissuade me from my impossible
 task.  It was a spectre that tormented me always, a ghost I had to give
 a form and a life, lest it consume me from the inside.  And when at last
 my task was done, when the grey box on wheels was complete and when it,
@@ -470,12 +470,12 @@ frozen desert beyond. ~FIND KITTEN!~^
 ^
 -- The Book of Found Kittens, pages 43-4, author unknown.^
 ^
-[Press any key to continue.] "; 
+[Press any key to continue.] ";
 	getkey();
 ];
 
 
-[ draw_big_robot x y; 
+[ draw_big_robot x y;
 
 	if (x == 0)
 		x = 1;
@@ -586,7 +586,7 @@ frozen desert beyond. ~FIND KITTEN!~^
 ! Something gets messed up if I make this local to findkitten()
 ! When going right or left, then up or down to hit the Kitten, the
 ! animation gets reversed.
-! 
+!
 Global last_right = false;
 
 [ findkitten key i;
@@ -672,7 +672,7 @@ Global last_right = false;
 	'2', 'K', 130:	player_y--;
 	'4', 'H', 131:	player_x++;
 	'6', 'L', 132:	player_x--;
-	'7', 'Y':	player_y++; player_x++; 
+	'7', 'Y':	player_y++; player_x++;
 	'9', 'U':	player_y++; player_x--;
 	'1', 'B':	player_y--; player_x++;
 	'3', 'N':	player_y--; player_x--;
@@ -694,7 +694,7 @@ Global last_right = false;
 				style reverse;
 				draw_object(robot_x, TopBar - 1, '#');
 				style roman;
-				draw_object(Anim_Meet - 1 + i, TopBar - 1, 
+				draw_object(Anim_Meet - 1 + i, TopBar - 1,
 					kitten_char, kitten_color);
 			} else {
 				robot_x = Anim_Meet - 1 + i;
@@ -780,7 +780,7 @@ Global last_right = false;
 		nonkitten_x-->i = get_random_x();
 		nonkitten_y-->i = get_random_y();
 		nonkitten_color-->i = get_random_color();
-		while (already_seen_xy(nonkitten_x-->i, 
+		while (already_seen_xy(nonkitten_x-->i,
 			nonkitten_y-->i) == true) {
 			nonkitten_x-->i = get_random_x();
 			nonkitten_y-->i = get_random_y();
