@@ -21,6 +21,7 @@ libtool
 ltmain.sh
 m4/
 missing
+robotfindskitten-*.tar.gz
 src/.deps/
 src/Makefile
 src/Makefile.in
