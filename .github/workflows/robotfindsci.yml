@@ -6,7 +6,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Dependency packages
-      run: sudo apt-get -y install build-essential gnulib libncurses-dev texinfo texlive-latex-recommended
+      run: sudo apt-get -y install build-essential gnulib libncurses-dev texinfo texlive-latex-recommended pandoc
     - name: autoreconf
       run: autoreconf -ifv
     - name: configure

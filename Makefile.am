@@ -1,6 +1,7 @@
 SUBDIRS = src doc nki share
-EXTRA_DIST = BUGS
+EXTRA_DIST = BUGS README.md
 ACLOCAL_AMFLAGS = -I m4
+CLEANFILES = README
 
 # Run the built code
 run:
@@ -18,3 +19,6 @@ ship:
 	@echo '~~~~~\o______/~~~~~'
 	@echo ''
 
+# autotools really expects README, so let's build a text equivalent
+README: README.md
+	pandoc -f markdown -t plain -o $@ $<
