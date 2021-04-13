@@ -29,6 +29,7 @@ robotfindskitten is available from most Unix distributions.
 
   * `sudo apt install robotfindskitten`  # [Debian](https://packages.debian.org/stable/robotfindskitten), Ubuntu, etc
   * `sudo dnf install robotfindskitten`  # Fedora, etc
+  * `sudo pkg install robotfindskitten`  # [FreeBSD](https://www.freshports.org/games/robotfindskitten)
   * `brew install robotfindskitten`  # [macOS Homebrew](https://formulae.brew.sh/formula/robotfindskitten)
 
 As of this writing, [Finnix](https://www.finnix.org/) is the only distribution to carry robotfindskitten pre-installed.
