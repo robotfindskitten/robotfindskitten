@@ -43,7 +43,7 @@
 !	2) If it wasn't already abundantly obvious, this program won't
 !	compile to Glulx because of copious use of Z-machine assembly
 !	instructions.
-!	
+!
 !	3) Compiling for V5 or higher is required due to "style" calls.
 !	Is there a reason why someone would want to compile this for V4
 !	or previous?
@@ -134,7 +134,7 @@ Global Real_Release = 0;
 	Width = $22-->0;
 	Height = $24-->0;
 
-	main_menu();	
+	main_menu();
 	while (true) {
 		key = getkey();
 		switch (key) {
@@ -543,7 +543,7 @@ frozen desert beyond. ~FIND KITTEN!~^
 	print "__", (char) 92;
 	y++;
 	@set_cursor y x;
-	print "C_C(____)";	
+	print "C_C(____)";
 
 	@set_colour Fore_def Back_def;
 ];
@@ -577,7 +577,7 @@ frozen desert beyond. ~FIND KITTEN!~^
 	print "__", (char) 92;
 	y++;
 	@set_cursor y x;
-	print " 3_3(____)";	
+	print " 3_3(____)";
 
 	@set_colour Fore_def Back_def;
 ];
@@ -770,7 +770,7 @@ Global last_right = false;
 		player_x = get_random_x();
 		player_y = get_random_y();
 	}
-];	
+];
 
 
 [ init_nonkittens i;
@@ -807,7 +807,7 @@ Global last_right = false;
 	if (fore == "")
 		fore = Back_def;
 	if (back == "")
-		back = Back_def;	
+		back = Back_def;
 
 	@set_colour fore Back_def;
 	if (character)

@@ -1,0 +1,15 @@
+# SPDX-PackageName: robotfindskitten
+# SPDX-PackageSupplier: Ryan Finnie <ryan@finnie.org>
+# SPDX-PackageDownloadLocation: https://codeberg.org/robotfindskitten/robotfindskitten
+# SPDX-FileComment: Woodpecker CI pre-commit workflow
+# SPDX-FileCopyrightText: © 2026 Ryan Finnie <ryan@finnie.org>
+# SPDX-License-Identifier: GPL-2.0-or-later
+---
+when:
+  - event: ["push", "pull_request", "manual"]
+steps:
+  - name: "pre-commit"
+    image: "python:3.14-trixie"
+    commands: |
+      python -m pip install pre-commit
+      pre-commit run --show-diff-on-failure --color=always --all-files

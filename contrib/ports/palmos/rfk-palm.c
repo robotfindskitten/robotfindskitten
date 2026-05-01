@@ -947,20 +947,20 @@ Boolean Prefs_Form_HandleEvent(EventPtr e)
       if (read_bogus_field(fld, &n)) {
 	my_prefs.default_num_bogus = n;
 	checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_1));
-	my_prefs.relative_move = (CtlGetValue(checkbox) != 0);	
+	my_prefs.relative_move = (CtlGetValue(checkbox) != 0);
 	checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_2));
-	my_prefs.sound_on = (CtlGetValue(checkbox) != 0);	
+	my_prefs.sound_on = (CtlGetValue(checkbox) != 0);
 	checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_3));
-	my_prefs.use_buttons = (CtlGetValue(checkbox) != 0);	
+	my_prefs.use_buttons = (CtlGetValue(checkbox) != 0);
 	checkbox = FrmGetObjectPtr(frm, FrmGetObjectIndex(frm, check_prefs_4));
-	my_prefs.replace_nki = (CtlGetValue(checkbox) != 0);	
+	my_prefs.replace_nki = (CtlGetValue(checkbox) != 0);
 	if (color) {
 	  Boolean old = my_prefs.color_nki;
 	  checkbox = FrmGetObjectPtr(frm,FrmGetObjectIndex(frm,check_prefs_5));
 	  my_prefs.color_nki = (CtlGetValue(checkbox) != 0);
 	  redraw = (old != my_prefs.color_nki); // if changed, redraw.. later..
 	  checkbox = FrmGetObjectPtr(frm,FrmGetObjectIndex(frm,check_prefs_6));
-	  my_prefs.color_msgs = (CtlGetValue(checkbox) != 0);	
+	  my_prefs.color_msgs = (CtlGetValue(checkbox) != 0);
 	}
 	writePrefs();
 	LeaveForm();

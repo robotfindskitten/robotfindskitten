@@ -1,26 +1,27 @@
-name: robotfindsci
-on: [push, pull_request]
+---
+name: "robotfindsci"
+"on": ["push", "pull_request"]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-latest"
     steps:
-    - uses: actions/checkout@v6
-    - name: Dependency packages
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install build-essential gnulib libncurses-dev texinfo texlive-latex-recommended pandoc
-    - name: autoreconf
-      run: autoreconf -ifv
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
-    - name: Upload dist
-      uses: actions/upload-artifact@v7
-      with:
-        name: robotfindskitten-dist-${{ github.job }}-${{ github.run_id }}.${{ github.run_number }}
-        path: robotfindskitten-*.tar.gz
+      - uses: "actions/checkout@v6"
+      - name: "Dependency packages"
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install build-essential gnulib libncurses-dev texinfo texlive-latex-recommended pandoc
+      - name: "autoreconf"
+        run: "autoreconf -ifv"
+      - name: "configure"
+        run: "./configure"
+      - name: "make"
+        run: "make"
+      - name: "make check"
+        run: "make check"
+      - name: "make distcheck"
+        run: "make distcheck"
+      - name: "Upload dist"
+        uses: "actions/upload-artifact@v7"
+        with:
+          name: "robotfindskitten-dist-${{ github.job }}-${{ github.run_id }}.${{ github.run_number }}"
+          path: "robotfindskitten-*.tar.gz"

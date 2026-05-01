@@ -79,9 +79,9 @@ This file documents the @code{robotfindskitten} Zen simulation.
 * The Documentation::		Overview of robotfindskitten.
 * A Word of Warning::		Helpful word of warning.
 * Another Word of Warning::	Another helpful word of warning.
-* Technical Information for Hard-Core Geeks::		
+* Technical Information for Hard-Core Geeks::
 				Hack Hack.
-* Join the Bludgeoning robotfindskitten Community!::	
+* Join the Bludgeoning robotfindskitten Community!::
 				Stand proud.
 * BEHOLD! A History of Confusion::    The dubious history  of robotfindskitten
 * A Final Thought::		Chapter and Verse.
