@@ -7,6 +7,8 @@
 ---
 when:
   - event: ["push", "pull_request", "manual"]
+labels:
+  platform: "linux/amd64"
 steps:
   - name: "pre-commit"
     image: "python:3.14-trixie"
