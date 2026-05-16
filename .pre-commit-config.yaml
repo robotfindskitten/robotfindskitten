@@ -44,7 +44,7 @@ repos:
     hooks:
       - id: "flake8"
 
-  - repo: "https://codeberg.org/rfinnie/woodpecker-shellcheck"
-    rev: "v1.1.0"
+  - repo: "https://forge.colobox.com/rfinnie/woodpecker-shellcheck"
+    rev: "v1.3.0"
     hooks:
       - id: "woodpecker-shellcheck"
