@@ -9,9 +9,12 @@ when:
   - event: ["push", "pull_request", "manual"]
 labels:
   platform: "linux/amd64"
+clone:
+  git:
+    image: "docker.io/woodpeckerci/plugin-git:latest@sha256:ebde4a4d07e0e24b630082484d192890dd4f6d442d90bf5466f0763860f83652"  # 2026-05-28
 steps:
   - name: "Robot Finds CI"
-    image: "debian"
+    image: "docker.io/library/debian:trixie@sha256:4ae67669760b807c19f23902a3fd7c121a6a70cf2ae709035674b23e712e4d62"  # 2026-05-19
     commands: |
       set -x
       # Dependency packages
