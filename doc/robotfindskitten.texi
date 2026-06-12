@@ -44,8 +44,8 @@ by the Foundation.
 @subtitle Al: That's where they belong.
 @author by Leonard Richardson
 @email{leonardr@@segfault.org}
-My site: @url{http://www.crummy.com/}
-My software: @url{http://www.crummy.com/devel/}
+My site: @url{https://www.crummy.com/}
+My software: @url{https://www.crummy.com/software/}
 
 ============================================================================
 

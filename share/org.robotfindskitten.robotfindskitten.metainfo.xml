@@ -20,7 +20,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Robot (#) having found a non-kitten item (NKI).</caption>
-      <image type="source" width="640" height="480">http://robotfindskitten.org/shots/Wii/shot.png</image>
+      <image type="source" width="640" height="480">https://robotfindskitten.org/shots/Wii/shot.png</image>
     </screenshot>
   </screenshots>
   <categories>
