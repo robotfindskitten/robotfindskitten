@@ -1,3 +1,8 @@
+# SPDX-PackageName: robotfindskitten
+# SPDX-PackageDownloadLocation: https://codeberg.org/robotfindskitten/robotfindskitten
+# SPDX-FileCopyrightText: © 1997 Leonard Richardson and contributors
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 appicon512dir = $(datadir)/icons/hicolor/512x512/apps
 appicon512_DATA = robotfindskitten.png
 

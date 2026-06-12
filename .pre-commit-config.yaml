@@ -44,6 +44,11 @@ repos:
     hooks:
       - id: "flake8"
 
+  - repo: "https://codeberg.org/fsfe/reuse-tool"
+    rev: "a1bb792acda6fd0724936b4ebbdbc8eceb9c0459"  # v6.2.0
+    hooks:
+      - id: "reuse-lint-file"
+
   - repo: "https://forge.colobox.com/rfinnie/woodpecker-shellcheck"
     rev: "aa1061cff5d2f6888ea0592f1faed65d2c14916a"  # v1.3.0
     hooks:

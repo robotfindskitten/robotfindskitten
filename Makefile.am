@@ -1,3 +1,8 @@
+# SPDX-PackageName: robotfindskitten
+# SPDX-PackageDownloadLocation: https://codeberg.org/robotfindskitten/robotfindskitten
+# SPDX-FileCopyrightText: © 1997 Leonard Richardson and contributors
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 SUBDIRS = src doc nki share
 EXTRA_DIST = BUGS README.md
 ACLOCAL_AMFLAGS = -I m4

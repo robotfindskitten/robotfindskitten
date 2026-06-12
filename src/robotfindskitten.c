@@ -1,4 +1,10 @@
 /*
+SPDX-PackageName: robotfindskitten
+SPDX-PackageDownloadLocation: https://codeberg.org/robotfindskitten/robotfindskitten
+SPDX-FileCopyrightText: © 1997 Leonard Richardson and contributors
+SPDX-License-Identifier: GPL-2.0-or-later
+*/
+/*
  *  Copyright (C) 2004-2005 Alexey Toptygin <alexeyt@freeshell.org>
  *  Based on sources by Leonard Richardson and others.
  *

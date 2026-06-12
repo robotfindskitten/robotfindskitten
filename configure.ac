@@ -1,3 +1,8 @@
+# SPDX-PackageName: robotfindskitten
+# SPDX-PackageDownloadLocation: https://codeberg.org/robotfindskitten/robotfindskitten
+# SPDX-FileCopyrightText: © 1997 Leonard Richardson and contributors
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT([robotfindskitten],[2.8284271.702],[rfk-dev@sourceforge.net],[robotfindskitten])
 AM_INIT_AUTOMAKE([gnu])
