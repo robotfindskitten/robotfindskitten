@@ -1,0 +1,18 @@
+version = 1
+
+[[annotations]]
+path = [
+    "AUTHORS",
+    "BUGS",
+    "ChangeLog",
+    "NEWS",
+    "README.md",
+    "doc/robotfindskitten.6",
+    "doc/robotfindskitten.texi",
+    "nki/vanilla.nki",
+    "share/robotfindskitten.png",
+]
+SPDX-PackageName = "robotfindskitten"
+SPDX-PackageDownloadLocation = "https://codeberg.org/robotfindskitten/robotfindskitten"
+SPDX-FileCopyrightText = "© 1997 Leonard Richardson and contributors"
+SPDX-License-Identifier = "GPL-2.0-or-later"

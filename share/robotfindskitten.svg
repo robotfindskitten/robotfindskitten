@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+SPDX-PackageName: robotfindskitten
+SPDX-PackageDownloadLocation: https://codeberg.org/robotfindskitten/robotfindskitten
+SPDX-FileCopyrightText: © 1997 Leonard Richardson and contributors
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"

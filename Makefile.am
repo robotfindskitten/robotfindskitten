@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 SUBDIRS = src doc nki share
-EXTRA_DIST = BUGS README.md
+EXTRA_DIST = BUGS README.md REUSE.toml
 ACLOCAL_AMFLAGS = -I m4
 CLEANFILES = README
 
