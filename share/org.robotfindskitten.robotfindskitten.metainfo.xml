@@ -3,6 +3,9 @@
   <id>org.robotfindskitten.robotfindskitten</id>
   <name>robotfindskitten</name>
   <summary>Zen Simulation of robot finding kitten</summary>
+  <developer id="org.robotfindskitten">
+    <name>Ryan Finnie</name>
+  </developer>
   <metadata_license>CC-BY-SA-4.0</metadata_license>
   <project_license>GPL-2.0-or-later</project_license>
   <description>
@@ -16,6 +19,7 @@
       you get a brief description of what it is you touched.
     </p>
   </description>
+  <url type="homepage">https://robotfindskitten.org/</url>
   <icon type="stock">robotfindskitten</icon>
   <screenshots>
     <screenshot type="default">
@@ -27,6 +31,14 @@
     <category>Game</category>
     <category>LogicGame</category>
   </categories>
+  <content_rating type="oars-1.0">
+    <content_attribute id="violence-cartoon">mild</content_attribute>
+    <content_attribute id="violence-fantasy">mild</content_attribute>
+    <content_attribute id="violence-realistic">mild</content_attribute>
+    <content_attribute id="drugs-alcohol">mild</content_attribute>
+    <content_attribute id="language-profanity">mild</content_attribute>
+    <content_attribute id="language-humor">mild</content_attribute>
+  </content_rating>
   <provides>
     <binary>robotfindskitten</binary>
   </provides>
