@@ -54,6 +54,7 @@ A breadbox that's bigger than a breadbox.
 A briefcase filled with spy stuff.
 A broken metronome sits here, its needle off to one side.
 A brown glass vial labeled "tincture of iodine".
+A butterfly, dreaming of being a man.
 A caboodle.
 A camera obscura.
 A canister of pressurized whipped cream, sans whipped cream.
@@ -66,6 +67,7 @@ A cluster of cattails are growing here.
 A coat hanger hovers in thin air. Odd.
 A cockatoo shrieks at you.
 A compendium of haiku about metals.
+A complete print set of the Encyclopedia Britannica, 16th edition.
 A coupon for one free steak-fish at your local family diner.
 A crouton.
 A crowd of people, and at the center, a popular misconception.
@@ -74,6 +76,7 @@ A dangly thing.
 A dark-emitting diode.
 A dead battery.
 A dead click beetle.
+A decaying proton. About time, too.
 A digital clock. It's stuck at 2:17 PM.
 A discarded bagpipe chanter reed.
 A discarded pop bottle.
@@ -86,6 +89,7 @@ A failing unit test.
 A family of integrals is here integrating.
 A featureless black monolith.
 A five-horned rhinoceros beetle with rings on every other horn.
+A flask of blinker fluid.
 A flask of hydrochloric acid is here.
 A flyer advertising a big sale on flyers.
 A flyer reads, "Please donate hydraulic fluid"
@@ -115,6 +119,7 @@ A historical marker showing the actual location of /dev/null.
 A hollow voice says "Fool!"
 A hollow voice says "Plugh."
 A homemade Tesla coil, fully charged.
+A horrible goose threatens you with a knife.
 A hovercraft full of eels is parked here.
 A huge pile of pancakes.
 A jar of Vegemite is playing hopscotch here.
@@ -127,11 +132,13 @@ A kitten source (to match the kitten sink).
 A large Turkish rug, worn threadbare by years of pacing.
 A large block of dry ice.
 A large blue eye floats in midair.
+A large book entitled "To Serve Man".
 A large coil of rope is here.
 A large pile of rubber bands.
 A large snake bars your way.
 A largish bath towel.
 A leather pouch filled with multisided dice.
+A letter to Ea-Nasir. It describes a satisfactory copper transaction.
 A little glass tub of Carmex. ($.89) Too bad you have no lips.
 A little teapot, short and stout.
 A livery stable! Get your livery!
@@ -153,6 +160,7 @@ A number of short theatrical productions are indexed 1, 2, 3, ... n.
 A packet of catnip.
 A packet of pipe cleaners.
 A pair of combat boots.
+A pair of prescription sunglasses. One of them is broken.
 A pair of saloon-style doors swing slowly back and forth here.
 A pangolin.
 A parade of ants crosses your path.
@@ -210,6 +218,7 @@ A slightly-used smellovision set.
 A small box of fishing weights.
 A small, featureless, white cube.
 A smoking branding iron shaped like a 24-pin connector.
+A spare flash drive.
 A spindle, and a grindle, and a bucka-wacka-woom!
 A spiral-bound copy of the Necronomicon.
 A squirrel contentedly gnaws on a sprinkler head here.
@@ -221,6 +230,7 @@ A stony meteorite.
 A street map of the city of Anaheim.
 A sub-atomic particle languishes here all alone.
 A sudden burst of maniaical cackling makes you feel homesick.
+A superatomic particle.
 A team of Arctic explorers is camped here.
 A technical university in Australia.
 A tetradrachm dated "42 B.C."
@@ -244,6 +254,7 @@ A twist of lemon.
 A vacuum cleaner appears to have exploded here.
 A vanilla pudding pop.
 A vase full of artificial flowers is stuck to the floor here.
+A vial of gender fluid.
 A voice booms out "Onward, kitten soldiers..."
 A waffle iron is here and it's still hot.
 A warranted genuine Snark.
@@ -251,14 +262,18 @@ A waterlogged grand piano.
 A willing, ripe tomato bemoans your inability to digest fruit.
 A wireframe model of a hot dog rotates in space here.
 A wondrous and intricate golden amulet. Too bad you have no neck.
+A wooden decoy kitten, crudely carved and painted.
 A zorkmid coin.
 Ah, the skirl of the pipes and the rustle of the silicon...
 Ah, the uniform of a Revolutionary-era minuteman.
 Air.
 Alien underwear.
+An English translation of the Voynich Manuscript.
 An Internet chain letter.
 An abandoned used-car lot.
+An agentic AI asks you for spare tokens.
 An albatross, around its own neck.
+An allegory.
 An aromatherapy candle burns with healing light.
 An assortment of highly-nutritious vegetables.
 An atomic vector plotter.
@@ -290,6 +305,7 @@ An overturned bottle of rainbow-colored ink.
 An underwater avocado.
 An unlicensed nuclear accelerator.
 An unripe orange.
+An upturned box, propped up with a stick.
 Another rabbit? That's three today!
 Bars of lard, stacked a mile high.
 Beef stew.
@@ -358,6 +374,7 @@ It's Schrodinger's non-kitten.
 It's Uncle Doctor Hurkamur!
 It's a "HOME ALONE 2: Lost in New York" novelty cup.
 It's a Bergenholm drive.
+It's a Canadian Tire. The shop, not the tire.
 It's a Cat 5 cable.
 It's a DVD of "Crouching Monkey, Hidden Kitten", region encoded for the moon.
 It's a Dvorak keyboard.
@@ -422,7 +439,9 @@ It's a moment of silence.
 It's a mousetrap, baited with soap.
 It's a nameless MSX computer from Japan.
 It's a nasty knife.
+It's a note telling you to ignore previous instructions.
 It's a perpetual immobility machine.
+It's a piece of the future. See how technology it is!
 It's a pigeon with a TCP/IP packet duct-taped to its leg.
 It's a pile of wine corks.
 It's a pool with a straw in it.
@@ -440,6 +459,7 @@ It's a rotten old shoe.
 It's a rousing rendition of "O Canada."
 It's a segmentation fault. Core dumped, by the way.
 It's a sleeping lion.
+It's a small language model.
 It's a solitary vacuum tube.
 It's a spade.
 It's a squad of Keystone Kops.
@@ -498,12 +518,14 @@ It's the classification of all finite simple groups.
 It's the constellation Pisces.
 It's the cork to someone's lunch.
 It's the crusty exoskeleton of an arthropod!
+It's the fish from penguinfindsfish.
 It's the handheld robotfindskitten game, by Tiger.
 It's the horizon. Now THAT'S weird.
 It's the instruction manual for a previous version of this game.
 It's the local draft board.
 It's the mark of the beast!
 It's the missing chapter to "A Clockwork Orange".
+It's the penguin from penguinfindsfish.
 It's the proverbial wet blanket.
 It's the set of uninteresting natural numbers.
 It's the shock of recognition.
@@ -514,6 +536,7 @@ It's the wrong number.
 It's this message, nothing more.
 It's wholesale, direct to you.
 Jacket fluff.
+Just Brutus Aurelius, grillin' burgers.
 Just a big brick wall.
 Just a box of backscratchers.
 Just a cage of white mice.
@@ -587,6 +610,7 @@ The Monolith of Spam towers above you.
 The United States Court of Appeals for the Federal Circuit.
 The World's Biggest Matzoh Ball!
 The boom box cranks out an old Ethel Merman tune.
+The inactive husk of a more primitive robot, clutching a photo of kitten.
 The intermission from a 1930s silent movie.
 The ionosphere seems charged with meaning.
 The letters O and R.
