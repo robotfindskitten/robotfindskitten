@@ -254,6 +254,7 @@ robotfindskitten.
 @cindex bickering
 @cindex sourceforge
 @cindex github
+@cindex codeberg
 
 For awhile (and by awhile, I mean a few decades), robotfindskitten's
 main project was on Sourceforge.  This was a problem, primarily being
@@ -267,11 +268,8 @@ repository was put on GitHub.  So we went from the evil platform which
 has a history of injecting projects with spyware... to the platform
 owned by Microsoft.  This was somehow seen as a net positive.
 
-The Sourceforge project is still at
-@url{https://sourceforge.net/projects/rfk/} and contains the existing
-mailing lists, but development is currently being done at
-@url{https://github.com/robotfindskitten/robotfindskitten} and
-contributions are welcome!
+In June 2026, development and releases were moved to Codeberg, mainly
+because we ran out of GitHub Copilot tokens.
 
 @node BEHOLD! A History of Confusion, A Final Thought, Join the Bludgeoning robotfindskitten Community!, Top
 @chapter BEHOLD! A History of Confusion

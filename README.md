@@ -41,6 +41,8 @@ It's in their best interest.
 
 ## Building from source
 
+The latest Git sources may be downloaded from [Codeberg](https://codeberg.org/robotfindskitten/robotfindskitten).
+
 To build robotfindskitten from source, you will need GNU and TeX tools.
 On Debian-based systems, the following build dependencies will be sufficient:
 
