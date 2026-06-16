@@ -26,4 +26,4 @@ ship:
 
 # autotools really expects README, so let's build a text equivalent
 README: README.md
-	pandoc -f markdown -t plain -o $@ $<
+	pandoc -f markdown-smart -t plain --reference-links -o $@ $<
