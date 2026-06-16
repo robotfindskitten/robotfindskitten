@@ -1,5 +1,13 @@
 version = 1
 
+# REUSE normally prefers individual .license files, and this is well
+# suited for a Git workflow. However, robotfindskitten's primary
+# distribution is still dist-generated tarballs, and we would still like
+# to include all license information. EXTRA_DIST allows for individual
+# files to be included (but not wildcards) which would get tedious and
+# likely to miss files over time. With REUSE.toml, this ensures it's
+# easy to ship via EXTRA_DIST.
+
 [[annotations]]
 path = [
     "AUTHORS",
