@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([robotfindskitten],[2.8284271.702],[rfk-dev@sourceforge.net],[robotfindskitten])
+AC_INIT([robotfindskitten],[3.0000000.726],[ryan@finnie.org],[robotfindskitten])
 AM_INIT_AUTOMAKE([gnu])
 dnl Make builds less verbose.  Shuts off Makefile portability checks.
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])

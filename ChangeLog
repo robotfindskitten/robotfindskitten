@@ -1,3 +1,11 @@
+Jun 17 2026 Ryan Finnie <ryan@finnie.org>
+	* Migrated development to GitHub, then to Codeberg 6 years later.
+	* Added a proper README.
+	* Added AppStream definitions for graphical distributions.
+	* Added 24 new NKIs.
+	* Moved contrib sources to a separate robotfindskitten-contrib repo.
+	* Various packaging and VCS updates.
+
 Mar 1 2020 Ryan Finnie <ryan@finnie.org>
 	* Minor dist fixes, rolling up commits between 2018 and 2020.
 	* Added an NKI.  A single NKI.  One, lone NKI.
