@@ -1,7 +1,7 @@
 # SPDX-PackageName: robotfindskitten
 # SPDX-PackageSupplier: Ryan Finnie <ryan@finnie.org>
 # SPDX-PackageDownloadLocation: https://codeberg.org/robotfindskitten/robotfindskitten
-# SPDX-FileComment: Woodpecker CI pre-commit workflow
+# SPDX-FileComment: Woodpecker CI prek workflow
 # SPDX-FileCopyrightText: © 2026 Ryan Finnie <ryan@finnie.org>
 # SPDX-License-Identifier: GPL-2.0-or-later
 ---
@@ -14,12 +14,14 @@ clone:
   git:
     image: "docker.io/woodpeckerci/plugin-git:latest@sha256:ebde4a4d07e0e24b630082484d192890dd4f6d442d90bf5466f0763860f83652"  # 2026-05-28
 steps:
-  - name: "pre-commit"
+  - name: "prek"
     image: "docker.io/library/python:3.14-trixie@sha256:11591407222400cafc1b2bd03fe09a90988f091fc9ddff4a901f80ceb02b78b3"  # 2026-05-25
     commands: |
       set -x
       apt update
       apt -y install shellcheck
 
-      python -m pip install pre-commit
-      pre-commit run --show-diff-on-failure --color=always --all-files
+      python -m pip install prek
+      prek --version
+      prek run --show-diff-on-failure --color=always --all-files
+      prek gc
